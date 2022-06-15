@@ -1,37 +1,34 @@
-import {
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  StatusBar,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, Image, SafeAreaView, StatusBar} from 'react-native';
 import React, {useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {COLORS} from '../Utils/Colors';
+import {LOGO} from '../Assets/Images';
 
-const Splash = () => {
-  const navigation = useNavigation();
+const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       navigation.navigate('MainApp');
-    }, 3000);
-  }, [navigation]);
+    }, 2000);
+  }, []);
 
   return (
-    <SafeAreaView style={styles.background}>
+    <SafeAreaView style={styles.Container}>
       <StatusBar translucent backgroundColor="transparent" />
-      <Text style={{color: 'black', fontSize: 30}}>SPLASH</Text>
+      <Image style={styles.Image} source={LOGO} />
     </SafeAreaView>
   );
 };
 
 export default Splash;
-const screen = Dimensions.get('screen');
+
 const styles = StyleSheet.create({
-  background: {
+  Container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    width: screen.width * 1.0,
+    backgroundColor: COLORS.dark,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  Image: {
+    width: 90,
+    height: 90,
   },
 });
