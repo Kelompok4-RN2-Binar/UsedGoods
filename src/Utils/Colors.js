@@ -1,5 +1,8 @@
 export const COLORS = {
   dark: '#01221D',
+  black: '#01040D',
   white: '#FFF',
-  gret: '#8991A4',
+  red: '#FF6164',
+  green: '#0CBFA5',
+  grey: '#8991A4',
 };
