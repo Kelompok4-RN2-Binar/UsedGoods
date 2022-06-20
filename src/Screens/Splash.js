@@ -2,13 +2,24 @@ import {StyleSheet, Image, SafeAreaView, StatusBar} from 'react-native';
 import React, {useEffect} from 'react';
 import {COLORS} from '../Utils/Colors';
 import {LOGO} from '../Assets/Images';
+import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+const Splash = () => {
+  const isLogin = useSelector(state => state.appData.isLogin)
+  console.log(isLogin)
+  const navigation = useNavigation();
 
-const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('MainApp');
-    }, 2000);
-  }, []);
+      if(isLogin==true){
+        navigation.replace("MainApp");
+      }else if (isLogin!=true){
+        navigation.replace("Auth");
+      }else{
+        navigation.replace("Auth");
+      }
+    }, 3000);
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.Container}>

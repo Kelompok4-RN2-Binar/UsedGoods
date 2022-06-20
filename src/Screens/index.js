@@ -1,5 +1,4 @@
-import Login from './Auth/Login';
-import Register from './Auth/Register';
+import Auth from './Auth/Auth';
 //Auth
 import Splash from './Splash';
 import Home from './MainApp/Home';
@@ -11,8 +10,7 @@ import InfoAkun from './MainApp/Other/InfoAkun';
 //MainApp for bottom tabs
 
 export {
-  Login,
-  Register,
+  Auth,
   Splash,
   Home,
   Notifikasi,

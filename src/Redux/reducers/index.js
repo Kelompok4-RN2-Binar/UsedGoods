@@ -1,6 +1,8 @@
 import { FETCH_LOGIN } from "../types";
 const initialState= {
-    data:null,
+    data:{},
+    isLogin:false,
+    token:null
 };
 
 
@@ -10,8 +12,9 @@ const Reducer = (state = initialState,action) => {
             return{
                 ...state,
                 data:action.data,
-            };
-        
+                isLogin:action.isLogin,
+                token:action.token
+            };  
             default:
                 return state;
     }

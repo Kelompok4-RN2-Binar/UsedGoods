@@ -11,8 +11,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../Utils/Colors';
 import {FONTS} from '../../Utils/Fonts';
 
-const Input = ({
+const LoginInput = ({
   icon,
+  onBlur,
   placeholder,
   onChangeText,
   value,
@@ -24,13 +25,14 @@ const Input = ({
     <View style={styles.Container}>
       <View style={styles.Content}>
         <Icon name={icon} size={20} color={COLORS.dark} />
+        
         <TextInput
           style={styles.Input}
           placeholder={placeholder}
           onChangeText={onChangeText}
           value={value}
-          secureTextEntry={isSecureText}
           placeholderTextColor={COLORS.grey}
+          onBlur={onBlur}
         />
         {placeholder == 'Password' || placeholder == 'Confirm Password' ? (
           <TouchableOpacity
@@ -45,7 +47,8 @@ const Input = ({
           </TouchableOpacity>
         ) : null}
       </View>
-      <Text style={styles.Text}>{error}</Text>
+      {error && <Text style={styles.Text}>{error}</Text> }
+      
     </View>
   );
 };
@@ -60,25 +63,27 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.dark,
+    borderWidth: 1,
+    borderColor: COLORS.grey,
     borderRadius: 15,
     paddingHorizontal: 15,
+    width: screen.width * 0.75,
   },
   Input: {
     width: screen.width * 0.5,
     fontFamily: FONTS.Regular,
     marginHorizontal: 10,
-    fontSize: 12,
+    fontSize: 14,
+    color:COLORS.black
   },
   Text: {
     width: screen.width * 0.5,
     fontFamily: FONTS.Regular,
     fontSize: 12,
     color: COLORS.danger,
-    marginTop: 5,
-    marginBottom: 10,
+    marginTop: 2,
+
   },
 });
 
-export default Input;
+export default LoginInput;
