@@ -1,7 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React ,{useEffect}from 'react'
+import { useSelector } from 'react-redux';
 
-const Home = () => {
+const Home = ({navigation}) => {
+  const isLogin = useSelector(state => state.appData.isLogin)
+  const data = useSelector(state => state.appData.data)
+  console.log(data)
+  useEffect(() => {
+        if(isLogin==false){
+          navigation.navigate("Auth")
+        }
+    }, []);
   return (
     <View>
       <Text>Home</Text>

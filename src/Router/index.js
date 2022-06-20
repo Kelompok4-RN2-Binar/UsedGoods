@@ -2,8 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
-  Login,
-  Register,
+  Auth,
   Splash,
   Home,
   DaftarJual,
@@ -14,7 +13,8 @@ import {
 } from '../Screens';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../Utils/Colors';
-
+import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -65,15 +65,16 @@ const MainApp = () => {
   );
 };
 
-const Router = () => {
+const Router = ({navigation}) => {
+
   return (
+
     <Stack.Navigator
       screenOptions={{headerShown: false}}
       initialRouteName="Splash">
       <Stack.Screen name="Splash" component={Splash} />
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="MainApp" component={MainApp} />
+      <Stack.Screen name="Auth" component={Auth} options={{ gestureEnabled: false ,headerLeft: () => <></>}}/>
+      <Stack.Screen name="MainApp" component={MainApp} options={{ gestureEnabled: false ,headerLeft: () => <></>}} />
       <Stack.Screen name="InfoAkun" component={InfoAkun} />
     </Stack.Navigator>
   );
