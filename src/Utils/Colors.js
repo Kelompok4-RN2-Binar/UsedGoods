@@ -6,5 +6,5 @@ export const COLORS = {
   green: '#0CBFA5',
   grey: '#8991A4',
   lightGrey: '#F4F5F6',
-  socialMedia: '#1a3834'
+  socialMedia: '#1a3834',
 };

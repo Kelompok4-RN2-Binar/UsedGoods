@@ -4,8 +4,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Dimensions,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../Utils/Colors';
@@ -23,7 +23,7 @@ const Input = ({
   return (
     <View style={styles.Container}>
       <View style={styles.Content}>
-        <Icon name={icon} size={20} color={COLORS.dark} />
+        <Icon style={styles.Icon} name={icon} size={20} color={COLORS.dark} />
         <TextInput
           style={styles.Input}
           placeholder={placeholder}
@@ -50,14 +50,15 @@ const Input = ({
   );
 };
 
-const screen = Dimensions.get('screen');
+const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Container: {
     alignItems: 'center',
   },
   Content: {
+    width: window.width * 0.8,
+    height: 52,
     backgroundColor: COLORS.white,
-    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 2,
@@ -66,18 +67,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   Input: {
-    width: screen.width * 0.5,
+    width: '75%',
     fontFamily: FONTS.Regular,
-    marginHorizontal: 10,
     fontSize: 12,
+    marginHorizontal: 15,
   },
   Text: {
-    width: screen.width * 0.5,
+    width: window.width * 0.7,
     fontFamily: FONTS.Regular,
-    fontSize: 12,
-    color: COLORS.danger,
-    marginTop: 5,
-    marginBottom: 10,
+    fontSize: 10,
+    color: COLORS.red,
+    textAlign: 'justify',
+    marginVertical: 5,
   },
 });
 

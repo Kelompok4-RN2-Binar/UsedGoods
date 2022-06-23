@@ -6,17 +6,20 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  StatusBar,
 } from 'react-native';
 import React from 'react';
 import {COLORS} from '../../Utils/Colors';
 import {FONTS} from '../../Utils/Fonts';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { goLogout } from '../../Redux/actions';
-import { useDispatch } from 'react-redux/';
+import {goLogout} from '../../Redux/actions';
+import {useDispatch} from 'react-redux/';
 const Akun = ({navigation}) => {
   const dispatch = useDispatch();
+
   return (
     <SafeAreaView style={styles.Container}>
+      <StatusBar backgroundColor={'transparent'} translucent />
       <View style={styles.Header}>
         <Text style={styles.Title}>My Account</Text>
         <Image style={styles.Image} />
@@ -36,14 +39,16 @@ const Akun = ({navigation}) => {
           />
           <Text style={styles.Text}>Edit Account</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{...styles.Box, shadowColor: COLORS.red}} onPress={()=>{
-          dispatch(goLogout()).then(()=>{
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "Auth" }],
+        <TouchableOpacity
+          style={{...styles.Box, shadowColor: COLORS.red}}
+          onPress={() => {
+            dispatch(goLogout()).then(() => {
+              navigation.reset({
+                index: 0,
+                routes: [{name: 'Auth'}],
               });
             });
-        }}>
+          }}>
           <Icon
             style={styles.Icon}
             name="logout-variant"
@@ -59,7 +64,7 @@ const Akun = ({navigation}) => {
 
 export default Akun;
 
-const screen = Dimensions.get('screen');
+const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
@@ -67,8 +72,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   Header: {
-    width: screen.width * 1,
-    height: screen.height * 0.3,
+    width: window.width * 1,
+    height: window.height * 0.35,
     backgroundColor: COLORS.dark,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
@@ -85,28 +90,28 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 15,
-    top: screen.height * 0.075,
+    top: window.height * 0.075,
   },
   Content: {
-    width: screen.width * 0.85,
+    width: window.width * 0.85,
     alignItems: 'center',
-    marginTop: screen.height * 0.1,
+    marginTop: window.height * 0.1,
   },
   Name: {
     fontFamily: FONTS.Bold,
     fontSize: 20,
     color: COLORS.black,
-    marginBottom: screen.height * 0.05,
+    marginBottom: window.height * 0.05,
   },
   Box: {
-    width: screen.width * 0.85,
-    height: screen.height * 0.1,
+    width: window.width * 0.85,
+    height: window.height * 0.1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.white,
     borderRadius: 15,
     elevation: 4,
-    marginBottom: screen.height * 0.025,
+    marginBottom: window.height * 0.025,
   },
   Icon: {
     marginHorizontal: 20,
