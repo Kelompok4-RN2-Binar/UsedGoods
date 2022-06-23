@@ -1,1 +1,1 @@
-export const URL = "https://market-final-project.herokuapp.com/"
+export const URL = 'https://market-final-project.herokuapp.com/';
