@@ -41,7 +41,7 @@ const Auth = () => {
           <View style={styles.Header}>
             <TouchableOpacity
               onPress={() => {
-                dispatch(authScreen('Login'));
+                dispatch(authScreen('Login'))
               }}>
               {selectScreen == 'Login' ? (
                 <Text style={styles.ActivePage}>Login</Text>
