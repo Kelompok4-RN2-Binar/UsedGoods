@@ -1,3 +1,6 @@
-import BottomNavigator from "./BottomNavigator";
-import TabItem from "./TabItem";
-export {BottomNavigator,TabItem}
+import LoginForm from './AuthForm/LoginForm';
+import RegisterForm from './AuthForm/RegisterForm';
+import Input from './Others/Input';
+import Button from './Others/Button';
+import ImagePicker from './Others/ImagePicker';
+export {LoginForm, RegisterForm, Input, Button, ImagePicker};

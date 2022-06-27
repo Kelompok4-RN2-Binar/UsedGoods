@@ -1,12 +1,14 @@
-import Login from "./Auth/Login";
-import Register from "./Auth/Register";
+import Auth from './Auth/Auth';
 //Auth
-import Splash from "./Splash";
-import Home from "./MainApp/Home";
-import Notifikasi from "./MainApp/Notifikasi";
-import Jual from "./MainApp/Jual";
-import DaftarJual from "./MainApp/DaftarJual";
-import Akun from "./MainApp/Akun";
+
+import Home from './MainApp/Home';
+import Notifikasi from './MainApp/Notifikasi';
+import Jual from './MainApp/Jual';
+import DaftarJual from './MainApp/DaftarJual';
+import Akun from './MainApp/Akun';
 //MainApp for bottom tabs
 
-export {Login,Register,Splash,Home,Notifikasi,Jual,DaftarJual,Akun}
+import Splash from './MainApp/Other/Splash';
+import InfoAkun from './MainApp/Other/InfoAkun';
+
+export {Auth, Home, Notifikasi, Jual, DaftarJual, Akun, Splash, InfoAkun};
