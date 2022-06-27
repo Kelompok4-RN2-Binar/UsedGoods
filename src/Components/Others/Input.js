@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Regular,
     fontSize: 12,
     marginHorizontal: 15,
+    color:'#000'
   },
   Text: {
     width: window.width * 0.7,

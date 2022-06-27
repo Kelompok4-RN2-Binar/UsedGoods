@@ -15,10 +15,11 @@ import {Google} from '../../Assets';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
 import {COLORS, FONTS} from '../../Utils';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   const loginValidation = yup.object().shape({
     email: yup
       .string()
@@ -34,7 +35,7 @@ const LoginForm = () => {
   });
 
   const goLogin = useCallback(values => {
-    dispatch(fetchingLogin(values));
+    dispatch(fetchingLogin(values)).then(navigation.replace("MainApp"));
   }, []);
 
   return (
