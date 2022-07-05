@@ -1,12 +1,40 @@
-import {View, Text} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  StatusBar,
+  StyleSheet,
+} from 'react-native';
 import React from 'react';
+import {RegisterForm, Header} from '../../../Components';
+import {COLORS} from '../../../Utils';
 
-const InfoAkun = () => {
+const InfoAkun = ({navigation}) => {
   return (
-    <View>
-      <Text>InfoAkun</Text>
-    </View>
+    <SafeAreaView style={styles.Container}>
+      <StatusBar
+        backgroundColor={'transparent'}
+        translucent
+        barStyle={'dark-content'}
+      />
+      <Header title={'Edit Account'} navigation={navigation} />
+      <ScrollView contentContainerStyle={styles.Box}>
+        <RegisterForm label={'Edit'} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 export default InfoAkun;
+
+const styles = StyleSheet.create({
+  Container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  Box: {
+    flexGrow: 1,
+    paddingBottom: 25,
+  },
+});

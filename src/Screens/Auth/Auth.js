@@ -12,18 +12,23 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {authScreen} from '../../Redux/actions';
+import {authScreen, getUserData} from '../../Redux/actions';
 import {Pattern, Logo} from '../../Assets';
 import {LoginForm, RegisterForm} from '../../Components';
 import {COLORS, FONTS} from '../../Utils/';
 
-const Auth = () => {
+const Auth = ({navigation}) => {
   const dispatch = useDispatch();
   const selectScreen = useSelector(state => state.appData.authScreen);
+  const loginUser = useSelector(state => state.appData.loginUser);
 
   useEffect(() => {
     dispatch(authScreen('Login'));
-  }, []);
+    if (loginUser) {
+      navigation.replace('MainApp');
+      dispatch(getUserData(loginUser.access_token));
+    }
+  }, [loginUser]);
 
   return (
     <SafeAreaView style={styles.Container}>
@@ -41,7 +46,7 @@ const Auth = () => {
           <View style={styles.Header}>
             <TouchableOpacity
               onPress={() => {
-                dispatch(authScreen('Login'))
+                dispatch(authScreen('Login'));
               }}>
               {selectScreen == 'Login' ? (
                 <Text style={styles.ActivePage}>Login</Text>

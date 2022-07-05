@@ -20,11 +20,18 @@ const Input = ({
   secureTextEntry,
 }) => {
   const [isSecureText, setIsSecureText] = useState(secureTextEntry);
+  const [isActive, setIsActive] = useState(false);
   return (
     <View style={styles.Container}>
-      <View style={styles.Content}>
+      <View
+        style={{
+          ...styles.Content,
+          borderColor: isActive ? COLORS.black : COLORS.grey,
+        }}>
         <Icon style={styles.Icon} name={icon} size={20} color={COLORS.dark} />
         <TextInput
+          onFocus={() => setIsActive(true)}
+          onBlur={() => setIsActive(false)}
           style={styles.Input}
           placeholder={placeholder}
           onChangeText={onChangeText}
@@ -61,8 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.dark,
+    borderWidth: 1,
     borderRadius: 15,
     paddingHorizontal: 15,
   },
@@ -71,7 +77,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Regular,
     fontSize: 12,
     marginHorizontal: 15,
-    color:'#000'
+    color: '#000',
   },
   Text: {
     width: window.width * 0.7,
