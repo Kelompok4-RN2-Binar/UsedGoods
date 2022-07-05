@@ -1,11 +1,11 @@
 import axios from 'axios';
-import {AUTH_SCREEN, FETCH_LOGIN} from '../types';
+import {AUTH_SCREEN, FETCH_LOGIN, GET_USER_DATA, LOGOUT} from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
 
-export const authScreen = screen => ({
+export const authScreen = data => ({
   type: AUTH_SCREEN,
-  payload: screen,
+  payload: data,
 });
 
 export const fetchingLogin = data => {
@@ -24,20 +24,15 @@ export const fetchingLogin = data => {
         });
         dispatch({
           type: FETCH_LOGIN,
-          isLogin: true,
-          data: res.data,
-          token: res.data.access_token,
+          payload: res.data,
         });
       })
       .catch(function (error) {
         if (error.response.status == 401) {
-          alert(
-            'Email or Password Missmatch! Please Input an a Correct Email & Password',
-          );
-        } else if (error.response.status == 400) {
-          alert('Fill Username or password');
-        } else {
-          alert(error);
+          Toast.show({
+            type: 'error',
+            text1: 'Email or Password Missmatch!',
+          });
         }
       });
   };
@@ -55,27 +50,87 @@ export const fetchingRegister = data => {
         address: address,
         city: city,
       })
-      .then(res => {
+      .then(() => {
         dispatch(authScreen('Login'));
         Toast.show({
           type: 'success',
           text1: 'Register Successful!',
         });
-        console.log('User Info : ', res.data);
       })
       .catch(function (error) {
-        alert(error.message);
+        if (error.response.status == 400) {
+          Toast.show({
+            type: 'error',
+            text1: 'Email Already Exists!',
+          });
+        }
       });
   };
 };
 
-export const goLogout = () => {
+export const goLogout = () => ({
+  type: LOGOUT,
+});
+
+export const getUserData = AccessToken => {
   return async dispatch => {
-    dispatch({
-      type: FETCH_LOGIN,
-      isLogin: false,
-      data: [],
-      token: null,
-    });
+    await axios
+      .get(URL + 'auth/user', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_USER_DATA,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+        if (error.response.status == 400) {
+          Toast.show({
+            type: 'error',
+            text1: 'Email Already Exists!',
+          });
+        }
+      });
+  };
+};
+
+export const updateUserData = (data, AccessToken) => {
+  return async dispatch => {
+    console.log(AccessToken);
+    const {name, email, password, phone, address, city} = data;
+    await axios
+      .put(
+        URL + 'auth/user',
+        {
+          full_name: name,
+          email: email,
+          password: password,
+          phone_number: parseInt(phone),
+          address: address,
+          city: city,
+        },
+        {
+          headers: {
+            access_token: `${AccessToken}`,
+          },
+        },
+      )
+      .then(res => {
+        console.log(res.data);
+        dispatch({
+          type: GET_USER_DATA,
+          payload: res.data,
+        });
+        Toast.show({
+          type: 'success',
+          text1: 'Update Successful!',
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 };

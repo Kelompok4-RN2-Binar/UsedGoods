@@ -2,18 +2,18 @@ import {SafeAreaView, Image, StatusBar, StyleSheet} from 'react-native';
 import React, {useEffect} from 'react';
 import {Logo} from '../../../Assets';
 import {COLORS} from '../../../Utils/Colors';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 const Splash = ({navigation}) => {
-  const isLogin = useSelector(state => state.appData.isLogin)
+  const loginUser = useSelector(state => state.appData.loginUser);
 
   useEffect(() => {
     setTimeout(() => {
-       if(isLogin==false){
-          navigation.navigate("Auth");
-        }else{
-          navigation.replace("MainApp")
-        };
-    }, 3000);
+      if (loginUser) {
+        navigation.replace('MainApp');
+      } else {
+        navigation.navigate('Auth');
+      }
+    }, 2000);
   }, []);
 
   return (

@@ -9,11 +9,12 @@ import {
   StatusBar,
 } from 'react-native';
 import React from 'react';
+import {useDispatch} from 'react-redux/';
 import {COLORS} from '../../Utils/Colors';
 import {FONTS} from '../../Utils/Fonts';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {goLogout} from '../../Redux/actions';
-import {useDispatch} from 'react-redux/';
+
 const Akun = ({navigation}) => {
   const dispatch = useDispatch();
 
@@ -42,12 +43,8 @@ const Akun = ({navigation}) => {
         <TouchableOpacity
           style={{...styles.Box, shadowColor: COLORS.red}}
           onPress={() => {
-            dispatch(goLogout()).then(() => {
-              navigation.reset({
-                index: 0,
-                routes: [{name: 'Auth'}],
-              });
-            });
+            dispatch(goLogout());
+            navigation.replace('Auth');
           }}>
           <Icon
             style={styles.Icon}

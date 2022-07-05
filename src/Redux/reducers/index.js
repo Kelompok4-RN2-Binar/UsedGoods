@@ -1,9 +1,8 @@
-import {AUTH_SCREEN, FETCH_LOGIN} from '../types';
+import {AUTH_SCREEN, FETCH_LOGIN, GET_USER_DATA, LOGOUT} from '../types';
 const initialState = {
   authScreen: 'Login',
-  data: {},
-  isLogin: false,
-  token: null,
+  loginUser: null,
+  userData: null,
 };
 
 const Reducer = (state = initialState, action) => {
@@ -16,9 +15,18 @@ const Reducer = (state = initialState, action) => {
     case FETCH_LOGIN:
       return {
         ...state,
-        data: action.data,
-        isLogin: action.isLogin,
-        token: action.token,
+        loginUser: action.payload,
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        loginUser: null,
+        userData: null,
+      };
+    case GET_USER_DATA:
+      return {
+        ...state,
+        userData: action.payload,
       };
     default:
       return state;
