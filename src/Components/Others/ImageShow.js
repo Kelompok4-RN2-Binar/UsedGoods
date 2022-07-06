@@ -3,10 +3,9 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../Utils/Colors';
 
-const ImagePicker = ({onPress, uri}) => {
-  let image = uri
-    ? uri
-    : 'https://png.pngtree.com/png-vector/20191110/ourmid/pngtree-avatar-icon-profile-icon-member-login-vector-isolated-png-image_1978396.jpg';
+const ImageShow = ({onPress, uri}) => {
+  let image = uri;
+
   return (
     <TouchableOpacity style={styles.Button} onPress={onPress}>
       <Image source={{uri: image}} style={styles.Image} />
@@ -20,7 +19,7 @@ const ImagePicker = ({onPress, uri}) => {
   );
 };
 
-export default ImagePicker;
+export default ImageShow;
 
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({

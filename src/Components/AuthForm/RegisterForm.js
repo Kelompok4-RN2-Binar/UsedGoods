@@ -6,7 +6,8 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
-import {FONTS, COLORS} from '../../Utils';
+import ImageShow from '../Others/ImageShow';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const RegisterForm = ({label}) => {
   const dispatch = useDispatch();
@@ -40,12 +41,6 @@ const RegisterForm = ({label}) => {
       .string()
       .email('Please Enter Valid Email!')
       .required('Email is Required!'),
-    password: yup
-      .string()
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-        'Must Contain 8 Characters, One Uppercase, One Lowercase and One Number!',
-      ),
     phone: yup
       .string()
       .required('Phone Number is Required!')
@@ -62,11 +57,23 @@ const RegisterForm = ({label}) => {
     dispatch(updateUserData(values, loginUser.access_token));
   }, []);
 
+  const imagePicker = async handleChange => {
+    ImagePicker.openPicker({
+      width: 450,
+      height: 450,
+      cropping: true,
+    }).then(image => {
+      console.log(image);
+      handleChange(image.path);
+    });
+  };
+
   return (
     <Formik
       initialValues={
         label
           ? {
+              image: userData.image_url,
               name: userData.full_name,
               email: userData.email,
               password: '',
@@ -75,6 +82,7 @@ const RegisterForm = ({label}) => {
               city: userData.city,
             }
           : {
+              image: '',
               name: '',
               email: '',
               password: '',
@@ -87,6 +95,7 @@ const RegisterForm = ({label}) => {
       onSubmit={values => (label ? goUpdate(values) : goRegister(values))}>
       {({handleChange, handleBlur, handleSubmit, values, errors}) => (
         <View>
+          <ImageShow onPress={() => imagePicker(handleChange('image'))} />
           <Input
             icon={'account-outline'}
             onChangeText={handleChange('name')}
@@ -103,27 +112,17 @@ const RegisterForm = ({label}) => {
             placeholder={'Email'}
             error={errors.email}
           />
-          {label ? (
-            <Text
-              style={{
-                fontFamily: FONTS.Regular,
-                fontSize: 10,
-                color: COLORS.red,
-                textAlign: 'center',
-              }}>
-              Don't fill it if you don't want to update the password!
-            </Text>
-          ) : null}
-          <Input
-            icon={'lock-outline'}
-            onChangeText={handleChange('password')}
-            onBlur={handleBlur('password')}
-            value={values.password}
-            placeholder={label ? 'New Password' : 'Password'}
-            error={errors.password}
-            secureTextEntry={true}
-          />
-
+          {label ? null : (
+            <Input
+              icon={'lock-outline'}
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              value={values.password}
+              placeholder={label ? 'New Password' : 'Password'}
+              error={errors.password}
+              secureTextEntry={true}
+            />
+          )}
           <Input
             icon={'phone-outline'}
             onChangeText={handleChange('phone')}

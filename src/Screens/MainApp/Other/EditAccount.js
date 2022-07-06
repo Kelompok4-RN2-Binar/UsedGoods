@@ -1,16 +1,9 @@
-import {
-  View,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  StatusBar,
-  StyleSheet,
-} from 'react-native';
+import {SafeAreaView, ScrollView, StatusBar, StyleSheet} from 'react-native';
 import React from 'react';
 import {RegisterForm, Header} from '../../../Components';
 import {COLORS} from '../../../Utils';
 
-const InfoAkun = ({navigation}) => {
+const EditAccount = ({navigation}) => {
   return (
     <SafeAreaView style={styles.Container}>
       <StatusBar
@@ -26,7 +19,7 @@ const InfoAkun = ({navigation}) => {
   );
 };
 
-export default InfoAkun;
+export default EditAccount;
 
 const styles = StyleSheet.create({
   Container: {

@@ -1,4 +1,10 @@
-import {SafeAreaView, Image, StatusBar, StyleSheet} from 'react-native';
+import {
+  SafeAreaView,
+  Image,
+  StatusBar,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import React, {useEffect} from 'react';
 import {Logo} from '../../../Assets';
 import {COLORS} from '../../../Utils/Colors';
@@ -26,6 +32,7 @@ const Splash = ({navigation}) => {
 
 export default Splash;
 
+const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
@@ -34,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   Image: {
-    width: 90,
-    height: 90,
+    width: window.height * 0.1,
+    height: window.height * 0.1,
   },
 });

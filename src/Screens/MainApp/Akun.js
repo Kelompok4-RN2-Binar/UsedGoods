@@ -9,7 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import React from 'react';
-import {useDispatch} from 'react-redux/';
+import {useDispatch, useSelector} from 'react-redux/';
 import {COLORS} from '../../Utils/Colors';
 import {FONTS} from '../../Utils/Fonts';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,21 +17,28 @@ import {goLogout} from '../../Redux/actions';
 
 const Akun = ({navigation}) => {
   const dispatch = useDispatch();
+  const userData = useSelector(state => state.appData.userData);
+  const uri = userData?.image_url;
+  const fullName = userData?.full_name;
 
   return (
     <SafeAreaView style={styles.Container}>
-      <StatusBar backgroundColor={'transparent'} translucent />
+      <StatusBar
+        backgroundColor={'transparent'}
+        translucent
+        barStyle={'light-content'}
+      />
       <View style={styles.Header}>
         <Text style={styles.Title}>My Account</Text>
-        <Image style={styles.Image} />
+        <Image source={{uri}} style={styles.Image} />
       </View>
       <View style={styles.Content}>
         <Text style={styles.Name} numberOfLines={1}>
-          Alvin Christian Davidson Therry
+          {fullName}
         </Text>
         <TouchableOpacity
           style={{...styles.Box, shadowColor: COLORS.black}}
-          onPress={() => navigation.navigate('InfoAkun')}>
+          onPress={() => navigation.navigate('EditAccount')}>
           <Icon
             style={styles.Icon}
             name="account-edit-outline"
@@ -39,6 +46,17 @@ const Akun = ({navigation}) => {
             color={COLORS.black}
           />
           <Text style={styles.Text}>Edit Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{...styles.Box, shadowColor: COLORS.black}}
+          onPress={() => navigation.navigate('EditPassword')}>
+          <Icon
+            style={styles.Icon}
+            name="lock-reset"
+            size={25}
+            color={COLORS.black}
+          />
+          <Text style={styles.Text}>Edit Password</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{...styles.Box, shadowColor: COLORS.red}}
@@ -70,7 +88,7 @@ const styles = StyleSheet.create({
   },
   Header: {
     width: window.width * 1,
-    height: window.height * 0.35,
+    height: window.height * 0.3,
     backgroundColor: COLORS.dark,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
@@ -84,21 +102,21 @@ const styles = StyleSheet.create({
   },
   Image: {
     backgroundColor: 'red',
-    width: 150,
-    height: 150,
+    width: window.height * 0.15,
+    height: window.height * 0.15,
     borderRadius: 15,
-    top: window.height * 0.075,
+    top: window.height * 0.06,
   },
   Content: {
     width: window.width * 0.85,
     alignItems: 'center',
-    marginTop: window.height * 0.1,
+    marginTop: window.height * 0.075,
   },
   Name: {
     fontFamily: FONTS.Bold,
     fontSize: 20,
     color: COLORS.black,
-    marginBottom: window.height * 0.05,
+    marginBottom: window.height * 0.025,
   },
   Box: {
     width: window.width * 0.85,
@@ -107,8 +125,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.white,
     borderRadius: 15,
-    elevation: 4,
-    marginBottom: window.height * 0.025,
+    elevation: 3,
+    marginBottom: 25,
   },
   Icon: {
     marginHorizontal: 20,

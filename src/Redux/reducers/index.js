@@ -1,4 +1,10 @@
-import {AUTH_SCREEN, FETCH_LOGIN, GET_USER_DATA, LOGOUT} from '../types';
+import {
+  AUTH_SCREEN,
+  FETCH_LOGIN,
+  GET_USER_DATA,
+  UPDATE_USER_DATA,
+  LOGOUT,
+} from '../types';
 const initialState = {
   authScreen: 'Login',
   loginUser: null,
@@ -24,6 +30,11 @@ const Reducer = (state = initialState, action) => {
         userData: null,
       };
     case GET_USER_DATA:
+      return {
+        ...state,
+        userData: action.payload,
+      };
+    case UPDATE_USER_DATA:
       return {
         ...state,
         userData: action.payload,
