@@ -39,7 +39,10 @@ const Input = ({
           secureTextEntry={isSecureText}
           placeholderTextColor={COLORS.grey}
         />
-        {placeholder == 'Password' || placeholder == 'Confirm Password' ? (
+        {placeholder == 'Password' ||
+        placeholder == 'Current Password' ||
+        placeholder == 'New Password' ||
+        placeholder == 'Confirm Password' ? (
           <TouchableOpacity
             onPress={() => {
               setIsSecureText(val => !val);
