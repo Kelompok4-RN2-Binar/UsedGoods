@@ -1,5 +1,5 @@
-import {View, Text} from 'react-native';
-import React, {useCallback,useState} from 'react';
+import {View} from 'react-native';
+import React, {useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchingRegister, updateUserData} from '../../Redux/actions';
 import {Formik} from 'formik';

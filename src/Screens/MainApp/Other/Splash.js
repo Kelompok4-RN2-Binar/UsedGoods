@@ -8,7 +8,6 @@ import {
 import React, {useEffect} from 'react';
 import {Logo} from '../../../Assets';
 import {COLORS} from '../../../Utils/Colors';
-import {useSelector} from 'react-redux';
 const Splash = ({navigation}) => {
   
   useEffect(() => {
