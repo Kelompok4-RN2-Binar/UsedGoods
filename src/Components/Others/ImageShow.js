@@ -8,7 +8,11 @@ const ImageShow = ({onPress, uri}) => {
 
   return (
     <TouchableOpacity style={styles.Button} onPress={onPress}>
+     {image==''?
+      <Image  style={styles.Image} />
+        :
       <Image source={{uri: image}} style={styles.Image} />
+      }
       <Icon
         name="camera-outline"
         size={25}

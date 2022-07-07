@@ -20,7 +20,7 @@ const Akun = ({navigation}) => {
   const userData = useSelector(state => state.appData.userData);
   const uri = userData?.image_url;
   const fullName = userData?.full_name;
-
+  const loginUser = useSelector(state => state.appData.loginUser);
   return (
     <SafeAreaView style={styles.Container}>
       <StatusBar
@@ -33,6 +33,9 @@ const Akun = ({navigation}) => {
         <Image source={{uri}} style={styles.Image} />
       </View>
       <View style={styles.Content}>
+      {
+      loginUser&&userData!=null?
+      <>
         <Text style={styles.Name} numberOfLines={1}>
           {fullName}
         </Text>
@@ -72,6 +75,22 @@ const Akun = ({navigation}) => {
           />
           <Text style={styles.Text}>Logout</Text>
         </TouchableOpacity>
+      </>
+      :
+      <>
+      <TouchableOpacity
+          style={{...styles.Box, shadowColor: COLORS.black,marginTop:25}}
+          onPress={() => navigation.navigate('Auth')}>
+          <Icon
+            style={styles.Icon}
+            name="login-variant"
+            size={25}
+            color={COLORS.black}
+          />
+          <Text style={styles.Text}>Login or Register</Text>
+        </TouchableOpacity> 
+      </>
+      }
       </View>
     </SafeAreaView>
   );

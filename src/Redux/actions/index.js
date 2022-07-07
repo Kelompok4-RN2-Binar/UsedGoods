@@ -49,10 +49,10 @@ export const fetchingLogin = data => {
   };
 };
 
-export const fetchingRegister = data => {
+export const fetchingRegister = (data) => {
   return async dispatch => {
     const {image, name, email, password, phone, address, city} = data;
-    await axios
+      await axios
       .post(URL + 'auth/register', {
         image: image,
         full_name: name,
@@ -81,7 +81,8 @@ export const fetchingRegister = data => {
             text1: error.response.data.message,
           });
         }
-      });
+      }); 
+    
   };
 };
 
@@ -121,27 +122,36 @@ export const getUserData = AccessToken => {
 
 export const updateUserData = (data, AccessToken) => {
   return async dispatch => {
-    console.log(AccessToken);
     const {image, name, email, password, phone, address, city} = data;
-    await axios
-      .put(
-        URL + 'auth/user',
-        {
-          image: image,
-          full_name: name,
-          email: email,
-          password: password,
-          phone_number: parseInt(phone),
-          address: address,
-          city: city,
-        },
-        {
-          headers: {
-            access_token: `${AccessToken}`,
+    const formData = new FormData()
+    formData.append('full_name', name)
+    formData.append('email', email)
+    formData.append('password', password)
+    formData.append('phone_number', phone)
+    formData.append('address', address)
+    formData.append('city', city)
+    if(image==null||image==''){
+      formData.append('image', '')
+    }else{
+      formData.append('image', {
+          uri: image,
+          type: 'image/jpeg',
+          name: 'photo.jpg'
+        })
+    }
+      await axios
+        .put(
+          URL + 'auth/user',
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Accept: "application/json",
+              access_token: `${AccessToken}`,
+            },
           },
-        },
-      )
-      .then(res => {
+        )
+        .then(res => {
         dispatch({
           type: UPDATE_USER_DATA,
           payload: res.data,

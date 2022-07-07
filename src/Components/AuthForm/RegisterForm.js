@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import React, {useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchingRegister, updateUserData} from '../../Redux/actions';
@@ -8,12 +8,11 @@ import Input from '../Others/Input';
 import Button from '../Others/Button';
 import ImageShow from '../Others/ImageShow';
 import ImagePicker from 'react-native-image-crop-picker';
-
 const RegisterForm = ({label}) => {
   const dispatch = useDispatch();
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
-
+  console.log("user data: ",userData)
   const registerValidation = yup.object().shape({
     name: yup.string().required('Name is Required!'),
     email: yup
@@ -64,7 +63,8 @@ const RegisterForm = ({label}) => {
       cropping: true,
     }).then(image => {
       console.log(image);
-      handleChange(image.path);
+      const uploadUri = Platform.OS === 'IOS' ? image.path.replace('file://', '') : image.path;
+      handleChange(uploadUri);
     });
   };
 
@@ -95,7 +95,9 @@ const RegisterForm = ({label}) => {
       onSubmit={values => (label ? goUpdate(values) : goRegister(values))}>
       {({handleChange, handleBlur, handleSubmit, values, errors}) => (
         <View>
-          <ImageShow onPress={() => imagePicker(handleChange('image'))} />
+        {label&&
+          <ImageShow onPress={() => imagePicker(handleChange('image'))} uri={values.image}/>
+        }
           <Input
             icon={'account-outline'}
             onChangeText={handleChange('name')}

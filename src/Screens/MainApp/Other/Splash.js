@@ -8,17 +8,11 @@ import {
 import React, {useEffect} from 'react';
 import {Logo} from '../../../Assets';
 import {COLORS} from '../../../Utils/Colors';
-import {useSelector} from 'react-redux';
 const Splash = ({navigation}) => {
-  const loginUser = useSelector(state => state.appData.loginUser);
-
+  
   useEffect(() => {
     setTimeout(() => {
-      if (loginUser) {
         navigation.replace('MainApp');
-      } else {
-        navigation.navigate('Auth');
-      }
     }, 2000);
   }, []);
 
