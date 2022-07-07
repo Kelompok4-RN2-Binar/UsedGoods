@@ -15,7 +15,7 @@ const Router = () => {
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false}}
-      initialRouteName="MainApp">
+      initialRouteName="Splash">
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Auth" component={Auth} />
       <Stack.Screen name="MainApp" component={MainApp} />

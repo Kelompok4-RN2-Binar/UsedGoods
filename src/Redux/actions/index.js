@@ -49,10 +49,10 @@ export const fetchingLogin = data => {
   };
 };
 
-export const fetchingRegister = data => {
+export const fetchingRegister = (data) => {
   return async dispatch => {
     const {image, name, email, password, phone, address, city} = data;
-    await axios
+      await axios
       .post(URL + 'auth/register', {
         image: image,
         full_name: name,
@@ -81,7 +81,8 @@ export const fetchingRegister = data => {
             text1: error.response.data.message,
           });
         }
-      });
+      }); 
+    
   };
 };
 
@@ -121,13 +122,25 @@ export const getUserData = AccessToken => {
 
 export const updateUserData = (data, AccessToken) => {
   return async dispatch => {
-    console.log(AccessToken);
     const {image, name, email, password, phone, address, city} = data;
-    await axios
+    const formData = new FormData()
+    formData.append('full_name', name)
+    formData.append('email', email)
+    formData.append('password', password)
+    formData.append('phone_number', phone)
+    formData.append('address', address)
+    formData.append('city', city)
+    formData.append('image', {
+        uri: image,
+        type: 'image/jpeg',
+        name: 'photo.jpg'
+      })
+    if(image==null){
+      await axios
       .put(
         URL + 'auth/user',
         {
-          image: image,
+          image_url: image,
           full_name: name,
           email: email,
           password: password,
@@ -137,6 +150,8 @@ export const updateUserData = (data, AccessToken) => {
         },
         {
           headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
             access_token: `${AccessToken}`,
           },
         },
@@ -164,6 +179,47 @@ export const updateUserData = (data, AccessToken) => {
           });
         }
       });
+    }else{
+      await axios
+        .put(
+          URL + 'auth/user',
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Accept: "application/json",
+              access_token: `${AccessToken}`,
+            },
+          },
+        )
+        .then(res => {
+        dispatch({
+          type: UPDATE_USER_DATA,
+          payload: res.data,
+        });
+        Toast.show({
+          type: 'success',
+          text1: 'Update Account Successful!',
+        });
+      })
+      .catch(function (error) {
+        if (error.response.status == 400) {
+          Toast.show({
+            type: 'error',
+            text1: 'Email Already Exists!',
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+        }
+      });
+      
+    }
+  
+
+      
   };
 };
 
