@@ -21,7 +21,7 @@ const DaftarJual = ({navigation}) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   }
   useEffect(() => {
-      if(loginUser==null){
+      if(loginUser==null&&userData==null){
         navigation.navigate("Akun")
       }else{
         dispatch(getProductSeller(loginUser.access_token));
@@ -35,7 +35,7 @@ const DaftarJual = ({navigation}) => {
   }, []);
   return (
     <SafeAreaView style={styles.Container}>
-    {loginUser==null? <></>
+    {loginUser==null&&userData==null? <></>
     :
     <>
     <StatusBar backgroundColor="transparent" barStyle="light-content" translucent/>
