@@ -139,22 +139,18 @@ export const updateUserData = (data, AccessToken) => {
           name: 'photo.jpg'
         })
     }
-     await axios
-      .put(URL + 'auth/user', {
-        image: image,
-        full_name: name,
-        email: email,
-        password: password,
-        phone_number: parseInt(phone),
-        address: address,
-        city: city,
-      },{
-        headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
-            access_token: `${AccessToken}`,
+      await axios
+        .put(
+          URL + 'auth/user',
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Accept: "application/json",
+              access_token: `${AccessToken}`,
+            },
           },
-      })
+        )
         .then(res => {
         dispatch({
           type: UPDATE_USER_DATA,
