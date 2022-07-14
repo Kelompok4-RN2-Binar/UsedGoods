@@ -1,60 +1,82 @@
-import {View, Text,SafeAreaView,ScrollView,Dimensions,Image,StatusBar,StyleSheet,TouchableOpacity} from 'react-native';
-import React ,{useState,useEffect}from 'react';
+import {View, Text,SafeAreaView,ScrollView,Dimensions,Image,StatusBar,StyleSheet,TouchableOpacity,RefreshControl} from 'react-native';
+import React ,{useState,useEffect,useCallback}from 'react';
 import { Header } from '../../Components';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector,useDispatch, } from 'react-redux';
 import { COLORS, FONTS } from '../../Utils';
-import IonIcon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getProductSeller ,DaftarJualScreen} from '../../Redux/actions';
+import Product from '../../Components/DaftarJual/Product';
 const DaftarJual = ({navigation}) => {
   const dispatch = useDispatch();
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
+  const daftarJualScreen = useSelector(state => state.appData.daftarJualScreen);
   const [category, setCategory] = useState ([
     {name:'Product', icon: 'package-variant-closed'},
     {name:'Interested', icon: 'heart-outline'},
     {name:'Sold', icon: 'currency-usd'},
   ]);
+  const[refreshing, setRefreshing] = useState(false);
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+  useEffect(() => {
+      if(loginUser==null&&userData==null){
+        navigation.navigate("Akun")
+      }else{
+        dispatch(getProductSeller(loginUser.access_token));
+        onRefresh();
+      }   
+  }, []);
+  const onRefresh = useCallback(()=>{ 
+    dispatch(getProductSeller(loginUser.access_token))
+    setRefreshing(true);
+    wait(300).then(()=>{setRefreshing(false) });
+  }, []);
   return (
     <SafeAreaView style={styles.Container}>
+    {loginUser==null&&userData==null? <></>
+    :
+    <>
     <StatusBar backgroundColor="transparent" barStyle="light-content" translucent/>
       <Header title={'My Selling List'} />
-      <ScrollView>
+      <ScrollView   refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} 
+        tintColor="green"
+        colors={['green']}
+      />}>
         <View style={{flexDirection:'row',marginVertical:15,width:window.width*0.8,alignSelf:'center'}}>
           <View style={{marginVertical:10,flexDirection:'row',justifyContent:'space-around',width:window.width*0.8}}>
             <View style={{flexDirection:'row'}}>
-              <Image style={{width:40,height:40,borderRadius:8,marginRight:20}} source={{uri:userData.image_url}}/>
+              <Image style={{width:40,height:40,borderRadius:8,marginRight:20,backgroundColor:'black'}} source={{uri:userData.image_url}}/>
               <View style={{flexDirection:'column'}}>
-                <Text>Nama Penjual</Text>
-                <Text>Kota</Text>
+                <Text style={styles.Text}>{userData.full_name}</Text>
+                <Text style={styles.Text}>{userData.city}</Text>
               </View>
             </View>
-            <TouchableOpacity style={{justifyContent:'center',alignItems:'center',borderRadius:8,borderWidth:1,borderColor:COLORS.green,width:window.width*0.2}}>
-              <Text>Edit</Text>
+            <TouchableOpacity style={{justifyContent:'center',alignItems:'center',borderRadius:8,borderWidth:1,borderColor:COLORS.green,width:window.width*0.2}} onPress={()=>{navigation.navigate("EditAccount")}}>
+              <Text style={styles.Text}>Edit</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View style={{flexDirection:'row',justifyContent:'center'}}>
           {category && category.map(item=>{
             return(
             <>
             <TouchableOpacity style={styles.Kategori2} onPress={() => {
-                      // { navigation.navigate('Kategori', {idKategori: item.id, });}
+                    dispatch(DaftarJualScreen(item.name))
                     }}>
                     <MaterialIcon name={item.icon} size={20} style={{marginRight: 5, color: COLORS.white}}/>
                     <Text style={{color: COLORS.white, fontFamily: FONTS.Regular, fontSize: 14,}}>{item.name}</Text>
             </TouchableOpacity>
             </>
             )})} 
-        </ScrollView>
-        <View style={{flexDirection:'row',flexWrap:'wrap',marginHorizontal:5,marginVertical:5,justifyContent:'flex-start',width:window.width*0.95,alignSelf:'center'}}>
-          <TouchableOpacity style={{justifyContent:'center',alignItems:'center',width:window.width*0.4,height:200,borderWidth:0.5,borderColor:COLORS.grey,flexDirection:'column',marginHorizontal:10,marginVertical:10}}>
-            <MaterialIcon name="plus" size={30} style={{color: COLORS.grey}}/>
-            <Text>Add Product</Text>
-          </TouchableOpacity>
-         
-          
+        </View>
+        <View style={{marginHorizontal:5,marginVertical:5,alignSelf:'center'}}>
+        {daftarJualScreen == 'Product' ? <Product/> : <></>}
         </View>
       </ScrollView>
+    </>
+    }
     </SafeAreaView>
   );
 };

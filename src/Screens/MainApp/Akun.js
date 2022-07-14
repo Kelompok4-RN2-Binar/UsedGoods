@@ -18,7 +18,6 @@ import {goLogout} from '../../Redux/actions';
 const Akun = ({navigation}) => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.appData.userData);
-  const fullName = userData?.full_name;
   const loginUser = useSelector(state => state.appData.loginUser);
   return (
     <SafeAreaView style={styles.Container}>
@@ -29,7 +28,7 @@ const Akun = ({navigation}) => {
       />
       <View style={styles.Header}>
         <Text style={styles.Title}>My Account</Text>
-        {userData?
+        {userData!=null?
         <Image source={{uri:userData.image_url}} style={styles.Image} />
         :
         <Image  style={styles.Image} />
@@ -40,7 +39,7 @@ const Akun = ({navigation}) => {
       loginUser&&userData!=null?
       <>
         <Text style={styles.Name} numberOfLines={1}>
-          {fullName}
+          {userData.full_name}
         </Text>
         <TouchableOpacity
           style={{...styles.Box, shadowColor: COLORS.black}}
