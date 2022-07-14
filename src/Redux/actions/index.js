@@ -140,7 +140,7 @@ export const updateUserData = (data, AccessToken) => {
         })
     }
      await axios
-      .post(URL + 'auth/register', {
+      .put(URL + 'auth/user', {
         image: image,
         full_name: name,
         email: email,
@@ -148,6 +148,12 @@ export const updateUserData = (data, AccessToken) => {
         phone_number: parseInt(phone),
         address: address,
         city: city,
+      },{
+        headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+            access_token: `${AccessToken}`,
+          },
       })
         .then(res => {
         dispatch({
