@@ -17,7 +17,7 @@ const Header = ({navigation, title}) => {
         <Icon name="keyboard-backspace" size={25} color={COLORS.black} />
       </TouchableOpacity>
     }
-      <Text style={[styles.Title,{marginLeft:title=="Lengkapi Detail Produk"? window.width * 0.12:window.width * 0.235,marginLeft:navigation?window.width * 0.235:0}]}>{title}</Text>
+      <Text style={[styles.Title,{marginLeft:title=="Lengkapi Detail Produk"? window.width * 0.12:window.width * 0.235},{marginLeft:navigation?window.width * 0.235:0}]}>{title}</Text>
     </View>
   );
 };
