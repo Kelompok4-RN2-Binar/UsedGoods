@@ -53,6 +53,7 @@ const RegisterForm = ({label}) => {
   }, []);
 
   const goUpdate = useCallback(values => {
+    console.log(loginUser.access_token)
     dispatch(updateUserData(values, loginUser.access_token));
   }, []);
 

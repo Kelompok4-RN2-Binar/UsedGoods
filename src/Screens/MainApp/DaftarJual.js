@@ -22,15 +22,15 @@ const DaftarJual = ({navigation}) => {
         <View style={{flexDirection:'row',marginVertical:15,width:window.width*0.8,alignSelf:'center'}}>
           <View style={{marginVertical:10,flexDirection:'row',justifyContent:'space-around',width:window.width*0.8}}>
             <View style={{flexDirection:'row'}}>
-              <Image style={{width:40,height:40,borderRadius:8,backgroundColor:'black',marginRight:20}}/>
+              <Image style={{width:40,height:40,borderRadius:8,marginRight:20}} source={{uri:userData.image_url}}/>
               <View style={{flexDirection:'column'}}>
                 <Text>Nama Penjual</Text>
                 <Text>Kota</Text>
               </View>
             </View>
-            <View style={{justifyContent:'center',alignItems:'center',borderRadius:8,borderWidth:1,borderColor:COLORS.green,width:window.width*0.2}}>
+            <TouchableOpacity style={{justifyContent:'center',alignItems:'center',borderRadius:8,borderWidth:1,borderColor:COLORS.green,width:window.width*0.2}}>
               <Text>Edit</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>

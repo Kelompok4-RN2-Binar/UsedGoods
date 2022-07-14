@@ -18,7 +18,6 @@ import {goLogout} from '../../Redux/actions';
 const Akun = ({navigation}) => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.appData.userData);
-  const uri = userData?.image_url;
   const fullName = userData?.full_name;
   const loginUser = useSelector(state => state.appData.loginUser);
   return (
@@ -30,7 +29,11 @@ const Akun = ({navigation}) => {
       />
       <View style={styles.Header}>
         <Text style={styles.Title}>My Account</Text>
-        <Image source={{uri}} style={styles.Image} />
+        {userData?
+        <Image source={{uri:userData.image_url}} style={styles.Image} />
+        :
+        <Image  style={styles.Image} />
+        }
       </View>
       <View style={styles.Content}>
       {
