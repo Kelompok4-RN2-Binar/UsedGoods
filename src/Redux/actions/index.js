@@ -5,12 +5,19 @@ import {
   GET_USER_DATA,
   UPDATE_USER_DATA,
   LOGOUT,
+  GET_PRODUCT_SELLER,
+  DAFTARJUAL_SCREEN
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
 
 export const authScreen = data => ({
   type: AUTH_SCREEN,
+  payload: data,
+});
+
+export const DaftarJualScreen = data => ({
+  type: DAFTARJUAL_SCREEN,
   payload: data,
 });
 
@@ -252,6 +259,29 @@ export const postProduct = (data, AccessToken,category) => {
       })
       .catch(function (error) {
           console.log(error)
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+      });
+  };
+};
+
+export const getProductSeller = AccessToken => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'seller/product', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_PRODUCT_SELLER,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
           Toast.show({
             type: 'error',
             text1: error.response.data.message,
