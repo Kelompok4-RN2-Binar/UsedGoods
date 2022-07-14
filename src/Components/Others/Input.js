@@ -18,6 +18,7 @@ const Input = ({
   value,
   error,
   secureTextEntry,
+  screen
 }) => {
   const [isSecureText, setIsSecureText] = useState(secureTextEntry);
   const [isActive, setIsActive] = useState(false);
@@ -32,7 +33,7 @@ const Input = ({
         <TextInput
           onFocus={() => setIsActive(true)}
           onBlur={() => setIsActive(false)}
-          style={styles.Input}
+          style={[styles.Input,{marginHorizontal:screen=="jual"? 0: 15,}]}
           placeholder={placeholder}
           onChangeText={onChangeText}
           value={value}

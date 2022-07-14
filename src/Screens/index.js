@@ -12,7 +12,6 @@ import Splash from './MainApp/Other/Splash';
 import EditAccount from './MainApp/Other/EditAccount';
 import EditPassword from './MainApp/Other/EditPassword';
 import DetailProduct from './MainApp/Other/DetailProduct';
-
 export {
   Auth,
   Home,

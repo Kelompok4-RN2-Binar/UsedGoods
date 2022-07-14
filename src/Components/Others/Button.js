@@ -5,7 +5,7 @@ import {FONTS} from '../../Utils/Fonts';
 
 const Button = ({caption, onPress}) => {
   return (
-    <TouchableOpacity style={styles.Container} onPress={onPress}>
+    <TouchableOpacity style={[styles.Container,{width:caption=="Preview"||caption=="Posting"?window.width * 0.4:window.width * 0.75,marginHorizontal:5}]} onPress={onPress}>
       <Text style={styles.Text}>{caption}</Text>
     </TouchableOpacity>
   );
