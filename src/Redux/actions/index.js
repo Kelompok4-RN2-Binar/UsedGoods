@@ -139,18 +139,16 @@ export const updateUserData = (data, AccessToken) => {
           name: 'photo.jpg'
         })
     }
-      await axios
-        .put(
-          URL + 'auth/user',
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Accept: "application/json",
-              access_token: `${AccessToken}`,
-            },
-          },
-        )
+     await axios
+      .post(URL + 'auth/register', {
+        image: image,
+        full_name: name,
+        email: email,
+        password: password,
+        phone_number: parseInt(phone),
+        address: address,
+        city: city,
+      })
         .then(res => {
         dispatch({
           type: UPDATE_USER_DATA,
@@ -212,6 +210,50 @@ export const updatePassword = (data, AccessToken) => {
             text1: error.response.data.message,
           });
         }
+      });
+  };
+};
+
+export const postProduct = (data, AccessToken,category) => {
+  return async dispatch => {
+    const { name, description,base_price,location,image} = data;
+    const formData = new FormData()
+    formData.append('name', name)
+    formData.append('description', description)
+    formData.append('base_price', parseInt(base_price))
+    formData.append('location', location)
+    formData.append('category_ids', category)
+    if(image==null||image==''){
+      formData.append('image', '')
+    }else{
+      formData.append('image', {
+          uri: image,
+          type: 'image/jpeg',
+          name: 'photo.jpg'
+        })
+    }
+      await axios
+      .post(URL + 'seller/product', formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+            access_token: `${AccessToken}`,
+          },
+        },
+      )
+        .then(res => {
+          Toast.show({
+            type: 'success',
+            text1: 'Success Post Product!',
+          });
+      })
+      .catch(function (error) {
+          console.log(error)
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
       });
   };
 };

@@ -6,6 +6,7 @@ import {
   EditAccount,
   EditPassword,
   DetailProduct,
+  Jual,
 } from '../Screens';
 import MainApp from './MainApp';
 
@@ -22,6 +23,7 @@ const Router = () => {
       <Stack.Screen name="EditAccount" component={EditAccount} />
       <Stack.Screen name="EditPassword" component={EditPassword} />
       <Stack.Screen name="DetailProduct" component={DetailProduct} />
+      <Stack.Screen name="Jual" component={Jual} />
     </Stack.Navigator>
   );
 };

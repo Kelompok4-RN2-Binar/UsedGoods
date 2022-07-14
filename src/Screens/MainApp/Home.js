@@ -20,8 +20,8 @@ import { useState } from 'react';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
-  const isLogin = useSelector(state => state.appData.isLogin)
-  const data = useSelector(state => state.appData.data)
+  const loginUser = useSelector(state => state.appData.loginUser)
+  const userData = useSelector(state => state.appData.userData)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState ([
     {id:'Semua', icon: 'search'},
@@ -30,12 +30,11 @@ const Home = ({navigation}) => {
     {id:'Aksesoris', icon: 'search'},
   ]);
   const [product, setProduct] = useState ('')
-  console.log(data)
-  useEffect(() => {
-        if(isLogin==false){
-          navigation.navigate("Auth")
-        }
-    }, []);
+  // useEffect(() => {
+  //       if(loginUser==null){
+  //         navigation.navigate("Auth")
+  //       }
+  //   }, []);
 
   return (
     <SafeAreaView style={styles.Container}>
