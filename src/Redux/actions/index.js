@@ -13,7 +13,7 @@ import {
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
-
+import moment from 'moment';
 export const authScreen = data => ({
   type: AUTH_SCREEN,
   payload: data,
@@ -355,3 +355,9 @@ export const rupiah = number => {
   thousand = thousand.join('.').split('').reverse().join('');
   return thousand;
 };
+
+export const timeDate = date => {
+  const tDate = moment(date).format('Do MMMM hh:mm')
+  return tDate;
+};
+

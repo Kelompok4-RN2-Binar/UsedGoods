@@ -4,11 +4,13 @@ import { useSelector } from 'react-redux';
 import { COLORS,FONTS } from '../../Utils';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-import { rupiah } from '../../Redux/actions';
+import { rupiah,timeDate } from '../../Redux/actions';
+
 const Wishlist = () => {
   const navigation = useNavigation();
   const wishlistDataSeller = useSelector(state => state.appData.wishlistDataSeller);
   console.log("wishlist screen: ",wishlistDataSeller)
+  
   return (
     <View>
       {wishlistDataSeller!=null ?
@@ -31,7 +33,7 @@ const Wishlist = () => {
                       width:window.width*0.8
                     }}>
                     <Text style={styles.textGrey}>Penawaran produk</Text>
-                    <Text style={[styles.textGrey, {}]}>20 Apr 14:04</Text>
+                    <Text style={[styles.textGrey, {}]}>{`${timeDate(item.updatedAt)}`}</Text>
                   </View>
                   <Text style={[styles.textBlack,{marginTop:5}]}>{item.product_name}</Text>
                   <Text style={styles.textBlack}>{`Rp. ${rupiah(item.base_price)}`}</Text>
