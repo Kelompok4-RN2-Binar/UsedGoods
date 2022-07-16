@@ -6,7 +6,8 @@ import {
   UPDATE_USER_DATA,
   LOGOUT,
   GET_PRODUCT_SELLER,
-  DAFTARJUAL_SCREEN
+  DAFTARJUAL_SCREEN,
+  GET_WISHLIST_SELLER
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
@@ -278,6 +279,29 @@ export const getProductSeller = AccessToken => {
       .then(res => {
         dispatch({
           type: GET_PRODUCT_SELLER,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+      });
+  };
+};
+
+export const getWishlistSeller = AccessToken => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'seller/order?status=pending', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_WISHLIST_SELLER,
           payload: res.data,
         });
       })

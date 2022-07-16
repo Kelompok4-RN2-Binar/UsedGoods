@@ -4,8 +4,9 @@ import { Header } from '../../Components';
 import { useSelector,useDispatch, } from 'react-redux';
 import { COLORS, FONTS } from '../../Utils';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getProductSeller ,DaftarJualScreen} from '../../Redux/actions';
+import { getProductSeller ,DaftarJualScreen,getWishlistSeller} from '../../Redux/actions';
 import Product from '../../Components/DaftarJual/Product';
+import Wishlist from '../../Components/DaftarJual/Wishlist';
 const DaftarJual = ({navigation}) => {
   const dispatch = useDispatch();
   const loginUser = useSelector(state => state.appData.loginUser);
@@ -25,11 +26,13 @@ const DaftarJual = ({navigation}) => {
         navigation.navigate("Akun")
       }else{
         dispatch(getProductSeller(loginUser.access_token));
+        dispatch(getWishlistSeller(loginUser.access_token));
         onRefresh();
       }   
   }, []);
   const onRefresh = useCallback(()=>{ 
-    dispatch(getProductSeller(loginUser.access_token))
+    dispatch(getProductSeller(loginUser.access_token));
+    dispatch(getWishlistSeller(loginUser.access_token));
     setRefreshing(true);
     wait(300).then(()=>{setRefreshing(false) });
   }, []);
@@ -72,7 +75,8 @@ const DaftarJual = ({navigation}) => {
             )})} 
         </View>
         <View style={{marginHorizontal:5,marginVertical:5,alignSelf:'center'}}>
-        {daftarJualScreen == 'Product' ? <Product/> : <></>}
+        {daftarJualScreen == 'Product' && <Product/> }
+        {daftarJualScreen == 'Interested' && <Wishlist/> }
         </View>
       </ScrollView>
     </>

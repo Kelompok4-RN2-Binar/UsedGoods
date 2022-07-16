@@ -5,14 +5,16 @@ import {
   UPDATE_USER_DATA,
   LOGOUT,
   GET_PRODUCT_SELLER,
-  DAFTARJUAL_SCREEN
+  DAFTARJUAL_SCREEN,
+  GET_WISHLIST_SELLER
 } from '../types';
 const initialState = {
   authScreen: 'Login',
   loginUser: null,
   userData: null,
   productDataSeller:null,
-  daftarJualScreen:'Product'
+  daftarJualScreen:'Product',
+  wishlistDataSeller:null
 };
 
 const Reducer = (state = initialState, action) => {
@@ -52,6 +54,11 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         productDataSeller: action.payload,
+      };
+    case GET_WISHLIST_SELLER:
+      return {
+        ...state,
+        wishlistDataSeller: action.payload,
       };
     default:
       return state;
