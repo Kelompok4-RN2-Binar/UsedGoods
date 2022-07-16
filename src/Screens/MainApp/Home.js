@@ -1,93 +1,147 @@
-import { 
+import {
   View,
-  SafeAreaView,
   Text,
+  SafeAreaView,
+  ScrollView,
   Image,
   TouchableOpacity,
-  StyleSheet,
-  Dimensions,
   StatusBar,
-  TextInput,
-} from 'react-native'
-import React ,{useEffect}from 'react'
-import {COLORS} from '../../Utils/Colors';
-import {FONTS} from '../../Utils/Fonts';
-import {GiftPicture} from '../../Assets/Images';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { useSelector, useDispatch} from 'react-redux';
-import { FlatList} from 'react-native-gesture-handler'; 
-import { useState } from 'react';
+  Dimensions,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import Carousel from 'react-native-reanimated-carousel';
+import {getBanner, getProduct, rupiah} from '../../Redux/actions';
+import {CategoryButton, Input} from '../../Components';
+import {COLORS, FONTS} from '../../Utils';
+import ProductView from '../../Components/Others/ProductView';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
-  const loginUser = useSelector(state => state.appData.loginUser)
-  const userData = useSelector(state => state.appData.userData)
-  const [search, setSearch] = useState('')
-  const [category, setCategory] = useState ([
-    {id:'Semua', icon: 'search'},
-    {id:'Hobi', icon: 'search'},
-    {id:'Kendaraan', icon: 'search'},
-    {id:'Aksesoris', icon: 'search'},
-  ]);
-  const [product, setProduct] = useState ('')
-  // useEffect(() => {
-  //       if(loginUser==null){
-  //         navigation.navigate("Auth")
-  //       }
-  //   }, []);
+  let banner = useSelector(state => state.appData.banner);
+  const product = useSelector(state => state.appData.product);
+  const [search, setSearch] = useState('');
+
+  banner = banner?.map(({image_url}) => image_url);
+
+  const category = [
+    {
+      name: 'All Product',
+      icon: 'feature-search',
+      onclick: () => dispatch(getProduct({category_id: ''})),
+    },
+    {
+      name: 'Elektronik',
+      icon: 'desktop-mac',
+      onclick: () => dispatch(getProduct({category_id: 96})),
+    },
+    {
+      name: 'Aksesoris Fashion',
+      icon: 'tshirt-crew-outline',
+      onclick: () => dispatch(getProduct({category_id: 102})),
+    },
+    {
+      name: 'Hobi dan Koleksit',
+      icon: 'bike',
+      onclick: () => dispatch(getProduct({category_id: 104})),
+    },
+    {
+      name: 'Perlengakapan Rumah',
+      icon: 'sofa-single-outline',
+      onclick: () => dispatch(getProduct({category_id: 107})),
+    },
+  ];
+
+  const getData = () => {
+    dispatch(getBanner());
+    dispatch(getProduct({category_id: ''}));
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const headerComponent = () => (
+    <View style={styles.Layer}>
+      <Input placeholder="Search" />
+      <Carousel
+        loop
+        autoPlay={true}
+        autoPlayInterval={5000}
+        width={window.width * 0.9}
+        height={120}
+        mode="parallax"
+        modeConfig={{
+          parallaxScrollingScale: 0.9,
+          parallaxScrollingOffset: 50,
+        }}
+        data={banner}
+        renderItem={({item}) => (
+          <Image style={styles.Banner} source={{uri: item}} />
+        )}
+      />
+      <View style={styles.ChoiceContainer}>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={category}
+          renderItem={({item}) => (
+            <CategoryButton
+              name={item.name}
+              icon={item.icon}
+              onPress={item.onclick}
+            />
+          )}
+          keyExtractor={item => item.name}
+        />
+      </View>
+    </View>
+  );
+
+  const footerComponent = () => (
+    <View>
+      <TouchableOpacity></TouchableOpacity>
+      <TouchableOpacity></TouchableOpacity>
+      <TouchableOpacity></TouchableOpacity>
+      <TouchableOpacity></TouchableOpacity>
+    </View>
+  );
+
+  const renderItem = ({item}) => (
+    <View style={styles.renderItemContainer}>
+      <TouchableOpacity style={styles.Card}>
+        <Image style={styles.Image} source={{uri: item.image_url}} />
+        <Text style={styles.Location} numberOfLines={1}>
+          {item.location}
+        </Text>
+        <Text style={styles.Name} numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={styles.Price} numberOfLines={1}>
+          {`Rp. ${rupiah(item.base_price)}`}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.Container}>
-      <StatusBar backgroundColor="transparent" barStyle="light-content" translucent/>
-      <View style={styles.Tone}></View>
-      <View style={styles.searchBar}>
-        <TextInput placeholder='Cari di UseGoods' value={search} onChangeText={text => setSearch(text)} style={styles.searchText}
-      />
-       <Icon name="search" size={25} color={COLORS.grey} style={styles.iconSearch}/>
-      </View>
-      <View style={{flexDirection:'column',marginLeft:16}}>
-            <Image style={styles.gambar} source={GiftPicture}/>
-            <Text style={styles.Diskon}>Bulan Ramadhan</Text>
-            <Text style={styles.Diskon}>Banyak Diskon!</Text>
-            <Text style={styles.Diskon1}>Diskon Hingga</Text>
-            <Text style={styles.Diskon2}>60%</Text>
-      </View>
-      <View style={{flexDirection:'column',marginLeft:16}}>
-        <Text style={styles.Kategori}>Telusuri Kategori</Text>
-          <FlatList 
-            showsHorizontalScrollIndicator={false}
-            data={category}
-            renderItem={({item}) => (
-              <TouchableOpacity style={styles.Kategori2} onPress={() => {
-                    { navigation.navigate('Kategori', {idKategori: item.id, });}
-                  }}>
-                  <Icon name="search" size={20} style={{marginRight: 5, color: COLORS.white}}/>
-                  <Text style={{color: COLORS.white, fontFamily: FONTS.Regular, fontSize: 14,}}>{item.id}</Text>
-              </TouchableOpacity>
-            )}
-            horizontal
-          />
-      </View>
+      <StatusBar backgroundColor={COLORS.dark} barStyle="light-content" />
       <FlatList
-          numColumns={2}
-          showsVerticalScrollIndicator={false}
-          data={product}
-          renderItem={({item}) => (
-            <TouchableOpacity key={item.id} style={styles.ProductContainer}
-                  onPress={() => {
-                    { navigation.navigate('DetailProduct', {idProduct: item.id, });}
-                  }}>
-                  <Image
-                    style={styles.ProductPoster}
-                    source={{uri: item.poster_path}}
-                  />
-                </TouchableOpacity>
-          )}
-          vertical
-        />
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item.id}
+        numColumns={2}
+        data={product}
+        renderItem={renderItem}
+        ListHeaderComponent={headerComponent}
+        ListFooterComponent={footerComponent}
+        contentContainerStyle={styles.FlatlistContainer}
+      />
     </SafeAreaView>
   );
-}
+};
 
 export default Home;
 
@@ -96,90 +150,61 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingBottom: 90,
   },
-  searchBar: {
-    backgroundColor:COLORS.white,
-    flexDirection:'row',
-    margin: 16,
-    marginTop: 45,
-    padding: 5,
-    alignItems:'center',
-    borderRadius: 15, 
-  },
-  searchText:{
-    flex: 1,
-    color: COLORS.black,
-    fontFamily: FONTS.Regular,
-    fontSize: 14,
-  },
- iconSearch: {
-    backgroundColor: COLORS.white,
-    paddingRight: 8,
-    justifyContent:'center',
-    alignItems:'center',
-  },
-  gambar:{
-    position: 'absolute',
-    width: 100,
-    height: 100,
-    marginLeft: 230,
-  },
-  Diskon:{
-    color: COLORS.white,
-    fontFamily: FONTS.Bold,
-    fontSize: 20,
-  },
-  Diskon1:{
-    color: COLORS.white,
-    fontFamily: FONTS.Regular,
-    fontSize: 10,
-  },
-  Diskon2:{
-    color: COLORS.red,
-    fontFamily: FONTS.Regular,
-    fontSize: 18,
-  },
-  Kategori:{
-    marginTop: 5,
-    color: COLORS.black,
-    fontFamily: FONTS.Regular,
-    fontSize: 14,
-  },
-  Kategori2:{
-    flexDirection:'row',
-    backgroundColor: COLORS.softDark,
-    marginHorizontal: 8,
-    marginVertical: 10,
+  renderItemContainer: {
+    width: window.width * 0.5,
     alignItems: 'center',
-    elevation: 2,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius:10,
+    marginVertical: 10,
   },
-  Tone: {
-    position: 'absolute',
-    paddingBottom:255,
-    paddingHorizontal:180,
+  Layer: {
+    width: window.width * 1,
     backgroundColor: COLORS.dark,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-  },
-  ProductContainer: {
-    backgroundColor: COLORS.white,
-    width: 156,
-    height: 206,
     alignItems: 'center',
-    borderRadius: 10,
-    elevation: 10,
-    marginVertical: 10,
-    marginLeft: 16,
+    paddingTop: 40,
+    borderBottomRightRadius: 15,
+    borderBottomLeftRadius: 15,
+    height: 325,
+    marginBottom: 10,
   },
-  ProductPoster: {
-    backgroundColor: COLORS.green,
+  Banner: {
+    height: 120,
+    borderRadius: 10,
+  },
+  ChoiceContainer: {
+    flexDirection: 'row',
+    width: window.width * 0.9,
+    marginTop: 15,
+  },
+  Card: {
+    backgroundColor: COLORS.white,
+    padding: 8,
+    borderRadius: 10,
+    borderColor: 'red',
+    width: 160,
+    alignItems: 'center',
+    elevation: 6,
+  },
+  Image: {
     resizeMode: 'stretch',
-    marginTop:10,
     width: 140,
     height: 100,
-    borderRadius: 5,
-  }
-})
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  Location: {
+    fontFamily: FONTS.Regular,
+    fontSize: 10,
+    color: COLORS.dark,
+  },
+  Name: {
+    fontFamily: FONTS.Bold,
+    fontSize: 14,
+    color: COLORS.dark,
+  },
+  Price: {
+    fontFamily: FONTS.SemiBold,
+    fontSize: 12,
+    color: COLORS.dark,
+  },
+});
