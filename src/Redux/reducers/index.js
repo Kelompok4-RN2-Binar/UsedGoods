@@ -14,8 +14,6 @@ const initialState = {
   authScreen: 'Login',
   loginUser: null,
   userData: null,
-  productDataSeller:null,
-  daftarJualScreen:'Product',
   wishlistDataSeller:null,
   banner: null,
   product: null,

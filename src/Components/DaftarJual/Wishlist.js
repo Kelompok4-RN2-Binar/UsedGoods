@@ -91,4 +91,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingBottom: 4,
   },
+    textGrey: {
+    color: COLORS.grey,
+    fontFamily: FONTS.Regular,
+    fontSize: 12,
+    paddingBottom: 4,
+  },
 })

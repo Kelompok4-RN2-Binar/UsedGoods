@@ -14,7 +14,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {CategoryButton, Header} from '../../Components';
 import {useSelector, useDispatch} from 'react-redux';
 import {COLORS, FONTS} from '../../Utils';
-import {getProductSeller, DaftarJualScreen} from '../../Redux/actions';
+import {getProductSeller, DaftarJualScreen,getWishlistSeller} from '../../Redux/actions';
 import Product from '../../Components/DaftarJual/Product';
 import Wishlist from '../../Components/DaftarJual/Wishlist';
 const DaftarJual = ({navigation}) => {
@@ -31,11 +31,13 @@ const DaftarJual = ({navigation}) => {
       navigation.navigate('Akun');
     } else {
       dispatch(getProductSeller(loginUser.access_token));
+      dispatch(getWishlistSeller(loginUser.access_token));
       onRefresh();
     }
   }, []);
   const onRefresh = useCallback(() => {
     dispatch(getProductSeller(loginUser.access_token));
+    dispatch(getWishlistSeller(loginUser.access_token));
     setRefreshing(true);
     wait(300).then(() => {
       setRefreshing(false);

@@ -9,10 +9,7 @@ import {
   GET_PRODUCT,
   GET_PRODUCT_SELLER,
   DAFTARJUAL_SCREEN,
-<<<<<<< HEAD
   GET_WISHLIST_SELLER
-=======
->>>>>>> 46052b5157a66b93852adcf3cdae32ed597a889a
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
@@ -330,7 +327,6 @@ export const getProductSeller = AccessToken => {
   };
 };
 
-<<<<<<< HEAD
 export const getWishlistSeller = AccessToken => {
   return async dispatch => {
     await axios
@@ -353,11 +349,9 @@ export const getWishlistSeller = AccessToken => {
       });
   };
 };
-=======
 export const rupiah = number => {
   let reverse = number.toString().split('').reverse().join(''),
     thousand = reverse.match(/\d{1,3}/g);
   thousand = thousand.join('.').split('').reverse().join('');
   return thousand;
 };
->>>>>>> 46052b5157a66b93852adcf3cdae32ed597a889a
