@@ -4,15 +4,19 @@ import {
   GET_USER_DATA,
   UPDATE_USER_DATA,
   LOGOUT,
+  GET_BANNER,
+  GET_PRODUCT,
   GET_PRODUCT_SELLER,
-  DAFTARJUAL_SCREEN
+  DAFTARJUAL_SCREEN,
 } from '../types';
 const initialState = {
   authScreen: 'Login',
   loginUser: null,
   userData: null,
-  productDataSeller:null,
-  daftarJualScreen:'Product'
+  banner: null,
+  product: null,
+  productDataSeller: null,
+  daftarJualScreen: 'Product',
 };
 
 const Reducer = (state = initialState, action) => {
@@ -47,6 +51,16 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         userData: action.payload,
+      };
+    case GET_BANNER:
+      return {
+        ...state,
+        banner: action.payload,
+      };
+    case GET_PRODUCT:
+      return {
+        ...state,
+        product: action.payload,
       };
     case GET_PRODUCT_SELLER:
       return {

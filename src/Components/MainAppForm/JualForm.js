@@ -1,37 +1,46 @@
-import {View,Text,StyleSheet,Dimensions,FlatList,TouchableOpacity, ScrollView, ImageBackground} from 'react-native';
-import React, {useCallback,useState} from 'react';
-import {useDispatch,useSelector} from 'react-redux';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+  ImageBackground,
+} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
-import { COLORS, FONTS } from '../../Utils';
+import {COLORS, FONTS} from '../../Utils';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
-import { postProduct } from '../../Redux/actions';
-import { useNavigation } from '@react-navigation/native';
+import {postProduct} from '../../Redux/actions';
+import {useNavigation} from '@react-navigation/native';
 
- const jualValidation = yup.object().shape({
-    name: yup.string().required('Product Name is Required!'),
-    location: yup.string().required('City is Required!'),
-    base_price: yup.string().required('Price is Required!'),
-    description: yup.string().required('Description is Required!'),
-  });
+const jualValidation = yup.object().shape({
+  name: yup.string().required('Product Name is Required!'),
+  location: yup.string().required('City is Required!'),
+  base_price: yup.string().required('Price is Required!'),
+  description: yup.string().required('Description is Required!'),
+});
 
 const JualForm = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
-  console.log("data akun :",userData)
+  console.log('data akun :', userData);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [items, setItems] = useState([
     {label: 'Elektronik', value: 96},
     {label: 'Aksesoris Fashion', value: 102},
     {label: 'Hobi dan Koleksi', value: 104},
-    {label: 'Perlengkapan rumah', value: 107}
+    {label: 'Perlengkapan rumah', value: 107},
   ]);
   const imagePicker = async handleChange => {
     ImagePicker.openPicker({
@@ -40,22 +49,44 @@ const JualForm = () => {
       cropping: true,
     }).then(image => {
       console.log(image);
-      const uploadUri = Platform.OS === 'IOS' ? image.path.replace('file://', '') : image.path;
+      const uploadUri =
+        Platform.OS === 'IOS' ? image.path.replace('file://', '') : image.path;
       handleChange(uploadUri);
     });
   };
-  const goSell = (values,resetForm) => {
+  const goSell = (values, resetForm) => {
     const categoryProduct = value.toString();
-    console.log(categoryProduct)
-    dispatch(postProduct(values,loginUser.access_token,categoryProduct)).then(()=>{navigation.navigate("DaftarJual");resetForm();setValue([])})
-    console.log("values :",values)
-  }
+    console.log(categoryProduct);
+    dispatch(postProduct(values, loginUser.access_token, categoryProduct)).then(
+      () => {
+        navigation.navigate('DaftarJual');
+        resetForm();
+        setValue([]);
+      },
+    );
+    console.log('values :', values);
+  };
   return (
     <Formik
-      initialValues={{name: '', description: '',base_price:'',location:userData.city,image:''}}
+      initialValues={{
+        name: '',
+        description: '',
+        base_price: '',
+        location: userData?.city,
+        image: '',
+      }}
       validationSchema={jualValidation}
-      onSubmit={(values,{resetForm}) => {goSell(values,resetForm)}}>
-      {({handleChange, handleBlur, handleSubmit, values, errors,setFieldValue}) => (
+      onSubmit={(values, {resetForm}) => {
+        goSell(values, resetForm);
+      }}>
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+        errors,
+        setFieldValue,
+      }) => (
         <View>
           <Text style={styles.Text}>Product Name</Text>
           <Input
@@ -64,7 +95,7 @@ const JualForm = () => {
             value={values.name}
             placeholder={'Product Name'}
             error={errors.name}
-            screen={"jual"}
+            screen={'jual'}
           />
           <Text style={styles.Text}>Price</Text>
           <Input
@@ -73,7 +104,7 @@ const JualForm = () => {
             value={values.base_price}
             placeholder={'Rp 0.00'}
             error={errors.base_price}
-            screen={"jual"}
+            screen={'jual'}
           />
           <Text style={styles.Text}>Location</Text>
           <Input
@@ -82,33 +113,39 @@ const JualForm = () => {
             value={values.location}
             placeholder={'Location'}
             error={errors.location}
-            screen={"jual"}
+            screen={'jual'}
           />
           <Text style={styles.Text}>Category</Text>
           <DropDownPicker
-            open={open} value={value} items={items} setOpen={setOpen}
-            setValue={setValue} setItems={setItems}
-            multiple={true} min={0}  max={4} 
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
+            multiple={true}
+            min={0}
+            max={4}
             style={styles.Dropdown}
             textStyle={{
               fontSize: 12,
-              color:COLORS.black,
-              paddingLeft:10
+              color: COLORS.black,
+              paddingLeft: 10,
             }}
             containerStyle={{
-              width:window.width * 0.8,
-              alignSelf:'center'
+              width: window.width * 0.8,
+              alignSelf: 'center',
             }}
             placeholder="Select Category"
-            mode='BADGE'
-            badgeDotColors={["black", "red", "blue","purple"]}
+            mode="BADGE"
+            badgeDotColors={['black', 'red', 'blue', 'purple']}
             badgeTextStyle={{
-              fontFamily:FONTS.Regular,
-              color:COLORS.white,
-              paddingLeft:-5
+              fontFamily: FONTS.Regular,
+              color: COLORS.white,
+              paddingLeft: -5,
             }}
             badgeColors={COLORS.green}
-            listMode="SCROLLVIEW" 
+            listMode="SCROLLVIEW"
           />
           <Text style={styles.Text}>Description</Text>
           <Input
@@ -117,26 +154,51 @@ const JualForm = () => {
             value={values.description}
             placeholder={'Description'}
             error={errors.description}
-            screen={"jual"}
+            screen={'jual'}
           />
           <Text style={styles.Text}>Product Image</Text>
-          <View style={{width:window.width*0.8,alignSelf:'center'}}>
+          <View style={{width: window.width * 0.8, alignSelf: 'center'}}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {values.image==''?
-              <TouchableOpacity style={styles.Category} onPress={()=>{imagePicker(handleChange('image'))}}>
-                  <Icon style={styles.Icon} name={'plus'} size={50} color={COLORS.grey} />
-              </TouchableOpacity>
-              :
-              <TouchableOpacity style={styles.Category} onPress={()=>{setFieldValue("image","")}}>
-                  <ImageBackground  style={styles.Image} source={{uri:values.image}} >
-                    <Icon style={styles.Icon} name={'minus'} size={50} color={COLORS.grey} />
+              {values.image == '' ? (
+                <TouchableOpacity
+                  style={styles.Category}
+                  onPress={() => {
+                    imagePicker(handleChange('image'));
+                  }}>
+                  <Icon
+                    style={styles.Icon}
+                    name={'plus'}
+                    size={50}
+                    color={COLORS.grey}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.Category}
+                  onPress={() => {
+                    setFieldValue('image', '');
+                  }}>
+                  <ImageBackground
+                    style={styles.Image}
+                    source={{uri: values.image}}>
+                    <Icon
+                      style={styles.Icon}
+                      name={'minus'}
+                      size={50}
+                      color={COLORS.grey}
+                    />
                   </ImageBackground>
-              </TouchableOpacity>
-            }         
+                </TouchableOpacity>
+              )}
             </ScrollView>
           </View>
-          <View style={{flexDirection:'row',justifyContent:'center',marginTop:5}}>
-            <Button caption={'Preview'}  />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginTop: 5,
+            }}>
+            <Button caption={'Preview'} />
             <Button caption={'Posting'} onPress={handleSubmit} />
           </View>
         </View>
@@ -149,35 +211,35 @@ export default JualForm;
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Text: {
-    paddingLeft:40,
-    color:COLORS.black,
-    fontFamily:FONTS.Regular
+    paddingLeft: 40,
+    color: COLORS.black,
+    fontFamily: FONTS.Regular,
   },
-  Dropdown:{
-    width:window.width * 0.8,
-    alignSelf:'center',
+  Dropdown: {
+    width: window.width * 0.8,
+    alignSelf: 'center',
     borderWidth: 1,
     borderRadius: 15,
-    marginBottom:25,
-    borderColor:COLORS.grey
+    marginBottom: 25,
+    borderColor: COLORS.grey,
   },
-  Icon:{
-    alignSelf:'center',
-    justifyContent:'center',
+  Icon: {
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
-  Category:{
-    width:window.width*0.3,
-    height:110,
-    borderWidth:1,
-    borderColor:COLORS.grey,
-    borderRadius:5,
-    marginRight:15,
-    justifyContent:'center'
+  Category: {
+    width: window.width * 0.3,
+    height: 110,
+    borderWidth: 1,
+    borderColor: COLORS.grey,
+    borderRadius: 5,
+    marginRight: 15,
+    justifyContent: 'center',
   },
-  Image:{
-    width:window.width*0.3,
-    height:110,
-    justifyContent:'center',
-    borderRadius:5,
-  }
+  Image: {
+    width: window.width * 0.3,
+    height: 110,
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
 });

@@ -28,71 +28,70 @@ const Akun = ({navigation}) => {
       />
       <View style={styles.Header}>
         <Text style={styles.Title}>My Account</Text>
-        {userData!=null?
-        <Image source={{uri:userData.image_url}} style={styles.Image} />
-        :
-        <Image  style={styles.Image} />
-        }
+        {userData != null ? (
+          <Image source={{uri: userData?.image_url}} style={styles.Image} />
+        ) : (
+          <Image style={styles.Image} />
+        )}
       </View>
       <View style={styles.Content}>
-      {
-      loginUser&&userData!=null?
-      <>
-        <Text style={styles.Name} numberOfLines={1}>
-          {userData.full_name}
-        </Text>
-        <TouchableOpacity
-          style={{...styles.Box, shadowColor: COLORS.black}}
-          onPress={() => navigation.navigate('EditAccount')}>
-          <Icon
-            style={styles.Icon}
-            name="account-edit-outline"
-            size={25}
-            color={COLORS.black}
-          />
-          <Text style={styles.Text}>Edit Account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{...styles.Box, shadowColor: COLORS.black}}
-          onPress={() => navigation.navigate('EditPassword')}>
-          <Icon
-            style={styles.Icon}
-            name="lock-reset"
-            size={25}
-            color={COLORS.black}
-          />
-          <Text style={styles.Text}>Edit Password</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{...styles.Box, shadowColor: COLORS.red}}
-          onPress={() => {
-            dispatch(goLogout());
-            navigation.replace('Auth');
-          }}>
-          <Icon
-            style={styles.Icon}
-            name="logout-variant"
-            size={25}
-            color={COLORS.black}
-          />
-          <Text style={styles.Text}>Logout</Text>
-        </TouchableOpacity>
-      </>
-      :
-      <>
-      <TouchableOpacity
-          style={{...styles.Box, shadowColor: COLORS.black,marginTop:25}}
-          onPress={() => navigation.navigate('Auth')}>
-          <Icon
-            style={styles.Icon}
-            name="login-variant"
-            size={25}
-            color={COLORS.black}
-          />
-          <Text style={styles.Text}>Login or Register</Text>
-        </TouchableOpacity> 
-      </>
-      }
+        {loginUser && userData != null ? (
+          <>
+            <Text style={styles.Name} numberOfLines={1}>
+              {userData.full_name}
+            </Text>
+            <TouchableOpacity
+              style={{...styles.Box, shadowColor: COLORS.black}}
+              onPress={() => navigation.navigate('EditAccount')}>
+              <Icon
+                style={styles.Icon}
+                name="account-edit-outline"
+                size={25}
+                color={COLORS.black}
+              />
+              <Text style={styles.Text}>Edit Account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{...styles.Box, shadowColor: COLORS.black}}
+              onPress={() => navigation.navigate('EditPassword')}>
+              <Icon
+                style={styles.Icon}
+                name="lock-reset"
+                size={25}
+                color={COLORS.black}
+              />
+              <Text style={styles.Text}>Edit Password</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{...styles.Box, shadowColor: COLORS.red}}
+              onPress={() => {
+                dispatch(goLogout());
+                navigation.replace('Auth');
+              }}>
+              <Icon
+                style={styles.Icon}
+                name="logout-variant"
+                size={25}
+                color={COLORS.black}
+              />
+              <Text style={styles.Text}>Logout</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity
+              style={{...styles.Box, shadowColor: COLORS.black, marginTop: 25}}
+              onPress={() => navigation.navigate('Auth')}>
+              <Icon
+                style={styles.Icon}
+                name="login-variant"
+                size={25}
+                color={COLORS.black}
+              />
+              <Text style={styles.Text}>Login or Register</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     </SafeAreaView>
   );

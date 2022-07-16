@@ -4,4 +4,6 @@ export const FETCH_LOGIN = '@FETCH_LOGIN';
 export const LOGOUT = '@LOGOUT';
 export const GET_USER_DATA = '@GET_USER_DATA';
 export const UPDATE_USER_DATA = '@UPDATE_USER_DATA';
+export const GET_BANNER = '@GET_BANNER';
+export const GET_PRODUCT = '@GET_PRODUCT';
 export const GET_PRODUCT_SELLER = '@GET_PRODUCT_SELLER';
