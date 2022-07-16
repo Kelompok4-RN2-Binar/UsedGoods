@@ -8,6 +8,8 @@ import {
   Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch} from 'react-redux';
+import {getProduct} from '../../Redux/actions';
 import {COLORS} from '../../Utils/Colors';
 import {FONTS} from '../../Utils/Fonts';
 
@@ -18,10 +20,13 @@ const Input = ({
   value,
   error,
   secureTextEntry,
-  screen
+  screen,
+  onPress,
 }) => {
+  const dispatch = useDispatch();
   const [isSecureText, setIsSecureText] = useState(secureTextEntry);
   const [isActive, setIsActive] = useState(false);
+  const [isSearch, setIsSearch] = useState('');
   return (
     <View style={styles.Container}>
       <View
@@ -33,9 +38,11 @@ const Input = ({
         <TextInput
           onFocus={() => setIsActive(true)}
           onBlur={() => setIsActive(false)}
-          style={[styles.Input,{marginHorizontal:screen=="jual"? 0: 15,}]}
+          style={[styles.Input, {marginHorizontal: screen == 'jual' ? 0 : 15}]}
           placeholder={placeholder}
-          onChangeText={onChangeText}
+          onChangeText={
+            placeholder == 'Search' ? value => setIsSearch(value) : onChangeText
+          }
           value={value}
           secureTextEntry={isSecureText}
           placeholderTextColor={COLORS.grey}
@@ -53,6 +60,12 @@ const Input = ({
               size={20}
               color={COLORS.dark}
             />
+          </TouchableOpacity>
+        ) : null}
+        {placeholder == 'Search' ? (
+          <TouchableOpacity
+            onPress={() => dispatch(getProduct({search: isSearch}))}>
+            <Icon name={'eye-outline'} size={20} color={COLORS.dark} />
           </TouchableOpacity>
         ) : null}
       </View>

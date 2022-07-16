@@ -4,6 +4,8 @@ import {
   GET_USER_DATA,
   UPDATE_USER_DATA,
   LOGOUT,
+  GET_BANNER,
+  GET_PRODUCT,
   GET_PRODUCT_SELLER,
   DAFTARJUAL_SCREEN,
   GET_WISHLIST_SELLER
@@ -14,7 +16,11 @@ const initialState = {
   userData: null,
   productDataSeller:null,
   daftarJualScreen:'Product',
-  wishlistDataSeller:null
+  wishlistDataSeller:null,
+  banner: null,
+  product: null,
+  productDataSeller: null,
+  daftarJualScreen: 'Product',
 };
 
 const Reducer = (state = initialState, action) => {
@@ -49,6 +55,16 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         userData: action.payload,
+      };
+    case GET_BANNER:
+      return {
+        ...state,
+        banner: action.payload,
+      };
+    case GET_PRODUCT:
+      return {
+        ...state,
+        product: action.payload,
       };
     case GET_PRODUCT_SELLER:
       return {

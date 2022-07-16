@@ -3,12 +3,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Home, DaftarJual, Jual, Notifikasi, Akun} from '../Screens';
 import {COLORS} from '../Utils/Colors';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import Toast from 'react-native-toast-message';
+import {useEffect} from 'react';
 const Tab = createBottomTabNavigator();
 
-const MainApp = () => {
-  const loginUser = useSelector(state => state.appData.loginUser)
+const MainApp = ({navigation}) => {
+  const loginUser = useSelector(state => state.appData.loginUser);
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -48,13 +50,45 @@ const MainApp = () => {
         },
       })}>
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Notifikasi" component={Notifikasi} />
-      {loginUser!=null&&
-      <Tab.Screen name="Jual" component={Jual} options={{
-        tabBarStyle: { display: "none" },
-      }}/>
-      }
-      <Tab.Screen name="DaftarJual" component={DaftarJual} />
+      <Tab.Screen
+        name="Notifikasi"
+        component={Notifikasi}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            if (!loginUser) {
+              e.preventDefault();
+              navigation.navigate('Auth');
+            }
+          },
+        })}
+      />
+      <Tab.Screen
+        name="Jual"
+        component={Jual}
+        options={{
+          tabBarStyle: {display: 'none'},
+        }}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            if (!loginUser) {
+              e.preventDefault();
+              navigation.navigate('Auth');
+            }
+          },
+        })}
+      />
+      <Tab.Screen
+        name="DaftarJual"
+        component={DaftarJual}
+        listeners={({navigation}) => ({
+          tabPress: e => {
+            if (!loginUser) {
+              e.preventDefault();
+              navigation.navigate('Auth');
+            }
+          },
+        })}
+      />
       <Tab.Screen name="Akun" component={Akun} />
     </Tab.Navigator>
   );

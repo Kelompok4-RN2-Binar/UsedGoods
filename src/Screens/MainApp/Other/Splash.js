@@ -9,10 +9,9 @@ import React, {useEffect} from 'react';
 import {Logo} from '../../../Assets';
 import {COLORS} from '../../../Utils/Colors';
 const Splash = ({navigation}) => {
-  
   useEffect(() => {
     setTimeout(() => {
-        navigation.replace('MainApp');
+      navigation.replace('MainApp');
     }, 2000);
   }, []);
 
