@@ -3,24 +3,22 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  FlatList,
   TouchableOpacity,
   ScrollView,
   ImageBackground,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, { useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
 import {COLORS, FONTS} from '../../Utils';
-import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import {updateProduct} from '../../Redux/actions';
 import {useNavigation} from '@react-navigation/native';
-const jualValidation = yup.object().shape({
+const EditValidation = yup.object().shape({
   name: yup.string().required('Product Name is Required!'),
   location: yup.string().required('City is Required!'),
   base_price: yup.string().required('Price is Required!'),
@@ -34,14 +32,7 @@ const EditForm = ({data}) => {
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   console.log('data akun :', userData);
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-  const [items, setItems] = useState([
-    {label: 'Elektronik', value: 96},
-    {label: 'Aksesoris Fashion', value: 102},
-    {label: 'Hobi dan Koleksi', value: 104},
-    {label: 'Perlengkapan rumah', value: 107},
-  ]);
   const array = [];
     data.Categories.map(item=>{
         array.push(item.id)
@@ -54,8 +45,7 @@ const EditForm = ({data}) => {
       cropping: true,
     }).then(image => {
       console.log(image);
-      const uploadUri =
-        Platform.OS === 'IOS' ? image.path.replace('file://', '') : image.path;
+      const uploadUri = Platform.OS === 'IOS' ? image.path.replace('file://', '') : image.path;
       handleChange(uploadUri);
     });
   };
@@ -91,7 +81,7 @@ const EditForm = ({data}) => {
         location: userData?.city,
         image: data.image_url,
       }}
-      validationSchema={jualValidation}
+      validationSchema={EditValidation}
       onSubmit={(values, {resetForm}) => {
         goUpdate(values, resetForm);
       }}>
