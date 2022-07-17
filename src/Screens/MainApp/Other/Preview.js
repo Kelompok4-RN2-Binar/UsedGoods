@@ -10,24 +10,49 @@ import {
   ImageBackground,
   Dimensions
 } from 'react-native';
-import React from 'react';
+import React ,{useEffect} from 'react';
 import {noImage} from '../../../Assets';
 import {COLORS, FONTS} from '../../../Utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-import { deleteProduct, rupiah } from '../../../Redux/actions';
+import { getCategory, rupiah } from '../../../Redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../Components/Others/Button';
-const Detail = () => {
+import { postProduct,updateProduct} from '../../../Redux/actions';
+const Preview = ({route}) => {
   const dispatch = useDispatch();
+  const { data,categoryProduct ,resetForm,arrayProduct,screen,id,dataCategory} = route.params;
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
-  const productSpesific = useSelector(state => state.appData.productSpesific);
+  const category = useSelector(state => state.appData.category);
+  console.log(category)
   const navigation = useNavigation();
-  const goDelete = () =>{
-    dispatch(deleteProduct(loginUser.access_token,productSpesific.id)).then(navigation.navigate("DaftarJual"))
-  }
+  const goSell = () => {
+    dispatch(postProduct(data, loginUser.access_token, categoryProduct)).then(
+      () => {
+        navigation.navigate('DaftarJual');
+      },
+    );
+    resetForm();
+  };
+  const goUpdate = () => {
+    dispatch(updateProduct(data, loginUser.access_token, categoryProduct,id)).then(
+      () => {
+        navigation.navigate('DaftarJual');
+      },
+    );
+    resetForm();
+  };
+  useEffect(() => {
+   
+      dispatch(getCategory());
+    
+  }, []);
+    
   return (
+    <>
+    {data!=null &&
+
     <SafeAreaView style={styles.container}>
     <StatusBar
         backgroundColor={'transparent'}
@@ -35,9 +60,7 @@ const Detail = () => {
         barStyle={'light-content'}
       />
     <ScrollView>
-    {productSpesific!=null?
-    <>
-    <ImageBackground style={styles.gambar } source={productSpesific.image_url==null?noImage:{uri:productSpesific.image_url}}>
+      <ImageBackground style={styles.gambar } source={data.image!=""?{uri:data.image}:noImage}>
       <View style={{flexDirection: 'row',}}>
         <TouchableOpacity onPress={()=>{navigation.pop()}}>
           <Icon
@@ -50,20 +73,47 @@ const Detail = () => {
       </View>
       <View style={[styles.container1,{borderWidth:0.5}]}>
         <View style={{margin:20,flexDirection:'column'}} >
+          {data.name!="" ?
           <Text style={{fontFamily:FONTS.Regular, fontSize: 20,color:COLORS.black}}>
-            {productSpesific.name}
-          </Text> 
+            {data.name}
+          </Text>
+          :
+          <Text style={{fontFamily:FONTS.Regular, fontSize: 20,color:COLORS.black}}>
+            Product Name
+          </Text>
+          }
           <View style={{flexDirection:'row',flexWrap:'wrap'}}>
-           
-            {productSpesific && productSpesific.Categories.map(item=>{
+            {categoryProduct==null  ? 
+            <Text style={{fontFamily:FONTS.Regular,color:COLORS.grey,fontSize:12}}>Category Product </Text>
+            :
+            <>
+            {screen=="edit" && dataCategory && dataCategory.map(itemB=>{
+            return(
+                  <Text style={{fontFamily:FONTS.Regular,color:COLORS.grey,fontSize:12}}>{itemB.name}, </Text>
+            )})}
+             
+            {screen=="jual" && arrayProduct && arrayProduct.map(itemA=>{
               return(
               <>
-                <Text style={{fontFamily:FONTS.Regular,color:COLORS.grey,fontSize:12}}>{item.name}, </Text>
+                {category && category.map(itemB=>{
+                return(
+                  <>
+                    {itemA==itemB.id && 
+                        <Text style={{fontFamily:FONTS.Regular,color:COLORS.grey,fontSize:12}}>{itemB.name}, </Text>
+                    }
+                  </>
+                )})}
               </>
             )})}
+            
+            </>
+            }
           </View>
-        
-          <Text style={{fontSize: 20,fontFamily:FONTS.Regular,color:COLORS.black}}>{`Rp. ${rupiah(productSpesific.base_price)}`} </Text>
+          {data.base_price!="" ? 
+          <Text style={{fontSize: 20,fontFamily:FONTS.Regular,color:COLORS.black}}>{`Rp. ${rupiah(data.base_price)}`} </Text>
+          :
+          <Text style={{fontSize: 20,fontFamily:FONTS.Regular,color:COLORS.black}}>Rp. 0</Text>
+          }
           
         </View>
       </View>
@@ -85,28 +135,44 @@ const Detail = () => {
       <View style={styles.container3}>
         <Text style={{fontFamily:FONTS.Regular, fontSize: 20,color:COLORS.black }}>Description</Text>
         <View style={{flexDirection:'row',flexWrap:'wrap'}}>
-        
-          <Text style={{ fontFamily:FONTS.Regular, fontSize: 16,color:COLORS.black}}>{productSpesific.description}</Text>
-    
+          {data.description!="" ? 
+          <Text style={{ fontFamily:FONTS.Regular, fontSize: 16,color:COLORS.black}}>{data.description}</Text>
+          :
+          <Text style={{ fontFamily:FONTS.Regular, fontSize: 16,color:COLORS.grey}}>Your Product Description</Text>
+          }
         </View>
       </View>
-      <View style={{marginBottom:20,flexDirection:'column'}}>
-        <Button caption={'Edit'} onPress={()=>{navigation.navigate("EditProduct",{
-          data:productSpesific
-        })}} />
-        <Button caption={'Delete'} onPress={()=>{goDelete()}} />
+      <View style={{marginBottom:20}}>
+      {data.image&&data.base_price&&data.name&&data.description&&categoryProduct!=null?
+        <>
+        {screen=="edit" &&
+        <Button caption={'Posting'}  onPress={()=>{goUpdate()} }/>       
+        }{screen=="jual" &&
+        <Button caption={'Posting'}  onPress={()=>{goSell()} }/>
+        }
+        </>
+        :
+        <>
+        {screen=="edit" &&
+        <Button caption={'Posting'}  onPress={()=>{goUpdate()} } disabled={true}/>
+        }{screen=="jual" &&
+        <Button caption={'Posting'}  onPress={()=>{goSell()} } disabled={true}/>
+        }
+        
+        
+        </>
+        
+      }
+        
       </View>
-    </>
-    :
-    <></>
-    }
-      
     </ScrollView>
     </SafeAreaView>
+    }
+    </>
   );
 };
 
-export default Detail;
+export default Preview;
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
 
@@ -124,7 +190,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: window.width * 0.05,
   },
   container1: {
-    position:'absolute',
+      position:'absolute',
     width: 330,
     backgroundColor: 'white',
     bottom:-80,
@@ -161,7 +227,6 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     flexDirection: 'row',
     width: window.width * 0.8,
-    
 
   },
   image :{

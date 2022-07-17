@@ -38,7 +38,7 @@ const Wishlist = () => {
                   <Text style={[styles.textBlack,{marginTop:5}]}>{item.product_name}</Text>
                   <Text style={styles.textBlack}>{`Rp. ${rupiah(item.base_price)}`}</Text>
                   <Text style={styles.textBlack}>
-                     Ditawar {`Rp. ${rupiah(item.base_price)}`}
+                     Ditawar {`Rp. ${rupiah(item.price)}`}
                   </Text>
                 </View>
               </TouchableOpacity>

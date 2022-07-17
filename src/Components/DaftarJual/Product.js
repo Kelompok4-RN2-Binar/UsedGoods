@@ -1,12 +1,15 @@
 import {View, Text,SafeAreaView,ScrollView,Dimensions,Image,StatusBar,StyleSheet,TouchableOpacity,RefreshControl} from 'react-native';
 import React ,{}from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { COLORS,FONTS } from '../../Utils';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-import { rupiah } from '../../Redux/actions';
+import { getSpesificProduct, rupiah } from '../../Redux/actions';
 const Product = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const loginUser = useSelector(state => state.appData.loginUser);
+  const userData = useSelector(state => state.appData.userData);
   const productDataSeller = useSelector(state => state.appData.productDataSeller);
   return (
     <View>
@@ -21,8 +24,10 @@ const Product = () => {
           {productDataSeller && productDataSeller.map(item=>{
             return(
             <>
-            
-            <TouchableOpacity style={{justifyContent:'flex-start',alignItems:'center',width:window.width*0.4,height:240,flexDirection:'column',marginHorizontal:10,marginVertical:12,borderRadius:8,borderWidth:1}}>
+            <TouchableOpacity style={[styles.card,{justifyContent:'flex-start',alignItems:'center',width:window.width*0.4,height:240,flexDirection:'column',marginHorizontal:10,marginVertical:12}]}
+            onPress={()=>{
+              dispatch(getSpesificProduct(loginUser.access_token,item.id)).then(navigation.navigate("Detail"))
+             }}>
               <Image source={{uri:item.image_url}} style={{width:window.width*0.35,height:100,borderRadius:8,marginTop:10}} />
               <View style={{flexDirection:'column',marginTop:5,alignItems:'flex-start',width:window.width*0.33,marginHorizontal:10,height:120}}>
                 <Text style={[styles.Text,{fontSize:15}]}>{item.name}</Text>
@@ -33,7 +38,7 @@ const Product = () => {
                 </View>
                 )})}
                 
-                <Text style={[styles.Text,{fontSize:15,position:'absolute',bottom:1}]}>{`Rp. ${rupiah(item.base_price)}`}</Text>
+                <Text style={[styles.Text,{fontSize:15,position:'absolute',bottom:10}]}>{`Rp. ${rupiah(item.base_price)}`}</Text>
               </View>
               
             </TouchableOpacity>
@@ -69,4 +74,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius:10,
   },
+  card:{
+    backgroundColor: COLORS.white,
+    padding: 8,
+    borderRadius: 10,
+    borderColor: 'red',
+    width: 160,
+    alignItems: 'center',
+    elevation: 6,
+  }
 })

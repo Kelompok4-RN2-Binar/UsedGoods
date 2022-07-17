@@ -9,7 +9,12 @@ import {
   GET_PRODUCT,
   GET_PRODUCT_SELLER,
   DAFTARJUAL_SCREEN,
-  GET_WISHLIST_SELLER
+  GET_WISHLIST_SELLER,
+  GET_NOTIFICATION_BUYER,
+  GET_NOTIFICATION_SELLER,
+  NOTIFICATION_SCREEN,
+  GET_CATEGORY,
+  GET_SPESIFIC_PRODUCT
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
@@ -21,6 +26,11 @@ export const authScreen = data => ({
 
 export const DaftarJualScreen = data => ({
   type: DAFTARJUAL_SCREEN,
+  payload: data,
+});
+
+export const NotificationScreen = data => ({
+  type: NOTIFICATION_SCREEN,
   payload: data,
 });
 
@@ -361,3 +371,155 @@ export const timeDate = date => {
   return tDate;
 };
 
+export const getNotificationSeller = AccessToken => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'notification?notification_type=seller', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_NOTIFICATION_SELLER,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+      });
+  };
+};
+
+export const getNotificationBuyer = AccessToken => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'notification?notification_type=buyer', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_NOTIFICATION_BUYER,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+      });
+  };
+};
+
+export const getCategory = () => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'seller/category')
+      .then(res => {
+        dispatch({
+          type: GET_CATEGORY,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+      });
+  };
+};
+
+export const getSpesificProduct = (AccessToken,id) => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'seller/product/'+id, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_SPESIFIC_PRODUCT,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const deleteProduct = (AccessToken,id) => {
+  return async dispatch => {
+    await axios
+      .delete(URL + 'seller/product/'+id, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+         Toast.show({
+            type: 'success',
+            text1: 'Success Delete Product!',
+          });
+      })
+      .catch(function (error) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+      });
+  };
+};
+
+export const updateProduct = (data, AccessToken, category,id) => {
+  return async dispatch => {
+    const {name, description, base_price, location, image} = data;
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('base_price', parseInt(base_price));
+    formData.append('location', location);
+    formData.append('category_ids', category);
+    if (image == null || image == '') {
+      formData.append('image', '');
+    } else {
+      formData.append('image', {
+        uri: image,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+      });
+    }
+    await axios
+      .put(URL + 'seller/product/'+id, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        Toast.show({
+          type: 'success',
+          text1: 'Success Update Product!',
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};

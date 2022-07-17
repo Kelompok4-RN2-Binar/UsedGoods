@@ -3,9 +3,9 @@ import {Text, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {COLORS} from '../../Utils/Colors';
 import {FONTS} from '../../Utils/Fonts';
 
-const Button = ({caption, onPress}) => {
+const Button = ({caption, onPress,disabled}) => {
   return (
-    <TouchableOpacity style={[styles.Container,{width:caption=="Preview"||caption=="Posting"?window.width * 0.4:window.width * 0.75,marginHorizontal:5}]} onPress={onPress}>
+    <TouchableOpacity style={[styles.Container,{width:caption=="Preview"||caption=="Posting"?window.width * 0.4:window.width * 0.75,marginHorizontal:5,backgroundColor:caption=="Delete"?"#871f1b":COLORS.green}]} onPress={onPress} disabled={disabled}>
       <Text style={styles.Text}>{caption}</Text>
     </TouchableOpacity>
   );

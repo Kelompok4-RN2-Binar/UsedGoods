@@ -8,7 +8,12 @@ import {
   GET_PRODUCT,
   GET_PRODUCT_SELLER,
   DAFTARJUAL_SCREEN,
-  GET_WISHLIST_SELLER
+  GET_WISHLIST_SELLER,
+  GET_NOTIFICATION_SELLER,
+  GET_NOTIFICATION_BUYER,
+  NOTIFICATION_SCREEN,
+  GET_CATEGORY,
+  GET_SPESIFIC_PRODUCT
 } from '../types';
 const initialState = {
   authScreen: 'Login',
@@ -19,6 +24,11 @@ const initialState = {
   product: null,
   productDataSeller: null,
   daftarJualScreen: 'Product',
+  notifDataSeller:null,
+  notifDataBuyer:null,
+  notifScreen:'Seller',
+  category:null,
+  productSpesific:null
 };
 
 const Reducer = (state = initialState, action) => {
@@ -33,6 +43,11 @@ const Reducer = (state = initialState, action) => {
         ...state,
         daftarJualScreen: action.payload,
       };
+    case NOTIFICATION_SCREEN:
+    return {
+      ...state,
+      notifScreen: action.payload,
+    };
     case FETCH_LOGIN:
       return {
         ...state,
@@ -73,6 +88,26 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         wishlistDataSeller: action.payload,
+      };
+    case GET_NOTIFICATION_SELLER:
+      return {
+        ...state,
+        notifDataSeller: action.payload,
+      };
+    case GET_NOTIFICATION_BUYER:
+      return {
+        ...state,
+        notifDataBuyer: action.payload,
+      };
+    case GET_CATEGORY:
+      return {
+        ...state,
+        category: action.payload,
+      };
+    case GET_SPESIFIC_PRODUCT:
+      return {
+        ...state,
+        productSpesific: action.payload,
       };
     default:
       return state;
