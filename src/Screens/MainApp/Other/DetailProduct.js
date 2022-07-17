@@ -10,15 +10,14 @@ import {
   ImageBackground,
   Dimensions
 } from 'react-native';
-import React ,{useState,useEffect} from 'react';
+import React from 'react';
 import {noImage} from '../../../Assets';
 import {COLORS, FONTS} from '../../../Utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-import { deleteProduct, getCategory, rupiah } from '../../../Redux/actions';
+import { deleteProduct, rupiah } from '../../../Redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../Components/Others/Button';
-import { postProduct} from '../../../Redux/actions';
 const Detail = () => {
   const dispatch = useDispatch();
   const loginUser = useSelector(state => state.appData.loginUser);

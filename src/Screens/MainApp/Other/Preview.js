@@ -10,7 +10,7 @@ import {
   ImageBackground,
   Dimensions
 } from 'react-native';
-import React ,{useState,useEffect} from 'react';
+import React ,{useEffect} from 'react';
 import {noImage} from '../../../Assets';
 import {COLORS, FONTS} from '../../../Utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -39,7 +39,6 @@ const Preview = ({route}) => {
     dispatch(updateProduct(data, loginUser.access_token, categoryProduct,id)).then(
       () => {
         navigation.navigate('DaftarJual');
-
       },
     );
     resetForm();

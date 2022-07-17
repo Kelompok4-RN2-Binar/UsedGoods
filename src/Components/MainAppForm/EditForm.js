@@ -46,6 +46,7 @@ const EditForm = ({data}) => {
     data.Categories.map(item=>{
         array.push(item.id)
     })
+  const categoryProduct = array.toString();
   const imagePicker = async handleChange => {
     ImagePicker.openPicker({
       width: 450,
@@ -59,8 +60,7 @@ const EditForm = ({data}) => {
     });
   };
   const goUpdate = (values, resetForm) => {
-    const categoryProduct = array.toString();
-    console.log(categoryProduct);
+
     dispatch(updateProduct(values, loginUser.access_token, categoryProduct,data.id)).then(
       () => {
         navigation.navigate('DaftarJual');
@@ -71,8 +71,6 @@ const EditForm = ({data}) => {
   };
 
   const goPreview = (values,resetForm) => {
-    const categoryProduct = array.toString()
-    console.log(categoryProduct)
     navigation.navigate("Preview",{
       data:values,
       categoryProduct:categoryProduct,

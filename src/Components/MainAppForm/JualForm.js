@@ -20,7 +20,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import {postProduct} from '../../Redux/actions';
 import {useNavigation} from '@react-navigation/native';
-import { getCategory } from '../../Redux/actions';
 const jualValidation = yup.object().shape({
   name: yup.string().required('Product Name is Required!'),
   location: yup.string().required('City is Required!'),
@@ -36,7 +35,6 @@ const JualForm = () => {
   console.log('data akun :', userData);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-  const [label, setLabel] = useState([]);
   const [items, setItems] = useState([
     {label: 'Elektronik', value: 96},
     {label: 'Aksesoris Fashion', value: 102},

@@ -24,7 +24,7 @@ const Product = () => {
           {productDataSeller && productDataSeller.map(item=>{
             return(
             <>
-            <TouchableOpacity style={{justifyContent:'flex-start',alignItems:'center',width:window.width*0.4,height:240,flexDirection:'column',marginHorizontal:10,marginVertical:12,borderRadius:8,borderWidth:1}}
+            <TouchableOpacity style={[styles.card,{justifyContent:'flex-start',alignItems:'center',width:window.width*0.4,height:240,flexDirection:'column',marginHorizontal:10,marginVertical:12}]}
             onPress={()=>{
               dispatch(getSpesificProduct(loginUser.access_token,item.id)).then(navigation.navigate("Detail"))
              }}>
@@ -38,7 +38,7 @@ const Product = () => {
                 </View>
                 )})}
                 
-                <Text style={[styles.Text,{fontSize:15,position:'absolute',bottom:1}]}>{`Rp. ${rupiah(item.base_price)}`}</Text>
+                <Text style={[styles.Text,{fontSize:15,position:'absolute',bottom:10}]}>{`Rp. ${rupiah(item.base_price)}`}</Text>
               </View>
               
             </TouchableOpacity>
@@ -74,4 +74,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius:10,
   },
+  card:{
+    backgroundColor: COLORS.white,
+    padding: 8,
+    borderRadius: 10,
+    borderColor: 'red',
+    width: 160,
+    alignItems: 'center',
+    elevation: 6,
+  }
 })
