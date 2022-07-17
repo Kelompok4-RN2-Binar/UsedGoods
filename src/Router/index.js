@@ -5,8 +5,10 @@ import {
   Splash,
   EditAccount,
   EditPassword,
-  DetailProduct,
   Jual,
+  Preview,
+  Detail,
+  EditProduct
 } from '../Screens';
 import MainApp from './MainApp';
 
@@ -22,8 +24,10 @@ const Router = () => {
       <Stack.Screen name="MainApp" component={MainApp} />
       <Stack.Screen name="EditAccount" component={EditAccount} />
       <Stack.Screen name="EditPassword" component={EditPassword} />
-      <Stack.Screen name="DetailProduct" component={DetailProduct} />
+      <Stack.Screen name="Detail" component={Detail} />
       <Stack.Screen name="Jual" component={Jual} />
+      <Stack.Screen name="Preview" component={Preview} />
+      <Stack.Screen name="EditProduct" component={EditProduct} />
     </Stack.Navigator>
   );
 };

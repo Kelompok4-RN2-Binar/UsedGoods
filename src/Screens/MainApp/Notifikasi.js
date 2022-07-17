@@ -8,17 +8,28 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React ,{useEffect} from 'react';
 import {FONTS} from '../../Utils/Fonts';
 import {COLORS} from '../../Utils/Colors';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import { getNotificationSeller,NotificationScreen } from '../../Redux/actions';
+import Seller from '../../Components/Notification/Seller';
+import Buyer from '../../Components/Notification/Buyer';
 const Notifikasi = () => {
-  const token = useSelector(state => state.appData.token);
-  console.log('token  :', token);
-  const arr = [1, 2, 3, 4, 5];
-
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const loginUser = useSelector(state => state.appData.loginUser);
+  const userData = useSelector(state => state.appData.userData);
+  const notifScreen = useSelector(state => state.appData.notifScreen);
+   useEffect(() => {
+    if (loginUser == null && userData == null) {
+      navigation.navigate('Akun');
+    } else {
+      dispatch(getNotificationSeller(loginUser.access_token));
+    }
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -32,47 +43,35 @@ const Notifikasi = () => {
             margin: 16,
             marginTop: 46,
           }}>
-          <Text style={styles.textBold}>Notifikasi</Text>
-          {arr.map(a => {
-            return (
+          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+            <Text style={[styles.textBold,{fontSize:18}]}>Notifikasi</Text>
+            <View style={{flexDirection:'row'}}>
               <TouchableOpacity
-                key={a}
-                style={{flexDirection: 'row', marginTop: 24}}>
-                <View style={styles.image}>
-                  <Image />
-                </View>
-                <View style={{flexDirection: 'column', marginLeft: 16}}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      paddingRight: 30,
-                    }}>
-                    <Text style={styles.textGrey}>Penawaran produk</Text>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={[styles.textGrey, {}]}>20 Apr 14:04</Text>
-                      <View style={styles.dot} />
-                    </View>
-                  </View>
-                  <Text style={styles.textBlack}>Jam Tangan Casio</Text>
-                  <Text style={styles.textBlack}>Rp 250.000</Text>
-                  <Text style={styles.textBlack}>
-                    Berhasil Ditawar Rp. 200.000
-                  </Text>
-                  <View
-                    style={{
-                      flexWrap: 'wrap',
-                      width: window.width * 0.82,
-                      flexDirection: 'row',
-                    }}>
-                    <Text style={[styles.textGrey]}>
-                      Kamu akan segera dihubungi penjual via whatsapp
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+              onPress={() => {
+                dispatch(NotificationScreen('Seller'));
+              }}>
+              {notifScreen == 'Seller' ? (
+                <Text style={styles.ActivePage}>Seller</Text>
+              ) : (
+                <Text style={styles.PasivePage}>Seller</Text>
+              )}
+            </TouchableOpacity>
+            <Text style={[styles.textBold,{fontSize:18}]}>  /  </Text>
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(NotificationScreen('Buyer'));
+              }}>
+              {notifScreen == 'Buyer' ? (
+                <Text style={styles.ActivePage}>Buyer</Text>
+              ) : (
+                <Text style={styles.PasivePage}>Buyer</Text>
+              )}
+            </TouchableOpacity>
+            </View>
+            
+          </View>
+          
+          {notifScreen=="Seller" ? <Seller/> : <Buyer/>}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -124,5 +123,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 4,
     marginLeft: 8,
+  },
+  ActivePage: {
+    fontFamily: FONTS.Bold,
+    fontSize: 16,
+    color: COLORS.black,
+    borderBottomWidth: 2,
+    borderColor: COLORS.red,
+  },
+  PasivePage: {
+    fontFamily: FONTS.Regular,
+    color: COLORS.grey,
+    fontSize: 14,
   },
 });

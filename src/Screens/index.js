@@ -11,7 +11,9 @@ import Akun from './MainApp/Akun';
 import Splash from './MainApp/Other/Splash';
 import EditAccount from './MainApp/Other/EditAccount';
 import EditPassword from './MainApp/Other/EditPassword';
-import DetailProduct from './MainApp/Other/DetailProduct';
+import Detail from './MainApp/Other/DetailProduct';
+import Preview from './MainApp/Other/Preview';
+import EditProduct from './MainApp/Other/EditProduct';
 export {
   Auth,
   Home,
@@ -22,5 +24,7 @@ export {
   Splash,
   EditAccount,
   EditPassword,
-  DetailProduct,
+  Detail,
+  Preview,
+  EditProduct
 };

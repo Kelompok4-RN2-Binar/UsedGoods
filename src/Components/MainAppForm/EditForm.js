@@ -18,9 +18,8 @@ import {COLORS, FONTS} from '../../Utils';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
-import {postProduct} from '../../Redux/actions';
+import {updateProduct} from '../../Redux/actions';
 import {useNavigation} from '@react-navigation/native';
-import { getCategory } from '../../Redux/actions';
 const jualValidation = yup.object().shape({
   name: yup.string().required('Product Name is Required!'),
   location: yup.string().required('City is Required!'),
@@ -28,7 +27,8 @@ const jualValidation = yup.object().shape({
   description: yup.string().required('Description is Required!'),
 });
 
-const JualForm = () => {
+const EditForm = ({data}) => {
+  console.log("data : ",data)
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const loginUser = useSelector(state => state.appData.loginUser);
@@ -36,13 +36,16 @@ const JualForm = () => {
   console.log('data akun :', userData);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-  const [label, setLabel] = useState([]);
   const [items, setItems] = useState([
     {label: 'Elektronik', value: 96},
     {label: 'Aksesoris Fashion', value: 102},
     {label: 'Hobi dan Koleksi', value: 104},
     {label: 'Perlengkapan rumah', value: 107},
   ]);
+  const array = [];
+    data.Categories.map(item=>{
+        array.push(item.id)
+    })
   const imagePicker = async handleChange => {
     ImagePicker.openPicker({
       width: 450,
@@ -55,43 +58,44 @@ const JualForm = () => {
       handleChange(uploadUri);
     });
   };
-  const goSell = (values, resetForm) => {
-    const categoryProduct = value.toString();
+  const goUpdate = (values, resetForm) => {
+    const categoryProduct = array.toString();
     console.log(categoryProduct);
-    dispatch(postProduct(values, loginUser.access_token, categoryProduct)).then(
+    dispatch(updateProduct(values, loginUser.access_token, categoryProduct,data.id)).then(
       () => {
         navigation.navigate('DaftarJual');
         resetForm();
         setValue([]);
       },
     );
-    console.log('values :', values);
   };
 
   const goPreview = (values,resetForm) => {
-    const categoryProduct = value.toString()
+    const categoryProduct = array.toString()
     console.log(categoryProduct)
     navigation.navigate("Preview",{
       data:values,
       categoryProduct:categoryProduct,
       resetForm:resetForm,
       arrayProduct : value,
-      screen:"jual"
+      screen:"edit",
+      id:data.id,
+      dataCategory:data.Categories
     })
 
   }
   return (
     <Formik
       initialValues={{
-        name: '',
-        description: '',
-        base_price: '',
+        name: data.name,
+        description: data.description,
+        base_price: data.base_price.toString(),
         location: userData?.city,
-        image: '',
+        image: data.image_url,
       }}
       validationSchema={jualValidation}
       onSubmit={(values, {resetForm}) => {
-        goSell(values, resetForm);
+        goUpdate(values, resetForm);
       }}>
       {({
         handleChange,
@@ -129,38 +133,6 @@ const JualForm = () => {
             placeholder={'Location'}
             error={errors.location}
             screen={'jual'}
-          />
-          <Text style={styles.Text}>Category</Text>
-          <DropDownPicker
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            multiple={true}
-            min={0}
-            max={4}
-            style={styles.Dropdown}
-            textStyle={{
-              fontSize: 12,
-              color: COLORS.black,
-              paddingLeft: 10,
-            }}
-            containerStyle={{
-              width: window.width * 0.8,
-              alignSelf: 'center',
-            }}
-            placeholder="Select Category"
-            mode="BADGE"
-            badgeDotColors={['black', 'red', 'blue', 'purple']}
-            badgeTextStyle={{
-              fontFamily: FONTS.Regular,
-              color: COLORS.white,
-              paddingLeft: -5,
-            }}
-            badgeColors={COLORS.green}
-            listMode="SCROLLVIEW"
           />
           <Text style={styles.Text}>Description</Text>
           <Input
@@ -222,7 +194,7 @@ const JualForm = () => {
   );
 };
 
-export default JualForm;
+export default EditForm;
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Text: {
