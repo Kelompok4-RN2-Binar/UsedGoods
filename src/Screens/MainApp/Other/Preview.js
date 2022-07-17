@@ -51,6 +51,9 @@ const Preview = ({route}) => {
   }, []);
     
   return (
+    <>
+    {data!=null &&
+
     <SafeAreaView style={styles.container}>
     <StatusBar
         backgroundColor={'transparent'}
@@ -143,20 +146,20 @@ const Preview = ({route}) => {
       <View style={{marginBottom:20}}>
       {data.image&&data.base_price&&data.name&&data.description&&categoryProduct!=null?
         <>
-        {screen=="edit" ? 
-        <Button caption={'Posting'}  onPress={()=>{goUpdate()} }/>
-        :
+        {screen=="edit" &&
+        <Button caption={'Posting'}  onPress={()=>{goUpdate()} }/>       
+        }{screen=="jual" &&
         <Button caption={'Posting'}  onPress={()=>{goSell()} }/>
         }
-        
         </>
         :
         <>
-        {screen="edit" ? 
+        {screen=="edit" &&
         <Button caption={'Posting'}  onPress={()=>{goUpdate()} } disabled={true}/>
-        :
+        }{screen=="jual" &&
         <Button caption={'Posting'}  onPress={()=>{goSell()} } disabled={true}/>
         }
+        
         
         </>
         
@@ -165,6 +168,8 @@ const Preview = ({route}) => {
       </View>
     </ScrollView>
     </SafeAreaView>
+    }
+    </>
   );
 };
 

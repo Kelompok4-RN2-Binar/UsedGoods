@@ -22,6 +22,7 @@ const DaftarJual = ({navigation}) => {
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   const daftarJualScreen = useSelector(state => state.appData.daftarJualScreen);
+  const productDataSeller = useSelector(state => state.appData.productDataSeller);
   const [refreshing, setRefreshing] = useState(false);
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -39,7 +40,7 @@ const DaftarJual = ({navigation}) => {
     dispatch(getProductSeller(loginUser.access_token));
     dispatch(getWishlistSeller(loginUser.access_token));
     setRefreshing(true);
-    wait(300).then(() => {
+    wait(500).then(() => {
       setRefreshing(false);
     });
   }, []);

@@ -36,7 +36,9 @@ const Detail = () => {
         barStyle={'light-content'}
       />
     <ScrollView>
-      <ImageBackground style={styles.gambar } source={productSpesific.image!=""?{uri:productSpesific.image_url}:noImage}>
+    {productSpesific!=null?
+    <>
+    <ImageBackground style={styles.gambar } source={productSpesific.image_url==null?noImage:{uri:productSpesific.image_url}}>
       <View style={{flexDirection: 'row',}}>
         <TouchableOpacity onPress={()=>{navigation.pop()}}>
           <Icon
@@ -95,6 +97,11 @@ const Detail = () => {
         })}} />
         <Button caption={'Delete'} onPress={()=>{goDelete()}} />
       </View>
+    </>
+    :
+    <></>
+    }
+      
     </ScrollView>
     </SafeAreaView>
   );

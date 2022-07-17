@@ -76,7 +76,9 @@ const JualForm = () => {
       categoryProduct:categoryProduct,
       resetForm:resetForm,
       arrayProduct : value,
-      screen:"jual"
+      screen:"jual",
+      id:null,
+      dataCategory:null
     })
 
   }
