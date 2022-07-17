@@ -190,12 +190,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: window.width * 0.05,
   },
   container1: {
-    position:'absolute',
-    borderRadius: 10,
+      position:'absolute',
     width: 330,
     backgroundColor: 'white',
     bottom:-80,
-    alignSelf:'center'
+    alignSelf:'center',
+    borderRadius: 10,
+    borderColor: 'red',
+    elevation: 6,
   },
   container2: {
     flexDirection: 'row',
@@ -208,14 +210,13 @@ const styles = StyleSheet.create({
 
   },
   container3: {
-    marginLeft:30,
     flexDirection: 'column',
     borderRadius: 10,
     marginTop: 25,
     width: 330,
     height: 150,
-    flex: 1,
     backgroundColor: 'white',
+    alignSelf:'center'
   },
     Text: {
     fontSize: 12,
