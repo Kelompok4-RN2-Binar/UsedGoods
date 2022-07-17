@@ -8,11 +8,13 @@ import {
   GET_PRODUCT,
   GET_PRODUCT_SELLER,
   DAFTARJUAL_SCREEN,
+  GET_WISHLIST_SELLER
 } from '../types';
 const initialState = {
   authScreen: 'Login',
   loginUser: null,
   userData: null,
+  wishlistDataSeller:null,
   banner: null,
   product: null,
   productDataSeller: null,
@@ -66,6 +68,11 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         productDataSeller: action.payload,
+      };
+    case GET_WISHLIST_SELLER:
+      return {
+        ...state,
+        wishlistDataSeller: action.payload,
       };
     default:
       return state;

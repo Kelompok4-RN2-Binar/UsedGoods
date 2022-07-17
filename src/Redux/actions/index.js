@@ -9,10 +9,11 @@ import {
   GET_PRODUCT,
   GET_PRODUCT_SELLER,
   DAFTARJUAL_SCREEN,
+  GET_WISHLIST_SELLER
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
-
+import moment from 'moment';
 export const authScreen = data => ({
   type: AUTH_SCREEN,
   payload: data,
@@ -326,9 +327,37 @@ export const getProductSeller = AccessToken => {
   };
 };
 
+export const getWishlistSeller = AccessToken => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'seller/order?status=pending', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_WISHLIST_SELLER,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+      });
+  };
+};
 export const rupiah = number => {
   let reverse = number.toString().split('').reverse().join(''),
     thousand = reverse.match(/\d{1,3}/g);
   thousand = thousand.join('.').split('').reverse().join('');
   return thousand;
 };
+
+export const timeDate = date => {
+  const tDate = moment(date).format('Do MMMM hh:mm')
+  return tDate;
+};
+

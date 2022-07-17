@@ -14,9 +14,9 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {CategoryButton, Header} from '../../Components';
 import {useSelector, useDispatch} from 'react-redux';
 import {COLORS, FONTS} from '../../Utils';
-import {getProductSeller, DaftarJualScreen} from '../../Redux/actions';
+import {getProductSeller, DaftarJualScreen,getWishlistSeller} from '../../Redux/actions';
 import Product from '../../Components/DaftarJual/Product';
-
+import Wishlist from '../../Components/DaftarJual/Wishlist';
 const DaftarJual = ({navigation}) => {
   const dispatch = useDispatch();
   const loginUser = useSelector(state => state.appData.loginUser);
@@ -31,11 +31,13 @@ const DaftarJual = ({navigation}) => {
       navigation.navigate('Akun');
     } else {
       dispatch(getProductSeller(loginUser.access_token));
+      dispatch(getWishlistSeller(loginUser.access_token));
       onRefresh();
     }
   }, []);
   const onRefresh = useCallback(() => {
     dispatch(getProductSeller(loginUser.access_token));
+    dispatch(getWishlistSeller(loginUser.access_token));
     setRefreshing(true);
     wait(300).then(() => {
       setRefreshing(false);
@@ -117,7 +119,7 @@ const DaftarJual = ({navigation}) => {
               <CategoryButton
                 name={'Interested'}
                 icon={'heart-outline'}
-                onPress={() => dispatch(DaftarJualScreen())}
+                onPress={() => dispatch(DaftarJualScreen('Wishlist'))}
               />
               <CategoryButton
                 name={'Sold'}
@@ -131,7 +133,8 @@ const DaftarJual = ({navigation}) => {
                 marginVertical: 5,
                 alignSelf: 'center',
               }}>
-              {daftarJualScreen == 'Product' ? <Product /> : <></>}
+              {daftarJualScreen == 'Product' && <Product />}
+              {daftarJualScreen == 'Wishlist' && <Wishlist />}
             </View>
           </ScrollView>
         </>

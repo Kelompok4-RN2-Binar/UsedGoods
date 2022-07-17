@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { COLORS,FONTS } from '../../Utils';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-
+import { rupiah } from '../../Redux/actions';
 const Product = () => {
   const navigation = useNavigation();
   const productDataSeller = useSelector(state => state.appData.productDataSeller);
@@ -33,7 +33,7 @@ const Product = () => {
                 </View>
                 )})}
                 
-                <Text style={[styles.Text,{fontSize:15,position:'absolute',bottom:1}]}>Rp {item.base_price}</Text>
+                <Text style={[styles.Text,{fontSize:15,position:'absolute',bottom:1}]}>{`Rp. ${rupiah(item.base_price)}`}</Text>
               </View>
               
             </TouchableOpacity>
