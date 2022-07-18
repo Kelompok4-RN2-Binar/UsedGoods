@@ -14,6 +14,7 @@ import EditPassword from './MainApp/Other/EditPassword';
 import Detail from './MainApp/Other/DetailProduct';
 import Preview from './MainApp/Other/Preview';
 import EditProduct from './MainApp/Other/EditProduct';
+import InfoPenawar from './MainApp/Other/InfoPenawar';
 export {
   Auth,
   Home,
@@ -26,5 +27,6 @@ export {
   EditPassword,
   Detail,
   Preview,
-  EditProduct
+  EditProduct,
+  InfoPenawar
 };

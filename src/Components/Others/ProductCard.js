@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, Image, StyleSheet,Dimensions} from 'react-native';
 import React from 'react';
 import {rupiah} from '../../Redux/actions';
 import {COLORS, FONTS} from '../../Utils';
@@ -21,11 +21,11 @@ const Product = ({data, onPress}) => {
 };
 
 export default Product;
-
+const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Card: {
     backgroundColor: COLORS.white,
-    width: 160,
+    width: window.width*0.4,
     alignItems: 'center',
     margin: 10,
     padding: 10,
