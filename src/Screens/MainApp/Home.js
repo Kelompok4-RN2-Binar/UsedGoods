@@ -1,8 +1,6 @@
 import {
   View,
-  Text,
   Image,
-  TouchableOpacity,
   FlatList,
   StyleSheet,
   Dimensions,
@@ -16,7 +14,6 @@ import Carousel from 'react-native-reanimated-carousel';
 import {getBanner, getProduct, getSpesificProduct} from '../../Redux/actions';
 import {CategoryButton, Input, ProductCard} from '../../Components';
 import {COLORS} from '../../Utils';
-import {useMemo} from 'react';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
@@ -58,13 +55,13 @@ const Home = ({navigation}) => {
     },
   ];
 
-  const getData = useMemo(() => {
+  const getData = () => {
     dispatch(getBanner());
     dispatch(getProduct({category: currentCategory, page: currentPage}));
-  }, [currentCategory]);
+  };
 
   useEffect(() => {
-    getData;
+    getData();
   }, []);
 
   const headerComponent = () => (
