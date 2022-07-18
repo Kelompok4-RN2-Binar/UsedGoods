@@ -3,23 +3,22 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  FlatList,
   TouchableOpacity,
   ScrollView,
   ImageBackground,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import DropDownPicker from 'react-native-dropdown-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
 import {COLORS, FONTS} from '../../Utils';
-import DropDownPicker from 'react-native-dropdown-picker';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ImagePicker from 'react-native-image-crop-picker';
 import {postProduct} from '../../Redux/actions';
-import {useNavigation} from '@react-navigation/native';
+
 const jualValidation = yup.object().shape({
   name: yup.string().required('Product Name is Required!'),
   location: yup.string().required('City is Required!'),
@@ -27,12 +26,13 @@ const jualValidation = yup.object().shape({
   description: yup.string().required('Description is Required!'),
 });
 
-const JualForm = () => {
+const JualForm = ({navigation}) => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   console.log('data akun :', userData);
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [items, setItems] = useState([
@@ -41,18 +41,23 @@ const JualForm = () => {
     {label: 'Hobi dan Koleksi', value: 104},
     {label: 'Perlengkapan rumah', value: 107},
   ]);
+
   const imagePicker = async handleChange => {
     ImagePicker.openPicker({
-      width: 450,
-      height: 450,
+      width: 420,
+      height: 300,
       cropping: true,
-    }).then(image => {
-      console.log(image);
-      const uploadUri =
-        Platform.OS === 'IOS' ? image.path.replace('file://', '') : image.path;
-      handleChange(uploadUri);
-    });
+    })
+      .then(image => {
+        const uploadUri =
+          Platform.OS === 'IOS'
+            ? image.path.replace('file://', '')
+            : image.path;
+        handleChange(uploadUri);
+      })
+      .catch(err => console.log(err));
   };
+
   const goSell = (values, resetForm) => {
     const categoryProduct = value.toString();
     console.log(categoryProduct);
@@ -66,20 +71,21 @@ const JualForm = () => {
     console.log('values :', values);
   };
 
-  const goPreview = (values,resetForm) => {
-    const categoryProduct = value.toString()
-    console.log(categoryProduct)
-    navigation.navigate("Preview",{
-      data:values,
-      categoryProduct:categoryProduct,
-      resetForm:resetForm,
-      arrayProduct : value,
-      screen:"jual",
-      id:null,
-      dataCategory:null
-    })
+  const goPreview = (values, resetForm) => {
+    console.log(values);
+    const categoryProduct = value.toString();
+    console.log('category', categoryProduct);
+    navigation.navigate('Preview', {
+      data: values,
+      categoryProduct: categoryProduct,
+      resetForm: resetForm,
+      arrayProduct: value,
+      screen: 'jual',
+      id: null,
+      dataCategory: null,
+    });
+  };
 
-  }
   return (
     <Formik
       initialValues={{
@@ -100,7 +106,7 @@ const JualForm = () => {
         values,
         errors,
         setFieldValue,
-        resetForm
+        resetForm,
       }) => (
         <View>
           <Text style={styles.Text}>Product Name</Text>
@@ -153,7 +159,7 @@ const JualForm = () => {
             }}
             placeholder="Select Category"
             mode="BADGE"
-            badgeDotColors={['black', 'red', 'blue', 'purple']}
+            badgeDotColors={['red', 'green', 'blue', 'yellow']}
             badgeTextStyle={{
               fontFamily: FONTS.Regular,
               color: COLORS.white,
@@ -213,7 +219,12 @@ const JualForm = () => {
               justifyContent: 'center',
               marginTop: 5,
             }}>
-            <Button caption={'Preview'} onPress={()=>{goPreview(values,resetForm)}}/>
+            <Button
+              caption={'Preview'}
+              onPress={() => {
+                goPreview(values, resetForm);
+              }}
+            />
             <Button caption={'Posting'} onPress={handleSubmit} />
           </View>
         </View>
@@ -223,10 +234,12 @@ const JualForm = () => {
 };
 
 export default JualForm;
+
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Text: {
-    paddingLeft: 40,
+    marginLeft: 40,
+    marginBottom: 5,
     color: COLORS.black,
     fontFamily: FONTS.Regular,
   },

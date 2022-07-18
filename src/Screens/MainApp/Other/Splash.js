@@ -1,13 +1,8 @@
-import {
-  SafeAreaView,
-  Image,
-  StatusBar,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import {View, Image, StatusBar, StyleSheet, Dimensions} from 'react-native';
 import React, {useEffect} from 'react';
 import {Logo} from '../../../Assets';
 import {COLORS} from '../../../Utils/Colors';
+
 const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
@@ -16,10 +11,14 @@ const Splash = ({navigation}) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.Container}>
-      <StatusBar translucent backgroundColor="transparent" />
+    <View style={styles.Container}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle={'light-content'}
+      />
       <Image style={styles.Image} source={Logo} />
-    </SafeAreaView>
+    </View>
   );
 };
 

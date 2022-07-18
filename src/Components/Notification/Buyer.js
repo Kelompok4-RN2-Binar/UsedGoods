@@ -1,68 +1,74 @@
-import { StyleSheet, Text, View ,Image,TouchableOpacity,Dimensions} from 'react-native'
-import React from 'react'
-import { useSelector } from 'react-redux';
-import { COLORS ,FONTS} from '../../Utils';
-const Buyer = () => {
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import React from 'react';
+import {useSelector} from 'react-redux';
+import {COLORS, FONTS} from '../../Utils';
 
-  const notifDataSeller = useSelector(state => state.appData.notifDataSeller); 
-  console.log("notif seller : ",notifDataSeller)
+const Buyer = () => {
+  const notifDataSeller = useSelector(state => state.appData.notifDataSeller);
+  console.log('notif seller : ', notifDataSeller);
 
   const arr = [1, 2, 3, 4, 5];
   return (
     <View>
-    {arr && arr.map(item => {
-            return (
-                <TouchableOpacity  style={{flexDirection: 'row', marginTop: 24}}>
-                <View >
-                    <Image  style={styles.image} />
+      {arr &&
+        arr.map(item => {
+          return (
+            <TouchableOpacity
+              key={item.id}
+              style={{flexDirection: 'row', marginTop: 24}}>
+              <View>
+                <Image style={styles.image} />
+              </View>
+              <View style={{flexDirection: 'column', marginLeft: 16}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingRight: 30,
+                  }}>
+                  <Text style={styles.textGrey}>Penawaran Produk</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={[styles.textGrey, {}]}>11th July 01:18</Text>
+                    <View style={styles.dot} />
+                  </View>
                 </View>
-                <View style={{flexDirection: 'column', marginLeft: 16}}>
-                    <View
-                    style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        paddingRight: 30,
-                    }}>
-                  
-                    <Text style={styles.textGrey}>Penawaran Produk</Text>
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={[styles.textGrey, {}]}>11th July 01:18</Text>
-                        <View style={styles.dot}/>
-                    </View>
-                    </View>
-                    <Text style={styles.textBlack}>Dummy Product {item}</Text>
-                    <Text style={styles.textBlack}>Rp.200.000</Text>
-                    {item.bid_price!=null && 
-                    <Text style={styles.textBlack}>
+                <Text style={styles.textBlack}>Dummy Product {item}</Text>
+                <Text style={styles.textBlack}>Rp.200.000</Text>
+                {item.bid_price != null && (
+                  <Text style={styles.textBlack}>
                     Berhasil Ditawar Rp.100.000
-                    </Text>
-                    }
-                    
+                  </Text>
+                )}
 
-                    <View
-                    style={{
-                        flexWrap: 'wrap',
-                        width: window.width * 0.82,
-                        flexDirection: 'row',
-                    }}>
-                    
-                    <Text style={[styles.textGrey]}>
-                        Kamu akan segera dihubungi penjual via whatsapp
-                    </Text>
-                    
-                    </View>
+                <View
+                  style={{
+                    flexWrap: 'wrap',
+                    width: window.width * 0.82,
+                    flexDirection: 'row',
+                  }}>
+                  <Text style={[styles.textGrey]}>
+                    Kamu akan segera dihubungi penjual via whatsapp
+                  </Text>
                 </View>
-                </TouchableOpacity>
-    );
-    })}
-  </View>  
-  )
-}
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+    </View>
+  );
+};
 
-export default Buyer
+export default Buyer;
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
-    container: {
+  container: {
     flex: 1,
     width: window.width * 1,
     backgroundColor: COLORS.white,
@@ -104,4 +110,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginLeft: 8,
   },
-})
+});

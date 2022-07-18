@@ -1,4 +1,4 @@
-import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
+import {View, StatusBar, StyleSheet, NativeModules} from 'react-native';
 import React, {useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {updatePassword} from '../../../Redux/actions';
@@ -9,7 +9,9 @@ import {COLORS} from '../../../Utils';
 
 const EditPassword = ({navigation}) => {
   const dispatch = useDispatch();
+
   const loginUser = useSelector(state => state.appData.loginUser);
+
   const registerValidation = yup.object().shape({
     currentPassword: yup
       .string()
@@ -49,7 +51,7 @@ const EditPassword = ({navigation}) => {
       validationSchema={registerValidation}
       onSubmit={values => goUpdate(values)}>
       {({handleChange, handleBlur, handleSubmit, values, errors}) => (
-        <SafeAreaView style={styles.Container}>
+        <View style={styles.Container}>
           <StatusBar
             backgroundColor={'transparent'}
             translucent
@@ -84,7 +86,7 @@ const EditPassword = ({navigation}) => {
             secureTextEntry={true}
           />
           <Button caption={'Update'} onPress={handleSubmit} />
-        </SafeAreaView>
+        </View>
       )}
     </Formik>
   );
@@ -92,9 +94,11 @@ const EditPassword = ({navigation}) => {
 
 export default EditPassword;
 
+const {StatusBarManager} = NativeModules;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingTop: StatusBarManager.HEIGHT + 20,
   },
 });

@@ -14,7 +14,7 @@ import {
   GET_NOTIFICATION_SELLER,
   NOTIFICATION_SCREEN,
   GET_CATEGORY,
-  GET_SPESIFIC_PRODUCT
+  GET_SPESIFIC_PRODUCT,
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
@@ -248,7 +248,7 @@ export const getBanner = () => {
   };
 };
 
-export const getProduct = ({status, category_id, search}) => {
+export const getProduct = ({page, category_id, search}) => {
   return async dispatch => {
     await axios
       .get(`${URL}buyer/product`, {
@@ -256,7 +256,7 @@ export const getProduct = ({status, category_id, search}) => {
           status: 'available',
           category_id: category_id ? category_id : '',
           search: search ? search : '',
-          page: 1,
+          page: page,
           per_page: 20,
         },
       })
@@ -352,10 +352,10 @@ export const getWishlistSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
       });
   };
 };
@@ -367,7 +367,7 @@ export const rupiah = number => {
 };
 
 export const timeDate = date => {
-  const tDate = moment(date).format('Do MMMM hh:mm')
+  const tDate = moment(date).format('Do MMMM hh:mm');
   return tDate;
 };
 
@@ -386,10 +386,10 @@ export const getNotificationSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
       });
   };
 };
@@ -409,10 +409,10 @@ export const getNotificationBuyer = AccessToken => {
         });
       })
       .catch(function (error) {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
       });
   };
 };
@@ -428,18 +428,18 @@ export const getCategory = () => {
         });
       })
       .catch(function (error) {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
       });
   };
 };
 
-export const getSpesificProduct = (AccessToken,id) => {
+export const getSpesificProduct = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .get(URL + 'seller/product/'+id, {
+      .get(URL + 'seller/product/' + id, {
         headers: {
           access_token: `${AccessToken}`,
         },
@@ -459,30 +459,30 @@ export const getSpesificProduct = (AccessToken,id) => {
   };
 };
 
-export const deleteProduct = (AccessToken,id) => {
+export const deleteProduct = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .delete(URL + 'seller/product/'+id, {
+      .delete(URL + 'seller/product/' + id, {
         headers: {
           access_token: `${AccessToken}`,
         },
       })
       .then(res => {
-         Toast.show({
-            type: 'success',
-            text1: 'Success Delete Product!',
-          });
+        Toast.show({
+          type: 'success',
+          text1: 'Success Delete Product!',
+        });
       })
       .catch(function (error) {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
       });
   };
 };
 
-export const updateProduct = (data, AccessToken, category,id) => {
+export const updateProduct = (data, AccessToken, category, id) => {
   return async dispatch => {
     const {name, description, base_price, location, image} = data;
     const formData = new FormData();
@@ -501,7 +501,7 @@ export const updateProduct = (data, AccessToken, category,id) => {
       });
     }
     await axios
-      .put(URL + 'seller/product/'+id, formData, {
+      .put(URL + 'seller/product/' + id, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Accept: 'application/json',

@@ -1,99 +1,83 @@
 import {
   View,
-  SafeAreaView,
   Text,
   Image,
-  TouchableOpacity,
   StyleSheet,
   Dimensions,
   StatusBar,
 } from 'react-native';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux/';
+import {goLogout} from '../../Redux/actions';
+import {userIcon} from '../../Assets';
+import {ButtonShadow} from '../../Components';
 import {COLORS} from '../../Utils/Colors';
 import {FONTS} from '../../Utils/Fonts';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {goLogout} from '../../Redux/actions';
 
 const Akun = ({navigation}) => {
   const dispatch = useDispatch();
+
   const userData = useSelector(state => state.appData.userData);
   const loginUser = useSelector(state => state.appData.loginUser);
+
   return (
-    <SafeAreaView style={styles.Container}>
+    <View style={styles.Container}>
       <StatusBar
+        barStyle={'light-content'}
         backgroundColor={'transparent'}
         translucent
-        barStyle={'light-content'}
       />
       <View style={styles.Header}>
         <Text style={styles.Title}>My Account</Text>
-        {userData != null ? (
+        {loginUser && userData ? (
           <Image source={{uri: userData?.image_url}} style={styles.Image} />
         ) : (
-          <Image style={styles.Image} />
+          <Image source={userIcon} style={styles.Image} />
         )}
       </View>
       <View style={styles.Content}>
-        {loginUser && userData != null ? (
+        {loginUser && userData ? (
           <>
             <Text style={styles.Name} numberOfLines={1}>
               {userData.full_name}
             </Text>
-            <TouchableOpacity
-              style={{...styles.Box, shadowColor: COLORS.black}}
-              onPress={() => navigation.navigate('EditAccount')}>
-              <Icon
-                style={styles.Icon}
-                name="account-edit-outline"
-                size={25}
-                color={COLORS.black}
-              />
-              <Text style={styles.Text}>Edit Account</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{...styles.Box, shadowColor: COLORS.black}}
-              onPress={() => navigation.navigate('EditPassword')}>
-              <Icon
-                style={styles.Icon}
-                name="lock-reset"
-                size={25}
-                color={COLORS.black}
-              />
-              <Text style={styles.Text}>Edit Password</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{...styles.Box, shadowColor: COLORS.red}}
+            <ButtonShadow
+              shadowColor={COLORS.black}
+              onPress={() => navigation.navigate('EditAccount')}
+              icon={'account-edit-outline'}
+              caption={'Edit Account'}
+            />
+            <ButtonShadow
+              shadowColor={COLORS.black}
+              onPress={() => navigation.navigate('EditPassword')}
+              icon={'lock-reset'}
+              caption={'Edit Password'}
+            />
+            <ButtonShadow
+              shadowColor={COLORS.red}
               onPress={() => {
                 dispatch(goLogout());
-                navigation.replace('Auth');
-              }}>
-              <Icon
-                style={styles.Icon}
-                name="logout-variant"
-                size={25}
-                color={COLORS.black}
-              />
-              <Text style={styles.Text}>Logout</Text>
-            </TouchableOpacity>
+                navigation.navigate('Auth');
+              }}
+              icon={'logout-variant'}
+              caption={'Logout'}
+            />
           </>
         ) : (
           <>
-            <TouchableOpacity
-              style={{...styles.Box, shadowColor: COLORS.black, marginTop: 25}}
-              onPress={() => navigation.navigate('Auth')}>
-              <Icon
-                style={styles.Icon}
-                name="login-variant"
-                size={25}
-                color={COLORS.black}
-              />
-              <Text style={styles.Text}>Login or Register</Text>
-            </TouchableOpacity>
+            <ButtonShadow
+              shadowColor={COLORS.black}
+              onPress={() => {
+                dispatch(goLogout());
+                navigation.navigate('Auth');
+              }}
+              icon={'login-variant'}
+              caption={'Login or Register'}
+            />
           </>
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -121,7 +105,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   Image: {
-    backgroundColor: 'red',
+    backgroundColor: COLORS.green,
     width: window.height * 0.15,
     height: window.height * 0.15,
     borderRadius: 15,
@@ -130,30 +114,11 @@ const styles = StyleSheet.create({
   Content: {
     width: window.width * 0.85,
     alignItems: 'center',
-    marginTop: window.height * 0.075,
+    marginTop: 65,
   },
   Name: {
     fontFamily: FONTS.Bold,
     fontSize: 20,
-    color: COLORS.black,
-    marginBottom: window.height * 0.025,
-  },
-  Box: {
-    width: window.width * 0.85,
-    height: window.height * 0.1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderRadius: 15,
-    elevation: 3,
-    marginBottom: 25,
-  },
-  Icon: {
-    marginHorizontal: 20,
-  },
-  Text: {
-    fontFamily: FONTS.Regular,
-    fontSize: 14,
     color: COLORS.black,
   },
 });

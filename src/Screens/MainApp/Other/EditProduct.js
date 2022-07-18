@@ -1,15 +1,20 @@
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet} from 'react-native';
-import { Header } from '../../../Components';
-import { COLORS } from '../../../Utils';
+import {
+  View,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  NativeModules,
+} from 'react-native';
 import React from 'react';
+import {Header} from '../../../Components';
 import EditForm from '../../../Components/MainAppForm/EditForm';
-import { useNavigation } from '@react-navigation/native';
+import {COLORS} from '../../../Utils';
 
-const EditProduct = ({route}) => {
-  const navigation = useNavigation();
+const EditProduct = ({route, navigation}) => {
   const {data} = route.params;
+
   return (
-    <SafeAreaView style={styles.Container}> 
+    <View style={styles.Container}>
       <StatusBar
         backgroundColor={'transparent'}
         translucent
@@ -17,18 +22,20 @@ const EditProduct = ({route}) => {
       />
       <Header title={'Edit Product'} navigation={navigation} />
       <ScrollView contentContainerStyle={styles.Box}>
-        <EditForm data={data}/>
+        <EditForm data={data} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
-}
+};
 
-export default EditProduct
+export default EditProduct;
 
+const {StatusBarManager} = NativeModules;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingTop: StatusBarManager.HEIGHT + 20,
   },
   Box: {
     flexGrow: 1,

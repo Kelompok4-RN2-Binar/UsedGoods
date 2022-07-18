@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS, FONTS} from '../../Utils';
@@ -16,12 +16,11 @@ export default CategoryButton;
 
 const styles = StyleSheet.create({
   Container: {
-    flexDirection: 'row',
     backgroundColor: COLORS.softDark,
-    marginHorizontal: 8,
-    marginVertical: 10,
+    height: 40,
+    flexDirection: 'row',
     alignItems: 'center',
-    elevation: 2,
+    marginHorizontal: 10,
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
