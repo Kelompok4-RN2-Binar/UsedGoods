@@ -15,6 +15,7 @@ import {
   NOTIFICATION_SCREEN,
   GET_CATEGORY,
   GET_SPESIFIC_PRODUCT,
+  GET_WISHLIST_SPESIFIC,
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
@@ -33,6 +34,7 @@ export const NotificationScreen = data => ({
   type: NOTIFICATION_SCREEN,
   payload: data,
 });
+
 
 export const fetchingLogin = data => {
   return async dispatch => {
@@ -340,7 +342,7 @@ export const getProductSeller = AccessToken => {
 export const getWishlistSeller = AccessToken => {
   return async dispatch => {
     await axios
-      .get(URL + 'seller/order?status=pending', {
+      .get(URL + 'seller/order?status=', {
         headers: {
           access_token: `${AccessToken}`,
         },
@@ -516,6 +518,80 @@ export const updateProduct = (data, AccessToken, category, id) => {
       })
       .catch(function (error) {
         console.log(error);
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+
+export const acceptOrder = (AccessToken, id) => {
+  return async dispatch => {
+    await axios
+      .patch(URL + 'seller/order/' + id,{
+        status:"accepted"
+      }, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        Toast.show({
+          type: 'success',
+          text1: 'Success Accept Order!',
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const declineOrder = (AccessToken, id) => {
+  return async dispatch => {
+    await axios
+      .patch(URL + 'seller/order/' + id,{
+        status:"declined"
+      }, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        Toast.show({
+          type: 'success',
+          text1: 'Success Decline Order!',
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const getWishlistSpesific = (AccessToken,id) => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'seller/order/'+id, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_WISHLIST_SPESIFIC,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
         Toast.show({
           type: 'error',
           text1: error.response.data.message,

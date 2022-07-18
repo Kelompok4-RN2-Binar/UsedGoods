@@ -1,16 +1,17 @@
-import {View, Text,SafeAreaView,ScrollView,Dimensions,Image,StatusBar,StyleSheet,TouchableOpacity,RefreshControl} from 'react-native';
+import {View, Text,Dimensions,Image,StyleSheet,TouchableOpacity} from 'react-native';
 import React ,{}from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { COLORS,FONTS } from '../../Utils';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-import { rupiah,timeDate } from '../../Redux/actions';
+import { getWishlistSpesific, rupiah,timeDate } from '../../Redux/actions';
 
 const Wishlist = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const wishlistDataSeller = useSelector(state => state.appData.wishlistDataSeller);
+  const loginUser = useSelector(state => state.appData.loginUser);
   console.log("wishlist screen: ",wishlistDataSeller)
-  
+
   return (
     <View>
       {wishlistDataSeller!=null ?
@@ -18,7 +19,13 @@ const Wishlist = () => {
           {wishlistDataSeller && wishlistDataSeller.map(item=>{
             return(
             <>
-            <TouchableOpacity
+            <TouchableOpacity onPress={()=>{
+              dispatch(getWishlistSpesific(loginUser.access_token,item.id)).then(
+                navigation.navigate("InfoPenawar",{
+                  dataRoute:item
+                })
+              )
+              }}
                 key={item}
                 style={{flexDirection: 'row',marginTop: 24,}}>
                 <View >
@@ -42,9 +49,11 @@ const Wishlist = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
+            
             </>
           )})
           }
+          
           </View>
           :
           <>

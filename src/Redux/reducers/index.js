@@ -13,7 +13,9 @@ import {
   GET_NOTIFICATION_BUYER,
   NOTIFICATION_SCREEN,
   GET_CATEGORY,
-  GET_SPESIFIC_PRODUCT
+  GET_SPESIFIC_PRODUCT,
+  GET_WISHLIST_SPESIFIC,
+  STATUS_PRODUCT
 } from '../types';
 const initialState = {
   authScreen: 'Login',
@@ -28,7 +30,8 @@ const initialState = {
   notifDataBuyer:null,
   notifScreen:'Seller',
   category:null,
-  productSpesific:null
+  productSpesific:null,
+  wishlistSpesific:null,
 };
 
 const Reducer = (state = initialState, action) => {
@@ -108,6 +111,11 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         productSpesific: action.payload,
+      };
+    case GET_WISHLIST_SPESIFIC:
+      return {
+        ...state,
+        wishlistSpesific: action.payload,
       };
     default:
       return state;

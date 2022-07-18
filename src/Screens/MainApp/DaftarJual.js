@@ -131,6 +131,7 @@ const DaftarJual = ({navigation}) => {
             justifyContent: 'center',
             marginTop: 20,
             marginBottom: 15,
+            marginHorizontal:10
           }}>
           <CategoryButton
             name={'Product'}
@@ -177,6 +178,11 @@ const styles = StyleSheet.create({
   },
   Location: {
     fontSize: 10,
+    fontFamily: FONTS.Regular,
+    color: COLORS.black,
+  },
+    Text: {
+    fontSize: 12,
     fontFamily: FONTS.Regular,
     color: COLORS.black,
   },

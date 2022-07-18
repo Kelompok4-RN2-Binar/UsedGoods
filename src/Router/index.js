@@ -9,6 +9,7 @@ import {
   Preview,
   Detail,
   EditProduct,
+  InfoPenawar
 } from '../Screens';
 import MainApp from './MainApp';
 
@@ -28,6 +29,7 @@ const Router = () => {
       <Stack.Screen name="Jual" component={Jual} />
       <Stack.Screen name="Preview" component={Preview} />
       <Stack.Screen name="EditProduct" component={EditProduct} />
+            <Stack.Screen name="InfoPenawar" component={InfoPenawar} />
     </Stack.Navigator>
   );
 };
