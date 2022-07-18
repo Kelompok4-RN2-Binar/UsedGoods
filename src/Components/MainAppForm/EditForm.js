@@ -7,7 +7,7 @@ import {
   ScrollView,
   ImageBackground,
 } from 'react-native';
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import {updateProduct} from '../../Redux/actions';
 import {useNavigation} from '@react-navigation/native';
+
 const EditValidation = yup.object().shape({
   name: yup.string().required('Product Name is Required!'),
   location: yup.string().required('City is Required!'),
@@ -26,52 +27,60 @@ const EditValidation = yup.object().shape({
 });
 
 const EditForm = ({data}) => {
-  console.log("data : ",data)
+  console.log('data : ', data);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   console.log('data akun :', userData);
+
   const [value, setValue] = useState([]);
   const array = [];
-    data.Categories.map(item=>{
-        array.push(item.id)
-    })
+  data.Categories.map(item => {
+    array.push(item.id);
+  });
   const categoryProduct = array.toString();
+
   const imagePicker = async handleChange => {
     ImagePicker.openPicker({
-      width: 450,
-      height: 450,
+      width: 420,
+      height: 300,
       cropping: true,
-    }).then(image => {
-      console.log(image);
-      const uploadUri = Platform.OS === 'IOS' ? image.path.replace('file://', '') : image.path;
-      handleChange(uploadUri);
+    })
+      .then(image => {
+        console.log(image);
+        const uploadUri =
+          Platform.OS === 'IOS'
+            ? image.path.replace('file://', '')
+            : image.path;
+        handleChange(uploadUri);
+      })
+      .catch(err => console.log(err));
+  };
+
+  const goUpdate = (values, resetForm) => {
+    dispatch(
+      updateProduct(values, loginUser.access_token, categoryProduct, data.id),
+    ).then(() => {
+      navigation.navigate('DaftarJual');
+      resetForm();
+      setValue([]);
     });
   };
-  const goUpdate = (values, resetForm) => {
 
-    dispatch(updateProduct(values, loginUser.access_token, categoryProduct,data.id)).then(
-      () => {
-        navigation.navigate('DaftarJual');
-        resetForm();
-        setValue([]);
-      },
-    );
+  const goPreview = (values, resetForm) => {
+    navigation.navigate('Preview', {
+      data: values,
+      categoryProduct: categoryProduct,
+      resetForm: resetForm,
+      arrayProduct: value,
+      screen: 'edit',
+      id: data.id,
+      dataCategory: data.Categories,
+    });
   };
 
-  const goPreview = (values,resetForm) => {
-    navigation.navigate("Preview",{
-      data:values,
-      categoryProduct:categoryProduct,
-      resetForm:resetForm,
-      arrayProduct : value,
-      screen:"edit",
-      id:data.id,
-      dataCategory:data.Categories
-    })
-
-  }
   return (
     <Formik
       initialValues={{
@@ -92,7 +101,7 @@ const EditForm = ({data}) => {
         values,
         errors,
         setFieldValue,
-        resetForm
+        resetForm,
       }) => (
         <View>
           <Text style={styles.Text}>Product Name</Text>
@@ -173,7 +182,12 @@ const EditForm = ({data}) => {
               justifyContent: 'center',
               marginTop: 5,
             }}>
-            <Button caption={'Preview'} onPress={()=>{goPreview(values,resetForm)}}/>
+            <Button
+              caption={'Preview'}
+              onPress={() => {
+                goPreview(values, resetForm);
+              }}
+            />
             <Button caption={'Posting'} onPress={handleSubmit} />
           </View>
         </View>

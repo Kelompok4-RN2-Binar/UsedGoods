@@ -1,14 +1,14 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
-  Auth,
   Splash,
+  Auth,
   EditAccount,
   EditPassword,
   Jual,
   Preview,
   Detail,
-  EditProduct
+  EditProduct,
 } from '../Screens';
 import MainApp from './MainApp';
 

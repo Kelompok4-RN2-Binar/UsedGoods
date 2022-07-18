@@ -4,12 +4,14 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Home, DaftarJual, Jual, Notifikasi, Akun} from '../Screens';
 import {COLORS} from '../Utils/Colors';
 import {useSelector} from 'react-redux';
-import Toast from 'react-native-toast-message';
-import {useEffect} from 'react';
+import {Platform} from 'react-native';
+
 const Tab = createBottomTabNavigator();
 
-const MainApp = ({navigation}) => {
+const MainApp = () => {
   const loginUser = useSelector(state => state.appData.loginUser);
+
+  const bottom = Platform.OS === 'ios' ? 20 : 5;
 
   return (
     <Tab.Navigator
@@ -30,7 +32,7 @@ const MainApp = ({navigation}) => {
           } else if (route.name === 'Akun') {
             iconName = 'account-outline';
           }
-          return <Icon name={iconName} size={25} color={color} />;
+          return <Icon name={iconName} size={24} color={color} />;
         },
         tabBarActiveTintColor: COLORS.green,
         tabBarInactiveTintColor: COLORS.white,
@@ -38,15 +40,17 @@ const MainApp = ({navigation}) => {
         tabBarStyle: {
           position: 'absolute',
           backgroundColor: COLORS.dark,
-          height: 65,
+          height: 60,
           borderRadius: 15,
-          marginHorizontal: 10,
-          bottom: 10,
+          marginHorizontal: 5,
+          paddingHorizontal: 10,
+          bottom: bottom,
         },
         tabBarItemStyle: {
+          height: 40,
           marginHorizontal: 15,
           marginVertical: 10,
-          borderRadius: 25,
+          borderRadius: 15,
         },
       })}>
       <Tab.Screen name="Home" component={Home} />

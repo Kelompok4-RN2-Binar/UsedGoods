@@ -1,13 +1,17 @@
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet} from 'react-native';
-import { Header,JualForm} from '../../Components';
-import {COLORS} from '../../Utils';
+import {
+  View,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  NativeModules,
+} from 'react-native';
 import React from 'react';
+import {Header, JualForm} from '../../Components';
+import {COLORS} from '../../Utils';
 
 const Jual = ({navigation}) => {
-  
-  
   return (
-    <SafeAreaView style={styles.Container}> 
+    <View style={styles.Container}>
       <StatusBar
         backgroundColor={'transparent'}
         translucent
@@ -15,18 +19,20 @@ const Jual = ({navigation}) => {
       />
       <Header title={'Sell Product'} navigation={navigation} />
       <ScrollView contentContainerStyle={styles.Box}>
-        <JualForm/>
+        <JualForm />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
-}
+};
 
-export default Jual
+export default Jual;
 
+const {StatusBarManager} = NativeModules;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingTop: StatusBarManager.HEIGHT + 20,
   },
   Box: {
     flexGrow: 1,

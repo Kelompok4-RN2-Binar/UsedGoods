@@ -1,11 +1,17 @@
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet} from 'react-native';
+import {
+  View,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  NativeModules,
+} from 'react-native';
 import React from 'react';
 import {RegisterForm, Header} from '../../../Components';
 import {COLORS} from '../../../Utils';
 
 const EditAccount = ({navigation}) => {
   return (
-    <SafeAreaView style={styles.Container}>
+    <View style={styles.Container}>
       <StatusBar
         backgroundColor={'transparent'}
         translucent
@@ -15,16 +21,18 @@ const EditAccount = ({navigation}) => {
       <ScrollView contentContainerStyle={styles.Box}>
         <RegisterForm label={'Edit'} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default EditAccount;
 
+const {StatusBarManager} = NativeModules;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingTop: StatusBarManager.HEIGHT + 20,
   },
   Box: {
     flexGrow: 1,

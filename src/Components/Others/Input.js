@@ -65,7 +65,7 @@ const Input = ({
         {placeholder == 'Search' ? (
           <TouchableOpacity
             onPress={() => dispatch(getProduct({search: isSearch}))}>
-            <Icon name={'eye-outline'} size={20} color={COLORS.dark} />
+            <Icon name={'card-search'} size={30} color={COLORS.dark} />
           </TouchableOpacity>
         ) : null}
       </View>

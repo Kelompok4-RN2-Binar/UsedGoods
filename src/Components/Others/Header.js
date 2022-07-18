@@ -12,12 +12,24 @@ import {COLORS, FONTS} from '../../Utils';
 const Header = ({navigation, title}) => {
   return (
     <View style={styles.Container}>
-    {navigation&&
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Icon name="keyboard-backspace" size={25} color={COLORS.black} />
-      </TouchableOpacity>
-    }
-      <Text style={[styles.Title,{marginLeft:title=="Lengkapi Detail Produk"? window.width * 0.12:window.width * 0.235},{marginLeft:navigation?window.width * 0.235:0}]}>{title}</Text>
+      {navigation && (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="keyboard-backspace" size={25} color={COLORS.black} />
+        </TouchableOpacity>
+      )}
+      <Text
+        style={[
+          styles.Title,
+          {
+            marginLeft:
+              title == 'Lengkapi Detail Produk'
+                ? window.width * 0.12
+                : window.width * 0.235,
+          },
+          {marginLeft: navigation ? window.width * 0.235 : 0},
+        ]}>
+        {title}
+      </Text>
     </View>
   );
 };
@@ -30,7 +42,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: window.width * 0.05,
-    marginTop: 50,
     marginBottom: 25,
   },
   Title: {

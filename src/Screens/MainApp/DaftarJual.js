@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   Dimensions,
   Image,
@@ -9,12 +8,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
+  NativeModules,
 } from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import {CategoryButton, Header} from '../../Components';
 import {useSelector, useDispatch} from 'react-redux';
 import {COLORS, FONTS} from '../../Utils';
-import {getProductSeller, DaftarJualScreen,getWishlistSeller} from '../../Redux/actions';
+import {
+  getProductSeller,
+  DaftarJualScreen,
+  getWishlistSeller,
+} from '../../Redux/actions';
 import Product from '../../Components/DaftarJual/Product';
 import Wishlist from '../../Components/DaftarJual/Wishlist';
 const DaftarJual = ({navigation}) => {
@@ -22,7 +26,9 @@ const DaftarJual = ({navigation}) => {
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   const daftarJualScreen = useSelector(state => state.appData.daftarJualScreen);
-  const productDataSeller = useSelector(state => state.appData.productDataSeller);
+  const productDataSeller = useSelector(
+    state => state.appData.productDataSeller,
+  );
   const [refreshing, setRefreshing] = useState(false);
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -45,115 +51,133 @@ const DaftarJual = ({navigation}) => {
     });
   }, []);
   return (
-    <SafeAreaView style={styles.Container}>
-      {loginUser == null && userData == null ? (
-        <></>
-      ) : (
-        <>
-          <StatusBar
-            backgroundColor="transparent"
-            barStyle="dark-content"
-            translucent
+    <View style={styles.Container}>
+      <StatusBar
+        backgroundColor="transparent"
+        barStyle="dark-content"
+        translucent
+      />
+      <Header title={'My Selling List'} />
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="green"
+            colors={['green']}
           />
-          <Header title={'My Selling List'} />
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                tintColor="green"
-                colors={['green']}
-              />
-            }>
+        }>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            width: window.width * 0.8,
+
+            flexDirection: 'row',
+            paddingVertical: 15,
+            justifyContent: 'space-around',
+            alignSelf: 'center',
+
+            borderRadius: 10,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 0,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3,
+            elevation: 3,
+          }}>
+          <View style={{flexDirection: 'row'}}>
+            <Image
+              style={{
+                backgroundColor: COLORS.green,
+                width: 40,
+                height: 40,
+
+                marginRight: 20,
+
+                borderRadius: 8,
+              }}
+              source={{uri: userData?.image_url}}
+            />
             <View
               style={{
-                flexDirection: 'row',
-                marginVertical: 15,
-                width: window.width * 0.8,
-                alignSelf: 'center',
+                flexDirection: 'column',
+                justifyContent: 'center',
               }}>
-              <View
-                style={{
-                  marginVertical: 10,
-                  flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  width: window.width * 0.8,
-                }}>
-                <View style={{flexDirection: 'row'}}>
-                  <Image
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 8,
-                      marginRight: 20,
-                      backgroundColor: 'black',
-                    }}
-                    source={{uri: userData.image_url}}
-                  />
-                  <View style={{flexDirection: 'column'}}>
-                    <Text style={styles.Text}>{userData.full_name}</Text>
-                    <Text style={styles.Text}>{userData.city}</Text>
-                  </View>
-                </View>
-                <TouchableOpacity
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    borderRadius: 8,
-                    borderWidth: 1,
-                    borderColor: COLORS.green,
-                    width: window.width * 0.2,
-                  }}
-                  onPress={() => {
-                    navigation.navigate('EditAccount');
-                  }}>
-                  <Text style={styles.Text}>Edit</Text>
-                </TouchableOpacity>
-              </View>
+              <Text style={styles.Name}>{userData?.full_name}</Text>
+              <Text style={styles.Location}>{userData?.city}</Text>
             </View>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-              <CategoryButton
-                name={'Product'}
-                icon={'package-variant-closed'}
-                onPress={() => dispatch(DaftarJualScreen('Product'))}
-              />
-              <CategoryButton
-                name={'Interested'}
-                icon={'heart-outline'}
-                onPress={() => dispatch(DaftarJualScreen('Wishlist'))}
-              />
-              <CategoryButton
-                name={'Sold'}
-                icon={'currency-usd'}
-                onPress={() => dispatch(DaftarJualScreen())}
-              />
-            </View>
-            <View
-              style={{
-                marginHorizontal: 5,
-                marginVertical: 5,
-                alignSelf: 'center',
-              }}>
-              {daftarJualScreen == 'Product' && <Product />}
-              {daftarJualScreen == 'Wishlist' && <Wishlist />}
-            </View>
-          </ScrollView>
-        </>
-      )}
-    </SafeAreaView>
+          </View>
+          <TouchableOpacity
+            style={{
+              borderColor: COLORS.green,
+              width: window.width * 0.2,
+              justifyContent: 'center',
+              alignItems: 'center',
+
+              borderRadius: 8,
+              borderWidth: 1,
+            }}
+            onPress={() => {
+              navigation.navigate('EditAccount');
+            }}>
+            <Text style={styles.Text}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginTop: 20,
+            marginBottom: 15,
+          }}>
+          <CategoryButton
+            name={'Product'}
+            icon={'package-variant-closed'}
+            onPress={() => dispatch(DaftarJualScreen('Product'))}
+          />
+          <CategoryButton
+            name={'Interested'}
+            icon={'heart-outline'}
+            onPress={() => dispatch(DaftarJualScreen('Wishlist'))}
+          />
+          <CategoryButton
+            name={'Sold'}
+            icon={'currency-usd'}
+            onPress={() => dispatch(DaftarJualScreen())}
+          />
+        </View>
+        <View
+          style={{
+            alignSelf: 'center',
+          }}>
+          {daftarJualScreen == 'Product' && <Product />}
+          {daftarJualScreen == 'Wishlist' && <Wishlist />}
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 export default DaftarJual;
+
+const {StatusBarManager} = NativeModules;
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    paddingTop: StatusBarManager.HEIGHT + 20,
   },
-  Text: {
+  Name: {
     fontSize: 12,
     fontFamily: FONTS.SemiBold,
+    color: COLORS.black,
+  },
+  Location: {
+    fontSize: 10,
+    fontFamily: FONTS.Regular,
     color: COLORS.black,
   },
 });
