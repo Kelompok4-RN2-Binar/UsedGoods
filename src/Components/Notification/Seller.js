@@ -225,12 +225,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     paddingBottom: 4,
   },
-  textBlack: {
-    color: COLORS.black,
-    fontFamily: FONTS.Regular,
-    fontSize: 14,
-    paddingBottom: 4,
-  },
   image: {
     width: 40,
     height: 40,
