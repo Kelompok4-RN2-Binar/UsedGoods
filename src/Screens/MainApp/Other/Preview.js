@@ -64,7 +64,7 @@ const Preview = ({route}) => {
             translucent
             barStyle={'light-content'}
           />
-          <ScrollView>
+          <ScrollView contentContainerStyle={styles.Box}>
             <ImageBackground
               style={styles.gambar}
               source={data.image != '' ? {uri: data.image} : noImage}>
@@ -230,7 +230,7 @@ const Preview = ({route}) => {
                 )}
               </View>
             </View>
-            <View style={{marginBottom: 20}}>
+            <View style={{marginBottom:20,flexDirection:'column',position:'absolute',bottom:1,alignSelf:'center'}}>
               {data.image &&
               data.base_price &&
               data.name &&
@@ -239,7 +239,8 @@ const Preview = ({route}) => {
                 <>
                   {screen == 'edit' && (
                     <Button
-                      caption={'Posting'}
+                      caption={'Update'}
+                      style={{width:window.width*0.8}}
                       onPress={() => {
                         goUpdate();
                       }}
@@ -248,6 +249,7 @@ const Preview = ({route}) => {
                   {screen == 'jual' && (
                     <Button
                       caption={'Posting'}
+                      style={{width:window.width*0.8}}
                       onPress={() => {
                         goSell();
                       }}
@@ -258,7 +260,8 @@ const Preview = ({route}) => {
                 <>
                   {screen == 'edit' && (
                     <Button
-                      caption={'Posting'}
+                      caption={'Update'}
+                      style={{width:window.width*0.8,backgroundColor:COLORS.disabled}}
                       onPress={() => {
                         goUpdate();
                       }}
@@ -268,6 +271,8 @@ const Preview = ({route}) => {
                   {screen == 'jual' && (
                     <Button
                       caption={'Posting'}
+                      
+                      style={{width:window.width*0.8,backgroundColor:COLORS.disabled}}
                       onPress={() => {
                         goSell();
                       }}
@@ -327,6 +332,7 @@ const styles = StyleSheet.create({
     height: 150,
     backgroundColor: 'white',
     alignSelf: 'center',
+    marginLeft:25
   },
   Text: {
     fontSize: 12,
@@ -344,5 +350,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: 20,
     backgroundColor: 'black',
+  },
+  Box: {
+    flexGrow: 1,
+    paddingBottom: 25,
+    height:window.height*1
   },
 });

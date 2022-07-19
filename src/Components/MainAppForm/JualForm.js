@@ -18,6 +18,7 @@ import Input from '../Others/Input';
 import Button from '../Others/Button';
 import {COLORS, FONTS} from '../../Utils';
 import {postProduct} from '../../Redux/actions';
+import { useNavigation } from '@react-navigation/native';
 
 const jualValidation = yup.object().shape({
   name: yup.string().required('Product Name is Required!'),
@@ -26,9 +27,9 @@ const jualValidation = yup.object().shape({
   description: yup.string().required('Description is Required!'),
 });
 
-const JualForm = ({navigation}) => {
+const JualForm = () => {
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   console.log('data akun :', userData);

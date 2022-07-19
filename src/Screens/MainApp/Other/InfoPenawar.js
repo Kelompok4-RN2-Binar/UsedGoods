@@ -38,7 +38,7 @@ const InfoPenawar = ({route}) => {
         setComponent(
             <View style={{width:window.width,}}>
             <View style={{justifyContent:'center',alignItems:'center',width:window.width*0.9,alignSelf:'center'}}>
-                <Text style={[styles.Text,{alignSelf:'center',fontSize:14,paddingTop:10,fontFamily:FONTS.SemiBold}]}>Yeay you managed to get a suitable price</Text>
+                <Text style={[styles.Text,{alignSelf:'center',fontSize:14,paddingTop:10,fontFamily:FONTS.SemiBold,color:COLORS.green}]}>Yeay you managed to get a suitable price :)</Text>
                 <Text style={[styles.textGrey,{alignSelf:'center',fontSize:14}]}>Immediately contact the buyer via whatsapp for further transactions</Text>
                 <Text style={[styles.Text,{alignSelf:'center',fontSize:16,paddingTop:10,fontFamily:FONTS.SemiBold}]}>Product Match</Text>
                 <View style={{flexDirection: 'row',paddingTop:20,width:window.width*0.9,marginLeft:20}}>
@@ -184,10 +184,10 @@ const InfoPenawar = ({route}) => {
                       <Text style={styles.textGrey}>Penawaran produk</Text>
                     }
                     
-                    <Text style={[styles.textGrey, {}]}>{`${timeDate(data.updatedAt)}`}</Text>
+                    <Text style={[styles.textGrey, {}]}>{`${timeDate(data.Product.updatedAt)}`}</Text>
                   </View>
-                  <Text style={[styles.textBlack]}>{data.product_name}</Text>
-                  <Text style={styles.textBlack}>{`Rp. ${rupiah(data.base_price)}`}</Text>
+                  <Text style={[styles.textBlack]}>{data.Product.name}</Text>
+                  <Text style={styles.textBlack}>{`Rp. ${rupiah(data.Product.base_price)}`}</Text>
                   <Text style={styles.textBlack}>
                      Ditawar {`Rp. ${rupiah(data.price)}`}
                   </Text>

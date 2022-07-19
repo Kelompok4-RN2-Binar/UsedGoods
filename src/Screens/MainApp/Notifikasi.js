@@ -14,7 +14,7 @@ import {COLORS} from '../../Utils/Colors';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
 
-import {getNotificationSeller, NotificationScreen} from '../../Redux/actions';
+import {getNotificationBuyer, getNotificationSeller, NotificationScreen} from '../../Redux/actions';
 import Seller from '../../Components/Notification/Seller';
 import Buyer from '../../Components/Notification/Buyer';
 
@@ -26,9 +26,10 @@ const Notifikasi = ({navigation}) => {
 
   useEffect(() => {
     dispatch(getNotificationSeller(loginUser.access_token));
+    dispatch(getNotificationBuyer(loginUser.access_token));
     dispatch(NotificationScreen('Seller'));
   }, []);
-
+  
   return (
     <View style={styles.container}>
       <StatusBar
@@ -36,9 +37,8 @@ const Notifikasi = ({navigation}) => {
         translucent
         barStyle={'dark-content'}
       />
-      <ScrollView contentContainerStyle={styles.Box}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={[styles.textBold, {fontSize: 18}]}>Notifikasi</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between',width:window.width*0.9}}>
+          <Text style={[styles.textBold, {fontSize: 18}]}>Notification</Text>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               onPress={() => {
@@ -64,7 +64,6 @@ const Notifikasi = ({navigation}) => {
           </View>
         </View>
         {notifScreen == 'Seller' ? <Seller /> : <Buyer />}
-      </ScrollView>
     </View>
   );
 };

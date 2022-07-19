@@ -40,10 +40,10 @@ const Wishlist = () => {
                       width:window.width*0.8
                     }}>
                     <Text style={styles.textGrey}>Penawaran produk</Text>
-                    <Text style={[styles.textGrey, {}]}>{`${timeDate(item.updatedAt)}`}</Text>
+                    <Text style={[styles.textGrey, {}]}>{`${timeDate(item.Product.updatedAt)}`}</Text>
                   </View>
-                  <Text style={[styles.textBlack,{marginTop:5}]}>{item.product_name}</Text>
-                  <Text style={styles.textBlack}>{`Rp. ${rupiah(item.base_price)}`}</Text>
+                  <Text style={[styles.textBlack,{marginTop:5}]}>{item.Product.name}</Text>
+                  <Text style={styles.textBlack}>{`Rp. ${rupiah(item.Product.base_price)}`}</Text>
                   <Text style={styles.textBlack}>
                      Ditawar {`Rp. ${rupiah(item.price)}`}
                   </Text>

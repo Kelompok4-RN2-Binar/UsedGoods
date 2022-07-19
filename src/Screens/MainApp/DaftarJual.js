@@ -76,7 +76,6 @@ const DaftarJual = ({navigation}) => {
             paddingVertical: 15,
             justifyContent: 'space-around',
             alignSelf: 'center',
-
             borderRadius: 10,
             shadowColor: '#000',
             shadowOffset: {
@@ -86,6 +85,7 @@ const DaftarJual = ({navigation}) => {
             shadowOpacity: 0.25,
             shadowRadius: 3,
             elevation: 3,
+            marginVertical:10
           }}>
           <View style={{flexDirection: 'row'}}>
             <Image
@@ -152,6 +152,7 @@ const DaftarJual = ({navigation}) => {
         <View
           style={{
             alignSelf: 'center',
+            marginBottom:60
           }}>
           {daftarJualScreen == 'Product' && <Product />}
           {daftarJualScreen == 'Wishlist' && <Wishlist />}
