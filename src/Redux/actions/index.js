@@ -722,10 +722,10 @@ export const getStatusOrderProduct = (AccessToken, id) => {
           type: GET_STATUS_ORDER_PRODUCT,
           payload: res.data,
         });
-        Toast.show({
-          type: 'success',
-          text1: 'You already ordered this product',
-        });
+        // Toast.show({
+        //   type: 'success',
+        //   text1: 'You already ordered this product',
+        // });
       })
       .catch(function (error) {
         dispatch({

@@ -31,7 +31,6 @@ const Detail = ({route}) => {
   const userData = useSelector(state => state.appData.userData);
   const productSpesific = user=='seller'?useSelector(state => state.appData.productSpesific):useSelector(state => state.appData.productSpesificBuyer);
   const statusOrderProduct = user=='seller'?null:useSelector(state => state.appData.statusOrderProduct);
-  console.log(statusOrderProduct)
   const order = useSelector(state => state.appData.order);
   const navigation = useNavigation();
   const [openModal, setopenModal] = useState(false);
@@ -136,7 +135,7 @@ const Detail = ({route}) => {
     }, []);
 
   const onRefresh = useCallback(() => {
-  
+    
     wait(500).then(() => {
       setRefreshing(false);
     });
