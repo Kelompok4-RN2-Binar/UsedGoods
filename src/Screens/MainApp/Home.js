@@ -15,7 +15,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import {getBanner, getProduct, getSpesificProduct, getSpesificProductBuyer,getStatusOrderProduct,getStatusOrder} from '../../Redux/actions';
 import {CategoryButton, Input, ProductCard} from '../../Components';
 import {COLORS} from '../../Utils';
-
+import Toast from 'react-native-toast-message';
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const [currentCategory, setCurrentCategory] = useState('');
@@ -120,40 +120,49 @@ const Home = ({navigation}) => {
       </View>
     </View>
   );
-
+  const cekLogin = () =>{
+    if(loginUser==null){
+      Toast.show({
+        type: 'error',
+        text1: 'You Are not logged in',
+      });
+      navigation.navigate("Auth")
+    }
+  }
   const renderItem = ({item}) => (
     <ProductCard
-      onPress={() =>
-        dispatch(getSpesificProductBuyer(loginUser.access_token, item.id)).then(
-          ()=>{
-            if(statusOrder!=null){
-              var order=statusOrder.filter(itemS=>{
-                return itemS.product_id==item.id
-              })
-              var orderArray= order.map(o=>{
+      onPress={() =>{
+        if(loginUser==null){
+          cekLogin()
+        }else{
+          dispatch(getSpesificProductBuyer(loginUser.access_token, item.id)).then(
+            ()=>{
+              if(statusOrder!=null){
+                var order=statusOrder.filter(itemS=>{
+                  return itemS.product_id==item.id
+                })
+                var orderArray= order.map(o=>{
                   return o.id
-              })
-              const orderId  = orderArray.toString();
-              console.log("id a:",orderId)
-              if(orderId==''){      
-                navigation.navigate('Detail',{
-                  user:'buyer',
-                  order_id:null
-                })    
-              }else{
-                dispatch(getStatusOrderProduct(loginUser.access_token,orderId)).then(
+                })
+                const orderId  = orderArray.toString();
+                if(orderId==''){      
                   navigation.navigate('Detail',{
                     user:'buyer',
-                    order_id:orderId
-                  })
-                )
-              }
-            }
-            
-          }
-          
-        )
-      }
+                    order_id:null
+                  })    
+                }else{
+                  dispatch(getStatusOrderProduct(loginUser.access_token,orderId)).then(
+                    navigation.navigate('Detail',{
+                      user:'buyer',
+                      order_id:orderId
+                    })
+                  )
+                }
+              } 
+            }      
+          )
+        }
+      }}
       data={item}
     />
     

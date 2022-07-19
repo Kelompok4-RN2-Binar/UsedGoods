@@ -17,10 +17,12 @@ import { getNotificationBuyer ,getDetailNotification,readNotif} from '../../Redu
 import { useDispatch } from 'react-redux';
 import BottomModal from '../Others/BottomModal';
 import Button from '../Others/Button';
+import Toast from 'react-native-toast-message';
 const Buyer = () => {
   const dispatch = useDispatch();
   const notifDataBuyer = useSelector(state => state.appData.notifDataBuyer);
   const loginUser = useSelector(state => state.appData.loginUser);
+  const userData = useSelector(state => state.appData.userData);
   const [refreshing, setRefreshing] = useState(false);
   const [openModal, setopenModal] = useState(false);
   const [component,setComponent] = useState(null);
@@ -39,12 +41,12 @@ const Buyer = () => {
 
   const onDismiss = () => {
       setopenModal(false);
-      var dataDetail = null;
     };
   var dataDetail =  useSelector(state => state.appData.notifDataDetail);
 
   const sendOnWhatsApp = () =>{
-      let url = 'whatsapp://send?text=' + 'Hello this is ' +userData.full_name + ' who want to buy  '+data.product_name + ' in SecondApp ' +'&phone=62' + dataDetail.User.phone_number;
+      let url = 'whatsapp://send?text=' + 'Hello this is ' +userData.full_name + ' who want to buy  '+dataDetail.product_name 
+      + ' in SecondApp with bid price ' + 'Rp. '+rupiah(dataDetail.bid_price) +'&phone=62' + dataDetail.User.phone_number;
       Linking.openURL(url).then((data) => {
         console.log('WhatsApp Opened');
       }).catch(() => {
@@ -82,11 +84,9 @@ const Buyer = () => {
               <View style={{flexDirection: 'row',paddingVertical:20,width:window.width*0.9,marginLeft:20,}}>
                 <Image
                   style={styles.imageUser}
-                  source={{uri:dataDetail.User.image_url}}
                 />
                 <View style={{flexDirection: 'column'}}>
-                  <Text style={[styles.Text,{fontSize:18}]}>{dataDetail.User.full_name}</Text>
-                  <Text style={[styles.Text,{fontSize:18}]}>{dataDetail.User.city}</Text>
+                  <Text style={[styles.Text,{fontSize:18}]}>{dataDetail.seller_name}</Text>
                 </View>
               </View>
               <View style={{flexDirection: 'row',paddingVertical:20,width:window.width*0.9,marginLeft:20}}>
@@ -97,7 +97,8 @@ const Buyer = () => {
                 <View style={{flexDirection: 'column'}}>
                   <Text style={[styles.Text,{fontSize:14}]}>{dataDetail.Product.name}</Text>
                   <Text style={[styles.Text,{fontSize:14}]}>{`Rp. ${rupiah(dataDetail.Product.base_price)}`}</Text>
-                  <Text style={[styles.Text,{fontSize:14}]}>Ditawar {`Rp. ${rupiah(dataDetail.bid_price)}`}</Text>
+                  <Text style={[styles.Text,{fontSize:14}]}>Bid {`Rp. ${rupiah(dataDetail.bid_price)}`}</Text>
+                  
                 </View>
               </View>
               <Button caption={'Contact Seller via Whatsapp'} onPress={()=>{sendOnWhatsApp();}} style={{width:window.width*0.8,height:50,marginVertical:15}}/>
@@ -120,6 +121,7 @@ const Buyer = () => {
               </View>  
               </>
             }
+            
           </View>
           }
         </View>
@@ -171,14 +173,22 @@ const Buyer = () => {
                   </View>
                 </View>
                 <Text style={styles.textBlack}>{item.product_name}</Text>
-                <Text style={styles.textBlack}>{`Rp. ${rupiah(
-                  item.base_price,
-                )}`}</Text>
-                {item.bid_price != null && (
+                <Text style={styles.textBlack}>{`Rp. ${rupiah(item.base_price)}`}</Text>
+                {item.bid_price != null && item.status=='accepted'?(
                   <Text style={styles.textBlack}>
-                    Ditawar {`Rp. ${rupiah(item.bid_price)}`}
+                    Successfully Bid {`Rp. ${rupiah(item.bid_price)}`}
                   </Text>
-                )}
+                ):(
+                  <Text style={styles.textBlack}>
+                    Bid {`Rp. ${rupiah(item.bid_price)}`}
+                  </Text>
+                )
+                }
+                {item.status=='accepted'&&
+                <View style={{flexDirection:'row',flexWrap:'wrap',width:window.width*0.8}}>
+                    <Text style={[styles.textGrey,{fontSize:14}]}>you will be contacted by the seller via whatsapp</Text>
+                </View>
+                }
 
                 <View
                   style={{

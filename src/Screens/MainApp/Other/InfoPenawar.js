@@ -3,7 +3,7 @@ import React,{useState,useEffect,useCallback} from 'react'
 import { Button, Header } from '../../../Components'
 import { COLORS, FONTS } from '../../../Utils'
 import { useNavigation } from '@react-navigation/native'
-import { acceptOrder, declineOrder, getWishlistSpesific, rupiah ,timeDate} from '../../../Redux/actions'
+import { acceptOrder, declineOrder, getWishlistSpesific, rupiah ,SoldOrder,timeDate} from '../../../Redux/actions'
 import BottomModal from '../../../Components/Others/BottomModal'
 import { useSelector,useDispatch } from 'react-redux'
 import Toast from 'react-native-toast-message';
@@ -58,7 +58,7 @@ const InfoPenawar = ({route}) => {
                   <View style={{flexDirection: 'column',marginBottom:10}}>
                     <Text style={[styles.Text,{fontSize:14}]}>{data.product_name}</Text>
                     <Text style={[styles.Text,{fontSize:14}]}>{`Rp. ${rupiah(data.base_price)}`}</Text>
-                    <Text style={[styles.Text,{fontSize:14}]}>Ditawar {`Rp. ${rupiah(data.price)}`}</Text>
+                    <Text style={[styles.Text,{fontSize:14}]}>Offered {`Rp. ${rupiah(data.price)}`}</Text>
                   </View>
                 </View>
                 <Button caption={'Contact Buyer via Whatsapp'} onPress={()=>{sendOnWhatsApp();}} style={{width:window.width*0.8,height:50,marginVertical:15}}/>
@@ -96,10 +96,15 @@ const InfoPenawar = ({route}) => {
                     <Button caption={'Send'} onPress={()=>{}} style={{width:window.width*0.8,height:50,marginVertical:15,backgroundColor:'#d0d0d0'}} disabled={true}/>
                   }
                   {status=="Sold" &&
-                    <Button caption={'Sold'} onPress={()=>{}} style={{width:window.width*0.8,height:50,marginVertical:15}}/>
+                    <Button caption={'Sold'}  style={{width:window.width*0.8,height:50,marginVertical:15}} 
+                    onPress={()=>{dispatch(SoldOrder(loginUser.access_token,data.id)).then(()=>{setopenModal(false);})
+                    }}/>
                   }
                   {status=="Cancel" &&
-                    <Button caption={'Cancel Transaction'} onPress={()=>{}} style={{width:window.width*0.8,height:50,marginVertical:15,backgroundColor:COLORS.red}}/>
+                    <Button caption={'Cancel Transaction'}  style={{width:window.width*0.8,height:50,marginVertical:15,backgroundColor:COLORS.red}} 
+                    onPress={()=>{
+                      dispatch(declineOrder(loginUser.access_token,data.id)).then(()=>{setopenModal(false);})
+                      }}/>
                   }
                   
               </View>
@@ -178,18 +183,22 @@ const InfoPenawar = ({route}) => {
                       paddingRight: 30,
                       width:window.width*0.8
                     }}>
-                    {data.status=="declined"?
+                    {data.status=="declined"&&
                       <Text style={[styles.textGrey,{color:COLORS.red}]}>Declined Product</Text>
-                      :
-                      <Text style={styles.textGrey}>Penawaran produk</Text>
+                    } 
+                    {data.status=="accepted"&&
+                      <Text style={[styles.textGrey,{color:COLORS.green}]}>Sold out</Text>
+                    }{data.status==""&&
+                      <Text style={styles.textGrey}>Product Offer</Text>
+                    }{data.status=="pending"&&
+                      <Text style={styles.textGrey}>Product Offer</Text>
                     }
-                    
                     <Text style={[styles.textGrey, {}]}>{`${timeDate(data.Product.updatedAt)}`}</Text>
                   </View>
                   <Text style={[styles.textBlack]}>{data.Product.name}</Text>
                   <Text style={styles.textBlack}>{`Rp. ${rupiah(data.Product.base_price)}`}</Text>
                   <Text style={styles.textBlack}>
-                     Ditawar {`Rp. ${rupiah(data.price)}`}
+                     Offered {`Rp. ${rupiah(data.price)}`}
                   </Text>
                 </View>
                 
@@ -203,7 +212,7 @@ const InfoPenawar = ({route}) => {
                   }} />
             </View>
             }
-            {data.status=="accepted" &&
+            {data.status=="" &&
             <View style={{flexDirection:'row'}}>
                 <Button caption={'Status'} onPress={()=>{onOpenStatus();}} style={{width:window.width*0.4,height:50,backgroundColor:COLORS.white,borderColor:COLORS.green,borderWidth:1}} styleText={{color:COLORS.black,fontFamily:FONTS.Regular}}/>
                 <Button caption={'Contact'} onPress={()=>{sendOnWhatsApp();}} style={{width:window.width*0.4,height:50}}/>

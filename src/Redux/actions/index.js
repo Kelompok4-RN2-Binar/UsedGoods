@@ -21,6 +21,7 @@ import {
   GET_STATUS_ORDER,
   GET_ORDER,
   GET_DETAIL_NOTIFICATION,
+  GET_SOLD_SELLER,
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
@@ -536,7 +537,7 @@ export const acceptOrder = (AccessToken, id) => {
   return async dispatch => {
     await axios
       .patch(URL + 'seller/order/' + id,{
-        status:"accepted"
+        status:""
       }, {
         headers: {
           access_token: `${AccessToken}`,
@@ -546,6 +547,31 @@ export const acceptOrder = (AccessToken, id) => {
         Toast.show({
           type: 'success',
           text1: 'Success Accept Order!',
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const SoldOrder = (AccessToken, id) => {
+  return async dispatch => {
+    await axios
+      .patch(URL + 'seller/order/' + id,{
+        status:"accepted"
+      }, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        Toast.show({
+          type: 'success',
+          text1: 'Success Sold Order!',
         });
       })
       .catch(function (error) {
@@ -743,6 +769,29 @@ export const readNotif = (AccessToken, id) => {
       })
       .then(res => {
         console.log("patch read sucess!")
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const getSoldSeller = AccessToken => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'seller/order?status=accepted', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_SOLD_SELLER,
+          payload: res.data,
+        });
       })
       .catch(function (error) {
         Toast.show({

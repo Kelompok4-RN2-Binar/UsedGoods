@@ -62,6 +62,7 @@ const Detail = ({route}) => {
     base_price: yup.string().required('Price is Required!'),
   });
   const onOpen = () => {
+    
     setopenModal(true);
     setComponent(
         <View style={{width:window.width,}}>

@@ -1,31 +1,20 @@
-import {View, Text,Dimensions,Image,StyleSheet,TouchableOpacity} from 'react-native';
-import React ,{}from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {View, Text,Dimensions,Image,StyleSheet} from 'react-native';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { COLORS,FONTS } from '../../Utils';
-import { useNavigation } from '@react-navigation/native';
-import { getWishlistSpesific, rupiah,timeDate } from '../../Redux/actions';
+import {  rupiah,timeDate } from '../../Redux/actions';
 
-const Wishlist = () => {
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const wishlistDataSeller = useSelector(state => state.appData.wishlistDataSeller);
-  const loginUser = useSelector(state => state.appData.loginUser);
-  console.log("wishlist screen: ",wishlistDataSeller)
-
+const Sold = () => {
+  const soldSeller = useSelector(state => state.appData.soldSeller);
+  console.log("sold : ",soldSeller)
   return (
     <View>
-      {wishlistDataSeller!=null ?
+      {soldSeller!=null ?
           <View style={{width:window.width*0.9,flexDirection:'row',flexWrap:'wrap',marginBottom:80,justifyContent:'flex-start'}}>    
-          {wishlistDataSeller && wishlistDataSeller.map(item=>{
+          {soldSeller && soldSeller.map(item=>{
             return(
             <>
-            <TouchableOpacity onPress={()=>{
-              dispatch(getWishlistSpesific(loginUser.access_token,item.id)).then(
-                navigation.navigate("InfoPenawar",{
-                  dataRoute:item
-                })
-              )
-              }}
+            <View 
                 key={item}
                 style={{flexDirection: 'row',marginTop: 24,}}>
                 <View >
@@ -39,26 +28,26 @@ const Wishlist = () => {
                       paddingRight: 30,
                       width:window.width*0.8
                     }}>
-                    <Text style={styles.textGrey}>Product Offer</Text>
+                    <Text style={[styles.textGrey,{color:COLORS.green}]}>Product Sold</Text>
                     <Text style={[styles.textGrey, {}]}>{`${timeDate(item.Product.updatedAt)}`}</Text>
                   </View>
                   <Text style={[styles.textBlack,{marginTop:5}]}>{item.Product.name}</Text>
                   <Text style={styles.textBlack}>{`Rp. ${rupiah(item.Product.base_price)}`}</Text>
                   <Text style={styles.textBlack}>
-                     Offered {`Rp. ${rupiah(item.price)}`}
+                    Sold {`Rp. ${rupiah(item.price)}`}
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             
             </>
-          )})
+            )})
           }
           
           </View>
           :
           <>
             <View style={{width:window.width*0.95,flexDirection:'row',flexWrap:'wrap',marginBottom:80,justifyContent:'center'}}>
-                <Text style={[styles.Text,{alignSelf:'center',fontSize:18}]}>Theres no wishlist yet</Text>
+                <Text style={[styles.Text,{alignSelf:'center',fontSize:18}]}>Theres no Sold Product yet</Text>
             </View>    
           </>
           }
@@ -66,7 +55,7 @@ const Wishlist = () => {
   )
 }
 
-export default Wishlist
+export default Sold
 
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({

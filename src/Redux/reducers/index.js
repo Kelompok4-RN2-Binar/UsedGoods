@@ -19,7 +19,8 @@ import {
   GET_STATUS_ORDER_PRODUCT,
   GET_STATUS_ORDER,
   GET_ORDER,
-  GET_DETAIL_NOTIFICATION
+  GET_DETAIL_NOTIFICATION,
+  GET_SOLD_SELLER
 } from '../types';
 const initialState = {
   authScreen: 'Login',
@@ -40,7 +41,8 @@ const initialState = {
   order:null,
   statusOrder:null,
   statusOrderProduct:null,
-  notifDataDetail:null
+  notifDataDetail:null,
+  soldSeller:null
 };
 
 const Reducer = (state = initialState, action) => {
@@ -150,6 +152,11 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         notifDataDetail: action.payload,
+      };
+    case GET_SOLD_SELLER:
+      return {
+        ...state,
+        soldSeller: action.payload,
       };
     default:
       return state;

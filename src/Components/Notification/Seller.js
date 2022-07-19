@@ -76,7 +76,7 @@ const Seller = () => {
                 <View style={{flexDirection: 'column'}}>
                   <Text style={[styles.Text,{fontSize:14}]}>{dataDetail.Product.name}</Text>
                   <Text style={[styles.Text,{fontSize:14}]}>{`Rp. ${rupiah(dataDetail.Product.base_price)}`}</Text>
-                  <Text style={[styles.Text,{fontSize:14}]}>Ditawar {`Rp. ${rupiah(dataDetail.bid_price)}`}</Text>
+                  <Text style={[styles.Text,{fontSize:14}]}>Bid {`Rp. ${rupiah(dataDetail.bid_price)}`}</Text>
                 </View>
               </View>
               
@@ -160,7 +160,7 @@ const Seller = () => {
                   )}`}</Text>
                   {item.bid_price != null && (
                     <Text style={styles.textBlack}>
-                      Ditawar {`Rp. ${rupiah(item.bid_price)}`}
+                      Bid {`Rp. ${rupiah(item.bid_price)}`}
                     </Text>
                   )}
                 </View>
