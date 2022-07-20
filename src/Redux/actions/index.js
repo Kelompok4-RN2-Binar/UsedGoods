@@ -16,6 +16,12 @@ import {
   GET_CATEGORY,
   GET_SPESIFIC_PRODUCT,
   GET_WISHLIST_SPESIFIC,
+  GET_SPESIFIC_PRODUCT_BUYER,
+  GET_STATUS_ORDER_PRODUCT,
+  GET_STATUS_ORDER,
+  GET_ORDER,
+  GET_DETAIL_NOTIFICATION,
+  GET_SOLD_SELLER,
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
@@ -531,7 +537,7 @@ export const acceptOrder = (AccessToken, id) => {
   return async dispatch => {
     await axios
       .patch(URL + 'seller/order/' + id,{
-        status:"accepted"
+        status:""
       }, {
         headers: {
           access_token: `${AccessToken}`,
@@ -541,6 +547,31 @@ export const acceptOrder = (AccessToken, id) => {
         Toast.show({
           type: 'success',
           text1: 'Success Accept Order!',
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const SoldOrder = (AccessToken, id) => {
+  return async dispatch => {
+    await axios
+      .patch(URL + 'seller/order/' + id,{
+        status:"accepted"
+      }, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        Toast.show({
+          type: 'success',
+          text1: 'Success Sold Order!',
         });
       })
       .catch(function (error) {
@@ -588,6 +619,177 @@ export const getWishlistSpesific = (AccessToken,id) => {
       .then(res => {
         dispatch({
           type: GET_WISHLIST_SPESIFIC,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const getSpesificProductBuyer = (AccessToken, id) => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'buyer/product/' + id, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_SPESIFIC_PRODUCT_BUYER,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+
+export const buyProduct = (data,AccessToken) => {
+  return async dispatch => {
+    const {base_price,id} = data;
+    await axios
+      .post(URL + 'buyer/order', {
+        product_id:id,
+        bid_price:base_price
+      },{
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log("res order actions: ",res.data)
+        dispatch({
+          type: GET_ORDER,
+          payload: res.data,
+        });
+        Toast.show({
+          type: 'success',
+          text1: 'Your bid price has been successfully sent to the seller!',
+        });
+      })
+      .catch(function (error) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+      });
+  };
+};
+
+export const getStatusOrder = (AccessToken) => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'buyer/order/', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_STATUS_ORDER,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+export const getStatusOrderProduct = (AccessToken, id) => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'buyer/order/' + id, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_STATUS_ORDER_PRODUCT,
+          payload: res.data,
+        });
+        // Toast.show({
+        //   type: 'success',
+        //   text1: 'You already ordered this product',
+        // });
+      })
+      .catch(function (error) {
+        dispatch({
+          type: GET_STATUS_ORDER_PRODUCT,
+          payload: null,
+        });
+      });
+  };
+};
+
+export const getDetailNotification = (AccessToken,id) => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'notification/'+id, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_DETAIL_NOTIFICATION,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const readNotif = (AccessToken, id) => {
+  return async dispatch => {
+    await axios
+      .patch(URL + 'notification/'+ id,{}, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        console.log("patch read sucess!")
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      });
+  };
+};
+
+export const getSoldSeller = AccessToken => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'seller/order?status=accepted', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_SOLD_SELLER,
           payload: res.data,
         });
       })

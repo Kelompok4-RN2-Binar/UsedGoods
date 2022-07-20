@@ -15,7 +15,12 @@ import {
   GET_CATEGORY,
   GET_SPESIFIC_PRODUCT,
   GET_WISHLIST_SPESIFIC,
-  STATUS_PRODUCT
+  GET_SPESIFIC_PRODUCT_BUYER,
+  GET_STATUS_ORDER_PRODUCT,
+  GET_STATUS_ORDER,
+  GET_ORDER,
+  GET_DETAIL_NOTIFICATION,
+  GET_SOLD_SELLER
 } from '../types';
 const initialState = {
   authScreen: 'Login',
@@ -32,6 +37,12 @@ const initialState = {
   category:null,
   productSpesific:null,
   wishlistSpesific:null,
+  productSpesificBuyer:null,
+  order:null,
+  statusOrder:null,
+  statusOrderProduct:null,
+  notifDataDetail:null,
+  soldSeller:null
 };
 
 const Reducer = (state = initialState, action) => {
@@ -116,6 +127,36 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         wishlistSpesific: action.payload,
+      };
+    case GET_SPESIFIC_PRODUCT_BUYER:
+      return {
+        ...state,
+        productSpesificBuyer: action.payload,
+      };
+    case GET_STATUS_ORDER_PRODUCT:
+      return {
+        ...state,
+        statusOrderProduct: action.payload,
+      };
+    case GET_STATUS_ORDER:
+      return {
+        ...state,
+        statusOrder: action.payload,
+      };
+    case GET_ORDER:
+      return {
+        ...state,
+        order: action.payload,
+      };
+    case GET_DETAIL_NOTIFICATION:
+      return {
+        ...state,
+        notifDataDetail: action.payload,
+      };
+    case GET_SOLD_SELLER:
+      return {
+        ...state,
+        soldSeller: action.payload,
       };
     default:
       return state;

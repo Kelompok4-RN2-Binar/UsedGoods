@@ -18,9 +18,11 @@ import {
   getProductSeller,
   DaftarJualScreen,
   getWishlistSeller,
+  getSoldSeller,
 } from '../../Redux/actions';
 import Product from '../../Components/DaftarJual/Product';
 import Wishlist from '../../Components/DaftarJual/Wishlist';
+import Sold from '../../Components/DaftarJual/Sold';
 const DaftarJual = ({navigation}) => {
   const dispatch = useDispatch();
   const loginUser = useSelector(state => state.appData.loginUser);
@@ -39,12 +41,14 @@ const DaftarJual = ({navigation}) => {
     } else {
       dispatch(getProductSeller(loginUser.access_token));
       dispatch(getWishlistSeller(loginUser.access_token));
+      dispatch(getSoldSeller(loginUser.access_token));
       onRefresh();
     }
   }, []);
   const onRefresh = useCallback(() => {
     dispatch(getProductSeller(loginUser.access_token));
     dispatch(getWishlistSeller(loginUser.access_token));
+    dispatch(getSoldSeller(loginUser.access_token));
     setRefreshing(true);
     wait(500).then(() => {
       setRefreshing(false);
@@ -76,7 +80,6 @@ const DaftarJual = ({navigation}) => {
             paddingVertical: 15,
             justifyContent: 'space-around',
             alignSelf: 'center',
-
             borderRadius: 10,
             shadowColor: '#000',
             shadowOffset: {
@@ -86,6 +89,7 @@ const DaftarJual = ({navigation}) => {
             shadowOpacity: 0.25,
             shadowRadius: 3,
             elevation: 3,
+            marginVertical:10
           }}>
           <View style={{flexDirection: 'row'}}>
             <Image
@@ -146,15 +150,17 @@ const DaftarJual = ({navigation}) => {
           <CategoryButton
             name={'Sold'}
             icon={'currency-usd'}
-            onPress={() => dispatch(DaftarJualScreen())}
+            onPress={() => dispatch(DaftarJualScreen('Sold'))}
           />
         </View>
         <View
           style={{
             alignSelf: 'center',
+            marginBottom:60
           }}>
           {daftarJualScreen == 'Product' && <Product />}
           {daftarJualScreen == 'Wishlist' && <Wishlist />}
+          {daftarJualScreen == 'Sold' && <Sold />}
         </View>
       </ScrollView>
     </View>

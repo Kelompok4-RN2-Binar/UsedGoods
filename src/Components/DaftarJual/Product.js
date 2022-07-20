@@ -62,7 +62,9 @@ const Product = () => {
                 onPress={() =>
                   dispatch(
                     getSpesificProduct(loginUser.access_token, item.id),
-                  ).then(navigation.navigate('Detail'))
+                  ).then(navigation.navigate('Detail',{
+                    user:'seller'
+                  }))
                 }
               />
             ))}

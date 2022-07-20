@@ -7,23 +7,25 @@ import {
   Platform,
   NativeModules,
   StatusBar,
+  RefreshControl
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
-import {getBanner, getProduct, getSpesificProduct} from '../../Redux/actions';
+import {getBanner, getProduct, getSpesificProduct, getSpesificProductBuyer,getStatusOrderProduct,getStatusOrder} from '../../Redux/actions';
 import {CategoryButton, Input, ProductCard} from '../../Components';
 import {COLORS} from '../../Utils';
-
+import Toast from 'react-native-toast-message';
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const [currentCategory, setCurrentCategory] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
 
   const loginUser = useSelector(state => state.appData.loginUser);
   let banner = useSelector(state => state.appData.banner);
   const product = useSelector(state => state.appData.product);
-
+  const statusOrder = useSelector(state => state.appData.statusOrder);
   banner = banner?.map(({image_url}) => image_url);
 
   const category = [
@@ -58,7 +60,25 @@ const Home = ({navigation}) => {
   const getData = () => {
     dispatch(getBanner());
     dispatch(getProduct({category: currentCategory, page: currentPage}));
+    if(loginUser!=null){
+      dispatch(getStatusOrder(loginUser.access_token))
+    }
   };
+
+
+
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+  const onRefresh = useCallback(() => {
+    dispatch(getProduct({category: currentCategory, page: currentPage}))
+    if(loginUser!=null){
+      dispatch(getStatusOrder(loginUser.access_token)).then(()=>{setRefreshing(true)})
+    }
+    wait(500).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
 
   useEffect(() => {
     getData();
@@ -100,16 +120,52 @@ const Home = ({navigation}) => {
       </View>
     </View>
   );
-
+  const cekLogin = () =>{
+    if(loginUser==null){
+      Toast.show({
+        type: 'error',
+        text1: 'You Are not logged in',
+      });
+      navigation.navigate("Auth")
+    }
+  }
   const renderItem = ({item}) => (
     <ProductCard
-      onPress={() =>
-        dispatch(getSpesificProduct(loginUser.access_token, item.id)).then(
-          navigation.navigate('Detail'),
-        )
-      }
+      onPress={() =>{
+        if(loginUser==null){
+          cekLogin()
+        }else{
+          dispatch(getSpesificProductBuyer(loginUser.access_token, item.id)).then(
+            ()=>{
+              if(statusOrder!=null){
+                var order=statusOrder.filter(itemS=>{
+                  return itemS.product_id==item.id
+                })
+                var orderArray= order.map(o=>{
+                  return o.id
+                })
+                const orderId  = orderArray.toString();
+                if(orderId==''){      
+                  navigation.navigate('Detail',{
+                    user:'buyer',
+                    order_id:null
+                  })    
+                }else{
+                  dispatch(getStatusOrderProduct(loginUser.access_token,orderId)).then(
+                    navigation.navigate('Detail',{
+                      user:'buyer',
+                      order_id:orderId
+                    })
+                  )
+                }
+              } 
+            }      
+          )
+        }
+      }}
       data={item}
     />
+    
   );
 
   return (
@@ -127,7 +183,13 @@ const Home = ({navigation}) => {
         renderItem={renderItem}
         ListHeaderComponent={headerComponent}
         contentContainerStyle={styles.FlatlistContainer}
-      />
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="green"
+            colors={['green']}/>
+      }/>
     </View>
   );
 };
