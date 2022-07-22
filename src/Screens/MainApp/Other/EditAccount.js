@@ -6,6 +6,7 @@ import {
   NativeModules,
 } from 'react-native';
 import React from 'react';
+import {ms} from 'react-native-size-matters';
 import {RegisterForm, Header} from '../../../Components';
 import {COLORS} from '../../../Utils';
 
@@ -32,10 +33,10 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingTop: StatusBarManager.HEIGHT + 20,
+    paddingTop: StatusBarManager.HEIGHT + ms(20),
   },
   Box: {
     flexGrow: 1,
-    paddingBottom: 25,
+    paddingBottom: ms(25),
   },
 });

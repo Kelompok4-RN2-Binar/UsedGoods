@@ -7,73 +7,136 @@ import {
   Platform,
   NativeModules,
   StatusBar,
-  RefreshControl
+  RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState,useCallback} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
-import {getBanner, getProduct, getSpesificProduct, getSpesificProductBuyer,getStatusOrderProduct,getStatusOrder} from '../../Redux/actions';
-import {CategoryButton, Input, ProductCard} from '../../Components';
-import {COLORS} from '../../Utils';
+import {
+  getBanner,
+  getProduct,
+  getSpesificProductBuyer,
+  getStatusOrderProduct,
+  getStatusOrder,
+  clearProduct,
+  addWishlist,
+  connectionChecker,
+} from '../../Redux/actions';
+import {
+  CategoryButton,
+  HomeShimmer,
+  Input,
+  ProductCard,
+} from '../../Components';
+import {CATEGORY, COLORS} from '../../Utils';
 import Toast from 'react-native-toast-message';
+import {useMemo} from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {ms} from 'react-native-size-matters';
+
 const Home = ({navigation}) => {
-  const dispatch = useDispatch();
-  const [currentCategory, setCurrentCategory] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [refreshing, setRefreshing] = useState(false);
-
-  const loginUser = useSelector(state => state.appData.loginUser);
-  let banner = useSelector(state => state.appData.banner);
-  const product = useSelector(state => state.appData.product);
-  const statusOrder = useSelector(state => state.appData.statusOrder);
-  banner = banner?.map(({image_url}) => image_url);
-
-  const category = [
+  const CATEGORY = [
     {
+      id: 1,
       name: 'All Product',
       icon: 'feature-search',
-      onclick: () =>
-        dispatch(getProduct({category: currentCategory, page: currentPage})),
+      onclick: () => {
+        currentCategory === ''
+          ? setCurrentCategory(null)
+          : setCurrentCategory('');
+      },
     },
     {
+      id: 2,
       name: 'Elektronik',
       icon: 'desktop-mac',
-      onclick: () => dispatch(getProduct({category_id: 96, page: 1})),
+      onclick: () => setCurrentCategory(96),
     },
     {
+      id: 3,
       name: 'Aksesoris Fashion',
       icon: 'tshirt-crew-outline',
-      onclick: () => dispatch(getProduct({category_id: 102, page: 1})),
+      onclick: () => setCurrentCategory(102),
     },
     {
+      id: 4,
       name: 'Hobi dan Koleksit',
       icon: 'bike',
-      onclick: () => dispatch(getProduct({category_id: 104, page: 1})),
+      onclick: () => setCurrentCategory(104),
     },
     {
+      id: 5,
       name: 'Perlengakapan Rumah',
       icon: 'sofa-single-outline',
-      onclick: () => dispatch(getProduct({category_id: 107, page: 1})),
+      onclick: () => setCurrentCategory(107),
     },
   ];
 
-  const getData = () => {
-    dispatch(getBanner());
-    dispatch(getProduct({category: currentCategory, page: currentPage}));
-    if(loginUser!=null){
-      dispatch(getStatusOrder(loginUser.access_token))
-    }
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [currentCategory, setCurrentCategory] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isSearch, setIsSearch] = useState('');
+
+  const loginUser = useSelector(state => state.appData.loginUser);
+
+  let banner = useSelector(state => state.appData.banner);
+  const product = useSelector(state => state.appData.product);
+  const connection = useSelector(state => state.appData.connection);
+  console.log(connection);
+
+  const statusOrder = useSelector(state => state.appData.statusOrder);
+
+  banner = banner?.map(({image_url}) => image_url);
+
+  useMemo(() => {
+    setLoading(true);
+    dispatch(clearProduct());
+    dispatch(
+      getProduct({category_id: currentCategory, search: '', page: 1}),
+    ).then(() => setLoading(false));
+  }, [currentCategory]);
+
+  const onSearch = () => {
+    setLoading(true);
+    dispatch(clearProduct());
+    dispatch(getProduct({category_id: '', search: isSearch, page: 1})).then(
+      () => setLoading(false),
+    );
   };
 
+  useMemo(() => {
+    dispatch(
+      getProduct({
+        category_id: currentCategory,
+        search: isSearch,
+        page: currentPage,
+      }),
+    );
+  }, [currentPage]);
 
+  const getData = () => {
+    dispatch(getBanner());
+    setCurrentCategory('');
+    if (loginUser != null) {
+      dispatch(getStatusOrder(loginUser.access_token));
+    }
+  };
 
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
+
   const onRefresh = useCallback(() => {
-    dispatch(getProduct({category: currentCategory, page: currentPage}))
-    if(loginUser!=null){
-      dispatch(getStatusOrder(loginUser.access_token)).then(()=>{setRefreshing(true)})
+    dispatch(getProduct({category: currentCategory, page: currentPage}));
+    if (loginUser != null) {
+      dispatch(getStatusOrder(loginUser.access_token)).then(() => {
+        setRefreshing(true);
+      });
     }
     wait(500).then(() => {
       setRefreshing(false);
@@ -81,18 +144,30 @@ const Home = ({navigation}) => {
   }, []);
 
   useEffect(() => {
+    dispatch(connectionChecker());
     getData();
-  }, []);
+  }, [connection]);
 
-  const headerComponent = () => (
+  const headerComponent = (
     <View style={styles.Layer}>
-      <Input placeholder="Search" />
+      <View style={styles.Headers}>
+        <Input
+          placeholder="Search"
+          onChangeText={val => setIsSearch(val)}
+          onPress={onSearch}
+        />
+        <TouchableOpacity
+          style={styles.Wishlist}
+          onPress={() => navigation.navigate('Wishlist')}>
+          <Icon name={'book'} size={ms(30)} color={COLORS.white} />
+        </TouchableOpacity>
+      </View>
       <Carousel
         loop
         autoPlay={true}
         autoPlayInterval={5000}
         width={window.width * 0.9}
-        height={120}
+        height={ms(120)}
         mode="parallax"
         modeConfig={{
           parallaxScrollingScale: 0.9,
@@ -107,7 +182,7 @@ const Home = ({navigation}) => {
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
-          data={category}
+          data={CATEGORY}
           renderItem={({item}) => (
             <CategoryButton
               name={item.name}
@@ -115,57 +190,63 @@ const Home = ({navigation}) => {
               onPress={item.onclick}
             />
           )}
-          keyExtractor={item => item.name}
+          keyExtractor={item => item.id}
         />
       </View>
     </View>
   );
-  const cekLogin = () =>{
-    if(loginUser==null){
+
+  const cekLogin = () => {
+    if (loginUser == null) {
       Toast.show({
         type: 'error',
         text1: 'You Are not logged in',
       });
-      navigation.navigate("Auth")
+      navigation.navigate('Auth');
     }
-  }
+  };
+
   const renderItem = ({item}) => (
     <ProductCard
-      onPress={() =>{
-        if(loginUser==null){
-          cekLogin()
-        }else{
-          dispatch(getSpesificProductBuyer(loginUser.access_token, item.id)).then(
-            ()=>{
-              if(statusOrder!=null){
-                var order=statusOrder.filter(itemS=>{
-                  return itemS.product_id==item.id
-                })
-                var orderArray= order.map(o=>{
-                  return o.id
-                })
-                const orderId  = orderArray.toString();
-                if(orderId==''){      
-                  navigation.navigate('Detail',{
-                    user:'buyer',
-                    order_id:null
-                  })    
-                }else{
-                  dispatch(getStatusOrderProduct(loginUser.access_token,orderId)).then(
-                    navigation.navigate('Detail',{
-                      user:'buyer',
-                      order_id:orderId
-                    })
-                  )
-                }
-              } 
-            }      
-          )
+      onPress={() => {
+        if (loginUser == null) {
+          cekLogin();
+        } else {
+          dispatch(
+            getSpesificProductBuyer(loginUser.access_token, item.id),
+          ).then(() => {
+            if (statusOrder != null) {
+              var order = statusOrder.filter(itemS => {
+                return itemS.product_id == item.id;
+              });
+              var orderArray = order.map(o => {
+                return o.id;
+              });
+              const orderId = orderArray.toString();
+              if (orderId == '') {
+                navigation.navigate('Detail', {
+                  user: 'buyer',
+                  order_id: null,
+                });
+              } else {
+                dispatch(
+                  getStatusOrderProduct(loginUser.access_token, orderId),
+                ).then(
+                  navigation.navigate('Detail', {
+                    user: 'buyer',
+                    order_id: orderId,
+                  }),
+                );
+              }
+            }
+          });
         }
       }}
       data={item}
+      onPressWishlist={() =>
+        dispatch(addWishlist(item.id, loginUser?.access_token))
+      }
     />
-    
   );
 
   return (
@@ -175,21 +256,29 @@ const Home = ({navigation}) => {
         backgroundColor={'transparent'}
         translucent
       />
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        keyExtractor={item => item.id}
-        numColumns={2}
-        data={product}
-        renderItem={renderItem}
-        ListHeaderComponent={headerComponent}
-        contentContainerStyle={styles.FlatlistContainer}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="green"
-            colors={['green']}/>
-      }/>
+      {loading || !connection ? (
+        <HomeShimmer />
+      ) : (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          data={product}
+          renderItem={renderItem}
+          ListHeaderComponent={headerComponent}
+          onEndReached={() => setCurrentPage(currentPage + 1)}
+          onEndReachedThreshold={0.5}
+          contentContainerStyle={styles.FlatlistContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="green"
+              colors={['green']}
+            />
+          }
+        />
+      )}
     </View>
   );
 };
@@ -202,7 +291,7 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingBottom: Platform.OS === 'ios' ? 85 : 70,
+    paddingBottom: Platform.OS === 'ios' ? ms(75) : ms(60),
   },
   FlatlistContainer: {
     alignItems: 'center',
@@ -211,18 +300,28 @@ const styles = StyleSheet.create({
     width: window.width * 1,
     backgroundColor: COLORS.dark,
     alignItems: 'center',
-    borderBottomRightRadius: 15,
-    borderBottomLeftRadius: 15,
-    height: Platform.OS === 'ios' ? 325 : 300,
-    paddingTop: StatusBarManager.HEIGHT + 10,
+    borderBottomRightRadius: ms(10),
+    borderBottomLeftRadius: ms(10),
+    paddingTop: StatusBarManager.HEIGHT + ms(10),
+    paddingBottom: ms(18),
+  },
+  Headers: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  Wishlist: {
+    marginBottom: ms(20),
+    marginLeft: ms(10),
   },
   Banner: {
-    height: 120,
-    borderRadius: 10,
+    backgroundColor: COLORS.lightGrey,
+    height: ms(120),
+    borderRadius: ms(10),
   },
   CategoryContainer: {
     width: window.width * 0.9,
     flexDirection: 'row',
-    marginTop: 10,
+    marginTop: ms(10),
   },
 });

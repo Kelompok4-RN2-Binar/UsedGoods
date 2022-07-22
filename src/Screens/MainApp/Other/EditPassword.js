@@ -1,6 +1,7 @@
 import {View, StatusBar, StyleSheet, NativeModules} from 'react-native';
 import React, {useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {ms} from 'react-native-size-matters';
 import {updatePassword} from '../../../Redux/actions';
 import {Formik} from 'formik';
 import * as yup from 'yup';
@@ -99,6 +100,6 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingTop: StatusBarManager.HEIGHT + 20,
+    paddingTop: StatusBarManager.HEIGHT + ms(20),
   },
 });

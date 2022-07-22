@@ -3,122 +3,149 @@ import {
   Text,
   Image,
   StyleSheet,
-  Dimensions,
   StatusBar,
+  NativeModules,
 } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux/';
-import {goLogout} from '../../Redux/actions';
+import {useNavigation} from '@react-navigation/native';
+import {ms} from 'react-native-size-matters';
+import {getUserData, goLogout} from '../../Redux/actions';
 import {userIcon} from '../../Assets';
-import {ButtonShadow} from '../../Components';
-import {COLORS} from '../../Utils/Colors';
-import {FONTS} from '../../Utils/Fonts';
+import {AkunShimmer, ButtonShadow} from '../../Components';
+import {COLORS, FONTS} from '../../Utils';
 
-const Akun = ({navigation}) => {
+const Akun = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const userData = useSelector(state => state.appData.userData);
+  const [loading, setLoading] = useState(true);
+
   const loginUser = useSelector(state => state.appData.loginUser);
+  const userData = useSelector(state => state.appData.userData);
+
+  useEffect(() => {
+    loginUser
+      ? dispatch(getUserData(loginUser?.access_token)).then(() =>
+          setLoading(false),
+        )
+      : setLoading(false);
+  }, [loginUser]);
 
   return (
     <View style={styles.Container}>
       <StatusBar
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
         backgroundColor={'transparent'}
         translucent
       />
-      <View style={styles.Header}>
-        <Text style={styles.Title}>My Account</Text>
-        {loginUser && userData ? (
-          <Image source={{uri: userData?.image_url}} style={styles.Image} />
-        ) : (
-          <Image source={userIcon} style={styles.Image} />
-        )}
-      </View>
-      <View style={styles.Content}>
-        {loginUser && userData ? (
-          <>
-            <Text style={styles.Name} numberOfLines={1}>
-              {userData.full_name}
-            </Text>
-            <ButtonShadow
-              shadowColor={COLORS.black}
-              onPress={() => navigation.navigate('EditAccount')}
-              icon={'account-edit-outline'}
-              caption={'Edit Account'}
-            />
-            <ButtonShadow
-              shadowColor={COLORS.black}
-              onPress={() => navigation.navigate('EditPassword')}
-              icon={'lock-reset'}
-              caption={'Edit Password'}
-            />
-            <ButtonShadow
-              shadowColor={COLORS.red}
-              onPress={() => {
-                dispatch(goLogout());
-                navigation.navigate('Auth');
-              }}
-              icon={'logout-variant'}
-              caption={'Logout'}
-            />
-          </>
-        ) : (
-          <>
-            <ButtonShadow
-              shadowColor={COLORS.black}
-              onPress={() => {
-                dispatch(goLogout());
-                navigation.navigate('Auth');
-              }}
-              icon={'login-variant'}
-              caption={'Login or Register'}
-            />
-          </>
-        )}
-      </View>
+      {loading ? (
+        <AkunShimmer />
+      ) : (
+        <>
+          <View style={styles.Header}>
+            <Text style={styles.Title}>My Account</Text>
+            {loginUser && userData ? (
+              <Image source={{uri: userData?.image_url}} style={styles.Image} />
+            ) : (
+              <Image source={userIcon} style={styles.Image} />
+            )}
+          </View>
+          <View style={styles.Content}>
+            {loginUser && userData ? (
+              <>
+                <Text style={styles.Name} numberOfLines={1}>
+                  {userData.full_name}
+                </Text>
+                <ButtonShadow
+                  shadowColor={COLORS.black}
+                  onPress={() => navigation.navigate('EditAccount')}
+                  icon={'account-edit-outline'}
+                  caption={'Edit Account'}
+                />
+                <ButtonShadow
+                  shadowColor={COLORS.black}
+                  onPress={() => navigation.navigate('EditPassword')}
+                  icon={'lock-reset'}
+                  caption={'Edit Password'}
+                />
+                <ButtonShadow
+                  shadowColor={COLORS.red}
+                  onPress={() => {
+                    dispatch(goLogout());
+                    navigation.navigate('Auth');
+                  }}
+                  icon={'logout-variant'}
+                  caption={'Logout'}
+                />
+              </>
+            ) : (
+              <>
+                <ButtonShadow
+                  shadowColor={COLORS.black}
+                  onPress={() => {
+                    navigation.navigate('Auth');
+                    dispatch(goLogout());
+                  }}
+                  icon={'login-variant'}
+                  caption={'Login or Register'}
+                />
+              </>
+            )}
+          </View>
+        </>
+      )}
     </View>
   );
 };
 
 export default Akun;
 
-const window = Dimensions.get('window');
+const {StatusBarManager} = NativeModules;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
     alignItems: 'center',
+
+    paddingTop: StatusBarManager.HEIGHT,
   },
   Header: {
-    width: window.width * 1,
-    height: window.height * 0.3,
     backgroundColor: COLORS.dark,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
+    width: ms(350),
+    height: ms(175),
     justifyContent: 'flex-end',
     alignItems: 'center',
+
+    borderBottomLeftRadius: ms(10),
+    borderBottomRightRadius: ms(10),
   },
   Title: {
     fontFamily: FONTS.Bold,
-    fontSize: 24,
+    fontSize: ms(20),
     color: COLORS.white,
+
+    top: ms(10),
   },
   Image: {
     backgroundColor: COLORS.green,
-    width: window.height * 0.15,
-    height: window.height * 0.15,
-    borderRadius: 15,
-    top: window.height * 0.06,
+    width: ms(120),
+    height: ms(120),
+    top: ms(50),
+
+    borderRadius: ms(10),
   },
   Content: {
-    width: window.width * 0.85,
+    width: ms(320),
     alignItems: 'center',
-    marginTop: 65,
+
+    marginTop: ms(65),
   },
   Name: {
     fontFamily: FONTS.Bold,
-    fontSize: 20,
+    fontSize: ms(15),
     color: COLORS.black,
+
+    marginBottom: ms(10),
   },
 });

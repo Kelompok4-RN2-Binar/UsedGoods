@@ -1,9 +1,16 @@
-import {Text, TouchableOpacity, Image, StyleSheet,Dimensions} from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import React from 'react';
+import {ms} from 'react-native-size-matters';
 import {rupiah} from '../../Redux/actions';
 import {COLORS, FONTS} from '../../Utils';
 
-const Product = ({data, onPress}) => {
+const Product = ({data, onPress, onPressWishlist}) => {
   return (
     <TouchableOpacity style={styles.Card} onPress={onPress}>
       <Image style={styles.Image} source={{uri: data?.image_url}} />
@@ -16,6 +23,9 @@ const Product = ({data, onPress}) => {
       <Text style={styles.Price} numberOfLines={1}>
         {`Rp. ${rupiah(data?.base_price)}`}
       </Text>
+      <TouchableOpacity style={styles.AddWishlist} onPress={onPressWishlist}>
+        <Text style={styles.Wishlist}>Add to Wishlist</Text>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
@@ -25,41 +35,60 @@ const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Card: {
     backgroundColor: COLORS.white,
-    width: window.width*0.4,
+    width: window.width * 0.4,
     alignItems: 'center',
-    margin: 10,
-    padding: 10,
-    borderRadius: 10,
-    elevation: 4,
-    shadowColor: '#000',
+    margin: ms(10),
+    padding: ms(10),
+
+    borderRadius: ms(10),
+    elevation: ms(2),
+    shadowColor: COLORS.black,
     shadowOffset: {
       width: 0,
       height: 0,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowOpacity: ms(0.25),
+    shadowRadius: ms(2),
   },
   Image: {
+    backgroundColor: COLORS.lightGrey,
     resizeMode: 'cover',
-    width: 140,
-    height: 100,
-    borderRadius: 10,
-    marginBottom: 10,
+    width: ms(130),
+    height: ms(90),
+
+    borderRadius: ms(10),
+    marginBottom: ms(10),
   },
   Location: {
     fontFamily: FONTS.Regular,
-    fontSize: 10,
+    fontSize: ms(10),
     color: COLORS.dark,
   },
   Name: {
     fontFamily: FONTS.Bold,
-    fontSize: 14,
+    fontSize: ms(14),
     color: COLORS.dark,
-    marginVertical: 4,
+
+    marginTop: ms(6),
   },
   Price: {
     fontFamily: FONTS.SemiBold,
-    fontSize: 12,
+    fontSize: ms(12),
     color: COLORS.dark,
+  },
+  AddWishlist: {
+    backgroundColor: COLORS.softDark,
+    alignItems: 'center',
+
+    paddingHorizontal: ms(10),
+    paddingVertical: ms(5),
+    marginTop: ms(6),
+
+    borderRadius: ms(10),
+  },
+  Wishlist: {
+    fontFamily: FONTS.Medium,
+    fontSize: ms(8),
+    color: COLORS.white,
   },
 });

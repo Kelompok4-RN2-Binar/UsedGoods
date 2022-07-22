@@ -22,25 +22,20 @@ import {
   GET_ORDER,
   GET_DETAIL_NOTIFICATION,
   GET_SOLD_SELLER,
+  CLEAR_PRODUCT,
+  ADD_WISHLIST,
+  CONNECTED,
+  NOT_CONNECTED,
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
 import moment from 'moment';
+import NetInfo from '@react-native-community/netinfo';
+
 export const authScreen = data => ({
   type: AUTH_SCREEN,
   payload: data,
 });
-
-export const DaftarJualScreen = data => ({
-  type: DAFTARJUAL_SCREEN,
-  payload: data,
-});
-
-export const NotificationScreen = data => ({
-  type: NOTIFICATION_SCREEN,
-  payload: data,
-});
-
 
 export const fetchingLogin = data => {
   return async dispatch => {
@@ -51,7 +46,6 @@ export const fetchingLogin = data => {
         password: password,
       })
       .then(res => {
-        console.log('User Info : ', res.data);
         Toast.show({
           type: 'success',
           text1: 'Login Successful!',
@@ -68,10 +62,7 @@ export const fetchingLogin = data => {
             text1: 'Email or Password Missmatch!',
           });
         } else {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+          console.log(error);
         }
       });
   };
@@ -79,10 +70,9 @@ export const fetchingLogin = data => {
 
 export const fetchingRegister = data => {
   return async dispatch => {
-    const {image, name, email, password, phone, address, city} = data;
+    const {name, email, password, phone, address, city} = data;
     await axios
       .post(URL + 'auth/register', {
-        image: image,
         full_name: name,
         email: email,
         password: password,
@@ -104,18 +94,11 @@ export const fetchingRegister = data => {
             text1: 'Email Already Exists!',
           });
         } else {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+          console.log(error);
         }
       });
   };
 };
-
-export const goLogout = () => ({
-  type: LOGOUT,
-});
 
 export const getUserData = AccessToken => {
   return async dispatch => {
@@ -148,7 +131,6 @@ export const getUserData = AccessToken => {
 };
 
 export const updateUserData = (data, AccessToken) => {
-  console.log(data);
   return async dispatch => {
     const {image, name, email, password, phone, address, city} = data;
     const formData = new FormData();
@@ -170,8 +152,6 @@ export const updateUserData = (data, AccessToken) => {
     await axios
       .put(URL + 'auth/user', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          Accept: 'application/json',
           access_token: `${AccessToken}`,
         },
       })
@@ -192,16 +172,13 @@ export const updateUserData = (data, AccessToken) => {
             text1: 'Email Already Exists!',
           });
         } else {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+          console.log(error);
         }
       });
   };
 };
 
-export const updatePassword = (data, AccessToken) => {
+export const updatePassword = (data, accessToken) => {
   return async () => {
     const {currentPassword, newPassword, confirmPassword} = data;
     await axios
@@ -214,7 +191,7 @@ export const updatePassword = (data, AccessToken) => {
         },
         {
           headers: {
-            access_token: `${AccessToken}`,
+            access_token: `${accessToken}`,
           },
         },
       )
@@ -231,14 +208,15 @@ export const updatePassword = (data, AccessToken) => {
             text1: 'Current Password is Wrong!',
           });
         } else {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+          console.log(error);
         }
       });
   };
 };
+
+export const goLogout = () => ({
+  type: LOGOUT,
+});
 
 export const getBanner = () => {
   return async dispatch => {
@@ -257,6 +235,7 @@ export const getBanner = () => {
 };
 
 export const getProduct = ({page, category_id, search}) => {
+  console.log(page, search, category_id);
   return async dispatch => {
     await axios
       .get(`${URL}buyer/product`, {
@@ -269,9 +248,10 @@ export const getProduct = ({page, category_id, search}) => {
         },
       })
       .then(res => {
+        console.log(res.data);
         dispatch({
           type: GET_PRODUCT,
-          payload: res.data.data,
+          payload: res.data,
         });
       })
       .catch(err => {
@@ -279,6 +259,52 @@ export const getProduct = ({page, category_id, search}) => {
       });
   };
 };
+
+export const clearProduct = () => ({
+  type: CLEAR_PRODUCT,
+});
+
+export const addWishlist = (productId, accessToken) => {
+  console.log(productId, accessToken);
+  return async dispatch => {
+    await axios
+      .post(
+        `${URL}buyer/wishlist`,
+        {
+          product_id: productId,
+        },
+        {
+          headers: {
+            access_token: `${accessToken}`,
+          },
+        },
+      )
+      .then(res => {
+        console.log(res.data);
+        Toast.show({
+          type: 'success',
+          text1: 'Successful Add to Wishlist!',
+        });
+        dispatch({
+          type: ADD_WISHLIST,
+          payload: res.data,
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+};
+
+export const DaftarJualScreen = data => ({
+  type: DAFTARJUAL_SCREEN,
+  payload: data,
+});
+
+export const NotificationScreen = data => ({
+  type: NOTIFICATION_SCREEN,
+  payload: data,
+});
 
 export const postProduct = (data, AccessToken, category) => {
   return async dispatch => {
@@ -314,10 +340,7 @@ export const postProduct = (data, AccessToken, category) => {
       })
       .catch(function (error) {
         console.log(error);
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -337,10 +360,7 @@ export const getProductSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -360,10 +380,7 @@ export const getWishlistSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -394,10 +411,7 @@ export const getNotificationSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -417,10 +431,7 @@ export const getNotificationBuyer = AccessToken => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -436,10 +447,7 @@ export const getCategory = () => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -459,10 +467,7 @@ export const getSpesificProduct = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -482,10 +487,7 @@ export const deleteProduct = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -524,25 +526,25 @@ export const updateProduct = (data, AccessToken, category, id) => {
       })
       .catch(function (error) {
         console.log(error);
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
 
-
 export const acceptOrder = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .patch(URL + 'seller/order/' + id,{
-        status:""
-      }, {
-        headers: {
-          access_token: `${AccessToken}`,
+      .patch(
+        URL + 'seller/order/' + id,
+        {
+          status: '',
         },
-      })
+        {
+          headers: {
+            access_token: `${AccessToken}`,
+          },
+        },
+      )
       .then(res => {
         Toast.show({
           type: 'success',
@@ -550,10 +552,7 @@ export const acceptOrder = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -561,13 +560,17 @@ export const acceptOrder = (AccessToken, id) => {
 export const SoldOrder = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .patch(URL + 'seller/order/' + id,{
-        status:"accepted"
-      }, {
-        headers: {
-          access_token: `${AccessToken}`,
+      .patch(
+        URL + 'seller/order/' + id,
+        {
+          status: 'accepted',
         },
-      })
+        {
+          headers: {
+            access_token: `${AccessToken}`,
+          },
+        },
+      )
       .then(res => {
         Toast.show({
           type: 'success',
@@ -575,10 +578,7 @@ export const SoldOrder = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -586,13 +586,17 @@ export const SoldOrder = (AccessToken, id) => {
 export const declineOrder = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .patch(URL + 'seller/order/' + id,{
-        status:"declined"
-      }, {
-        headers: {
-          access_token: `${AccessToken}`,
+      .patch(
+        URL + 'seller/order/' + id,
+        {
+          status: 'declined',
         },
-      })
+        {
+          headers: {
+            access_token: `${AccessToken}`,
+          },
+        },
+      )
       .then(res => {
         Toast.show({
           type: 'success',
@@ -600,18 +604,15 @@ export const declineOrder = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
 
-export const getWishlistSpesific = (AccessToken,id) => {
+export const getWishlistSpesific = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .get(URL + 'seller/order/'+id, {
+      .get(URL + 'seller/order/' + id, {
         headers: {
           access_token: `${AccessToken}`,
         },
@@ -623,10 +624,7 @@ export const getWishlistSpesific = (AccessToken,id) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -646,29 +644,29 @@ export const getSpesificProductBuyer = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
 
-
-export const buyProduct = (data,AccessToken) => {
+export const buyProduct = (data, AccessToken) => {
   return async dispatch => {
-    const {base_price,id} = data;
+    const {base_price, id} = data;
     await axios
-      .post(URL + 'buyer/order', {
-        product_id:id,
-        bid_price:base_price
-      },{
-        headers: {
-          access_token: `${AccessToken}`,
+      .post(
+        URL + 'buyer/order',
+        {
+          product_id: id,
+          bid_price: base_price,
         },
-      })
-      .then((res) => {
-        console.log("res order actions: ",res.data)
+        {
+          headers: {
+            access_token: `${AccessToken}`,
+          },
+        },
+      )
+      .then(res => {
+        console.log('res order actions: ', res.data);
         dispatch({
           type: GET_ORDER,
           payload: res.data,
@@ -679,15 +677,12 @@ export const buyProduct = (data,AccessToken) => {
         });
       })
       .catch(function (error) {
-          Toast.show({
-            type: 'error',
-            text1: error.response.data.message,
-          });
+        console.log(error);
       });
   };
 };
 
-export const getStatusOrder = (AccessToken) => {
+export const getStatusOrder = AccessToken => {
   return async dispatch => {
     await axios
       .get(URL + 'buyer/order/', {
@@ -702,13 +697,11 @@ export const getStatusOrder = (AccessToken) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
+
 export const getStatusOrderProduct = (AccessToken, id) => {
   return async dispatch => {
     await axios
@@ -736,10 +729,10 @@ export const getStatusOrderProduct = (AccessToken, id) => {
   };
 };
 
-export const getDetailNotification = (AccessToken,id) => {
+export const getDetailNotification = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .get(URL + 'notification/'+id, {
+      .get(URL + 'notification/' + id, {
         headers: {
           access_token: `${AccessToken}`,
         },
@@ -751,10 +744,7 @@ export const getDetailNotification = (AccessToken,id) => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -762,19 +752,20 @@ export const getDetailNotification = (AccessToken,id) => {
 export const readNotif = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .patch(URL + 'notification/'+ id,{}, {
-        headers: {
-          access_token: `${AccessToken}`,
+      .patch(
+        URL + 'notification/' + id,
+        {},
+        {
+          headers: {
+            access_token: `${AccessToken}`,
+          },
         },
-      })
+      )
       .then(res => {
-        console.log("patch read sucess!")
+        console.log('patch read sucess!');
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
   };
 };
@@ -794,10 +785,27 @@ export const getSoldSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        console.log(error);
       });
+  };
+};
+
+export const connectionChecker = () => {
+  return async dispatch => {
+    try {
+      NetInfo.addEventListener(state => {
+        if (state.isConnected) {
+          dispatch({
+            type: CONNECTED,
+          });
+        } else {
+          dispatch({
+            type: NOT_CONNECTED,
+          });
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 };

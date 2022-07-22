@@ -1,6 +1,7 @@
-import {Text, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {ms} from 'react-native-size-matters';
 import {COLORS, FONTS} from '../../Utils';
 
 const ButtonShadow = ({shadowColor, onPress, icon, caption}) => {
@@ -16,33 +17,32 @@ const ButtonShadow = ({shadowColor, onPress, icon, caption}) => {
 
 export default ButtonShadow;
 
-const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Box: {
-    width: window.width * 0.85,
-    height: window.height * 0.1,
+    backgroundColor: COLORS.white,
+    width: ms(320),
+    height: ms(60),
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
 
-    marginTop: 20,
+    marginTop: ms(15),
 
-    borderRadius: 15,
+    borderRadius: ms(10),
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 0,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOpacity: ms(0.25),
+    shadowRadius: ms(2),
+    elevation: ms(2),
   },
   Icon: {
-    marginHorizontal: 20,
+    marginHorizontal: ms(20),
   },
   Text: {
     fontFamily: FONTS.Regular,
-    fontSize: 14,
+    fontSize: ms(12),
     color: COLORS.black,
   },
 });

@@ -11,7 +11,7 @@ import {
   NativeModules,
 } from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
-import {CategoryButton, Header} from '../../Components';
+import {CategoryButton, DaftarJualShimmer, Header} from '../../Components';
 import {useSelector, useDispatch} from 'react-redux';
 import {COLORS, FONTS} from '../../Utils';
 import {
@@ -32,6 +32,7 @@ const DaftarJual = ({navigation}) => {
     state => state.appData.productDataSeller,
   );
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -61,108 +62,113 @@ const DaftarJual = ({navigation}) => {
         barStyle="dark-content"
         translucent
       />
-      <Header title={'My Selling List'} />
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="green"
-            colors={['green']}
-          />
-        }>
-        <View
-          style={{
-            backgroundColor: COLORS.white,
-            width: window.width * 0.8,
-
-            flexDirection: 'row',
-            paddingVertical: 15,
-            justifyContent: 'space-around',
-            alignSelf: 'center',
-            borderRadius: 10,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 0,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3,
-            elevation: 3,
-            marginVertical:10
-          }}>
-          <View style={{flexDirection: 'row'}}>
-            <Image
-              style={{
-                backgroundColor: COLORS.green,
-                width: 40,
-                height: 40,
-
-                marginRight: 20,
-
-                borderRadius: 8,
-              }}
-              source={{uri: userData?.image_url}}
-            />
+      {loading ? (
+        <DaftarJualShimmer />
+      ) : (
+        <>
+          <Header title={'My Selling List'} />
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="green"
+                colors={['green']}
+              />
+            }>
             <View
               style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}>
-              <Text style={styles.Name}>{userData?.full_name}</Text>
-              <Text style={styles.Location}>{userData?.city}</Text>
-            </View>
-          </View>
-          <TouchableOpacity
-            style={{
-              borderColor: COLORS.green,
-              width: window.width * 0.2,
-              justifyContent: 'center',
-              alignItems: 'center',
+                backgroundColor: COLORS.white,
+                width: window.width * 0.8,
 
-              borderRadius: 8,
-              borderWidth: 1,
-            }}
-            onPress={() => {
-              navigation.navigate('EditAccount');
-            }}>
-            <Text style={styles.Text}>Edit</Text>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: 20,
-            marginBottom: 15,
-            marginHorizontal:10
-          }}>
-          <CategoryButton
-            name={'Product'}
-            icon={'package-variant-closed'}
-            onPress={() => dispatch(DaftarJualScreen('Product'))}
-          />
-          <CategoryButton
-            name={'Interested'}
-            icon={'heart-outline'}
-            onPress={() => dispatch(DaftarJualScreen('Wishlist'))}
-          />
-          <CategoryButton
-            name={'Sold'}
-            icon={'currency-usd'}
-            onPress={() => dispatch(DaftarJualScreen('Sold'))}
-          />
-        </View>
-        <View
-          style={{
-            alignSelf: 'center',
-            marginBottom:60
-          }}>
-          {daftarJualScreen == 'Product' && <Product />}
-          {daftarJualScreen == 'Wishlist' && <Wishlist />}
-          {daftarJualScreen == 'Sold' && <Sold />}
-        </View>
-      </ScrollView>
+                flexDirection: 'row',
+                paddingVertical: 15,
+                justifyContent: 'space-around',
+                alignSelf: 'center',
+                borderRadius: 10,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 0,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3,
+                elevation: 3,
+              }}>
+              <View style={{flexDirection: 'row'}}>
+                <Image
+                  style={{
+                    backgroundColor: COLORS.green,
+                    width: 40,
+                    height: 40,
+
+                    marginRight: 20,
+
+                    borderRadius: 8,
+                  }}
+                  source={{uri: userData?.image_url}}
+                />
+                <View
+                  style={{
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={styles.Name}>{userData?.full_name}</Text>
+                  <Text style={styles.Location}>{userData?.city}</Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={{
+                  borderColor: COLORS.green,
+                  width: window.width * 0.2,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+
+                  borderRadius: 8,
+                  borderWidth: 1,
+                }}
+                onPress={() => {
+                  navigation.navigate('EditAccount');
+                }}>
+                <Text style={styles.Text}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginTop: 20,
+                marginBottom: 15,
+                marginHorizontal: 10,
+              }}>
+              <CategoryButton
+                name={'Product'}
+                icon={'package-variant-closed'}
+                onPress={() => dispatch(DaftarJualScreen('Product'))}
+              />
+              <CategoryButton
+                name={'Interested'}
+                icon={'heart-outline'}
+                onPress={() => dispatch(DaftarJualScreen('Wishlist'))}
+              />
+              <CategoryButton
+                name={'Sold'}
+                icon={'currency-usd'}
+                onPress={() => dispatch(DaftarJualScreen('Sold'))}
+              />
+            </View>
+            <View
+              style={{
+                alignSelf: 'center',
+                marginBottom: 60,
+              }}>
+              {daftarJualScreen == 'Product' && <Product />}
+              {daftarJualScreen == 'Wishlist' && <Wishlist />}
+              {daftarJualScreen == 'Sold' && <Sold />}
+            </View>
+          </ScrollView>
+        </>
+      )}
     </View>
   );
 };
@@ -187,7 +193,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Regular,
     color: COLORS.black,
   },
-    Text: {
+  Text: {
     fontSize: 12,
     fontFamily: FONTS.Regular,
     color: COLORS.black,

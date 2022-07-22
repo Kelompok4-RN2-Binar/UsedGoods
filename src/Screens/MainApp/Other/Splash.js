@@ -1,5 +1,6 @@
-import {View, Image, StatusBar, StyleSheet, Dimensions} from 'react-native';
+import {View, Image, StatusBar, StyleSheet} from 'react-native';
 import React, {useEffect} from 'react';
+import {ms} from 'react-native-size-matters';
 import {Logo} from '../../../Assets';
 import {COLORS} from '../../../Utils/Colors';
 
@@ -24,7 +25,6 @@ const Splash = ({navigation}) => {
 
 export default Splash;
 
-const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   Image: {
-    width: window.height * 0.1,
-    height: window.height * 0.1,
+    width: ms(80),
+    height: ms(80),
   },
 });
