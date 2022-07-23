@@ -26,6 +26,8 @@ import {
   CONNECTED,
   NOT_CONNECTED,
   GET_WISHLIST,
+  GET_HISTORY,
+  GET_HISTORY_PRODUCT,
 } from '../types';
 const initialState = {
   authScreen: 'Login',
@@ -50,6 +52,8 @@ const initialState = {
   notifDataDetail: null,
   soldSeller: null,
   connection: false,
+  history:null,
+  historyProduct:null
 };
 
 const Reducer = (state = initialState, action) => {
@@ -185,6 +189,16 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         connection: false,
+      };
+    case GET_HISTORY:
+      return {
+        ...state,
+        history: action.payload,
+      };
+    case GET_HISTORY_PRODUCT:
+      return {
+        ...state,
+        historyProduct: action.payload,
       };
     default:
       return state;

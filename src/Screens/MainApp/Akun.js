@@ -61,6 +61,12 @@ const Akun = () => {
                 </Text>
                 <ButtonShadow
                   shadowColor={COLORS.black}
+                  onPress={() => navigation.navigate('History')}
+                  icon={'history'}
+                  caption={'My History'}
+                />
+                <ButtonShadow
+                  shadowColor={COLORS.black}
                   onPress={() => navigation.navigate('EditAccount')}
                   icon={'account-edit-outline'}
                   caption={'Edit Account'}

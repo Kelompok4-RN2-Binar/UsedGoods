@@ -11,6 +11,7 @@ import {
   EditProduct,
   InfoPenawar,
   Wishlist,
+  History
 } from '../Screens';
 import MainApp from './MainApp';
 
@@ -32,6 +33,7 @@ const Router = () => {
       <Stack.Screen name="EditProduct" component={EditProduct} />
       <Stack.Screen name="InfoPenawar" component={InfoPenawar} />
       <Stack.Screen name="Wishlist" component={Wishlist} />
+      <Stack.Screen name="History" component={History} />
     </Stack.Navigator>
   );
 };

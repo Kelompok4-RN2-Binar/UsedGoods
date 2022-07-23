@@ -18,6 +18,7 @@ import {
   buyProduct,
   deleteProduct,
   getStatusOrderProduct,
+  goFingerprint,
   rupiah,
 } from '../../../Redux/actions';
 import {useDispatch, useSelector} from 'react-redux';
@@ -27,7 +28,6 @@ import {ButtonIcon, DetailProductShimmer, Input} from '../../../Components';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {ms} from 'react-native-size-matters';
-
 const Detail = ({route}) => {
   const {user, order_id} = route.params;
 
@@ -37,7 +37,7 @@ const Detail = ({route}) => {
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   const order = useSelector(state => state.appData.order);
-
+  console.log("order ",order)
   const productSpesific =
     user == 'seller'
       ? useSelector(state => state.appData.productSpesific)
@@ -45,7 +45,7 @@ const Detail = ({route}) => {
 
   const statusOrderProduct =
     user != 'seller' && useSelector(state => state.appData.statusOrderProduct);
-
+  console.log("status order ",statusOrderProduct)
   const [openModal, setopenModal] = useState(false);
   const [component, setComponent] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -61,20 +61,20 @@ const Detail = ({route}) => {
     );
   };
 
+  
   const goBuy = (values, resetForm) => {
-    console.log(values);
-    dispatch(buyProduct(values, loginUser.access_token)).then(() => {
-      resetForm();
-      setopenModal(false);
-      dispatch(getStatusOrderProduct(loginUser.access_token, order.id)).then(
-        () => {
+      goFingerprint().then(()=>{
+         dispatch(buyProduct(values, loginUser.access_token)).then(() => {
           setRefreshing(true);
           wait(500).then(() => {
-            setRefreshing(false);
+            resetForm();
+            setopenModal(false);
+            setRefreshing(false); 
+            navigation.replace("MainApp")
           });
-        },
-      );
-    });
+          // dispatch(getStatusOrderProduct(loginUser.access_token, order.id))
+         });
+       })
   };
   const buyValidation = yup.object().shape({
     base_price: yup.string().required('Price is Required!'),
@@ -123,9 +123,11 @@ const Detail = ({route}) => {
               source={{uri: productSpesific.image_url}}
             />
             <View style={{flexDirection: 'column', marginBottom: 10}}>
-              <Text style={[styles.Text, {fontSize: 14}]}>
-                {productSpesific.name}
-              </Text>
+              <View style={{flexDirection: 'row',flexWrap:'wrap',width:window.width*0.7 }}>
+                <Text style={[styles.Text, {fontSize: 14}]}>
+                  {productSpesific.name}
+                </Text>
+              </View>
               <Text
                 style={[
                   styles.Text,
@@ -140,7 +142,7 @@ const Detail = ({route}) => {
             }}
             validationSchema={buyValidation}
             onSubmit={(values, {resetForm}) => {
-              goBuy(values, resetForm);
+                goBuy(values, resetForm);
             }}>
             {({handleChange, handleBlur, handleSubmit, values, errors}) => (
               <View
@@ -152,7 +154,7 @@ const Detail = ({route}) => {
                 <Text
                   style={[
                     styles.Text,
-                    {fontSize: 14, fontFamily: FONTS.Regular},
+                    {fontSize: 14, fontFamily: FONTS.Regular,paddingBottom: ms(5),},
                   ]}>
                   Bid Price
                 </Text>
@@ -185,21 +187,35 @@ const Detail = ({route}) => {
             )}
           </Formik>
         </View>
-      </View>,
+      </View>
     );
   };
 
-  useEffect(() => {
-    if (user == 'buyer' && order_id != '') {
-      dispatch(getStatusOrderProduct(loginUser.access_token, order_id));
-    } else if (user == 'buyer' && statusOrderProduct != null) {
-      dispatch(
-        getStatusOrderProduct(loginUser.access_token, statusOrderProduct.id),
-      );
+  const cekData = () =>{
+    if(user=='buyer'){
+      if (statusOrderProduct != null) {
+        dispatch(
+          getStatusOrderProduct(loginUser.access_token, statusOrderProduct.id),
+        );
+      }   
+      if (order_id != null) {
+        dispatch(
+          getStatusOrderProduct(loginUser.access_token, order_id),
+        );
+      }else{
+        dispatch(
+          getStatusOrderProduct(loginUser.access_token, null)
+        );
+      }
     }
+  }
+
+  useEffect(() => {
+    cekData()
   }, []);
 
   const onRefresh = useCallback(() => {
+    cekData()
     wait(500).then(() => {
       setRefreshing(false);
     });
@@ -245,7 +261,7 @@ const Detail = ({route}) => {
               <View style={styles.CategoryContainer}>
                 {productSpesific?.Categories.map(item => {
                   return (
-                    <Text key={item => item.id} style={styles.Category}>
+                    <Text key={item.id} style={styles.Category}>
                       | {item.name} |
                     </Text>
                   );
@@ -478,5 +494,22 @@ const styles = StyleSheet.create({
   Button: {
     bottom: 0,
     position: 'absolute',
+  },
+  Text:{
+    fontFamily:FONTS.Regular,
+    color:COLORS.black
+  },
+  textGrey: {
+    color: COLORS.grey,
+    fontFamily: FONTS.Regular,
+    fontSize: 12,
+    paddingBottom: 4,
+  },
+  imageUser:{
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    marginRight: 20,
+    backgroundColor: 'black',
   },
 });

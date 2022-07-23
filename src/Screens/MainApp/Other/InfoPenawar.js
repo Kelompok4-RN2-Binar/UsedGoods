@@ -3,10 +3,9 @@ import React,{useState,useEffect,useCallback} from 'react'
 import { Button, Header } from '../../../Components'
 import { COLORS, FONTS } from '../../../Utils'
 import { useNavigation } from '@react-navigation/native'
-import { acceptOrder, declineOrder, getWishlistSpesific, rupiah ,SoldOrder,timeDate} from '../../../Redux/actions'
+import { acceptOrder, declineOrder, getWishlistSpesific, rupiah ,SoldOrder,timeDate,sendOnWhatsApp} from '../../../Redux/actions'
 import BottomModal from '../../../Components/Others/BottomModal'
 import { useSelector,useDispatch } from 'react-redux'
-import Toast from 'react-native-toast-message';
 const InfoPenawar = ({route}) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
@@ -21,18 +20,6 @@ const InfoPenawar = ({route}) => {
     const wait = timeout => {
       return new Promise(resolve => setTimeout(resolve, timeout));
     };
-    const sendOnWhatsApp = () =>{
-      let url = 'whatsapp://send?text=' + 'Hello this is ' +userData.full_name + ' who sell '+data.product_name + ' in SecondApp ' +'&phone=62' + data.User.phone_number;
-      Linking.openURL(url).then((data) => {
-        console.log('WhatsApp Opened');
-      }).catch(() => {
-        Toast.show({
-          type: 'error',
-          text1: 'Make sure Whatsapp installed on your device',
-        });
-      });
-    }
-
     const onOpenAccepted = () => {
         setopenModal(true);
         setComponent(
@@ -61,8 +48,13 @@ const InfoPenawar = ({route}) => {
                     <Text style={[styles.Text,{fontSize:14}]}>Offered {`Rp. ${rupiah(data.price)}`}</Text>
                   </View>
                 </View>
-                <Button caption={'Contact Buyer via Whatsapp'} onPress={()=>{sendOnWhatsApp();}} style={{width:window.width*0.8,height:50,marginVertical:15}}/>
+                <Button caption={'Contact Buyer via Whatsapp'}  style={{width:window.width*0.8,height:50,marginVertical:15}} 
+                  onPress={()=>{
+                    let url = 'whatsapp://send?text=' + 'Hello this is ' +userData.full_name + ' who sell '+data.product_name + ' in SecondApp ' +'&phone=62' + data.User.phone_number;
+                    sendOnWhatsApp(url);
+                  }}/>
             </View>
+          
              </View>
         )
     };

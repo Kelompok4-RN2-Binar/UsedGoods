@@ -16,6 +16,7 @@ import Preview from './MainApp/Other/Preview';
 import EditProduct from './MainApp/Other/EditProduct';
 import InfoPenawar from './MainApp/Other/InfoPenawar';
 import Wishlist from './MainApp/Other/Wishlist';
+import History from './MainApp/Other/History';
 export {
   Auth,
   Home,
@@ -31,4 +32,5 @@ export {
   EditProduct,
   InfoPenawar,
   Wishlist,
+  History
 };

@@ -24,3 +24,5 @@ export const GET_SOLD_SELLER = '@GET_SOLD_SELLER';
 export const CLEAR_PRODUCT = '@CLEAR_PRODUCT';
 export const CONNECTED = '@CONNECTED';
 export const NOT_CONNECTED = '@NOT_CONNECTED';
+export const GET_HISTORY = '@GET_HISTORY';
+export const GET_HISTORY_PRODUCT = '@GET_HISTORY_PRODUCT';

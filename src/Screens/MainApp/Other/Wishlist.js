@@ -19,6 +19,7 @@ import {
 import {COLORS} from '../../../Utils';
 import {ms} from 'react-native-size-matters';
 import {Header, ProductCard} from '../../../Components';
+import { GET_STATUS_ORDER_PRODUCT } from '../../../Redux/types';
 
 const Wishlist = ({navigation}) => {
   const dispatch = useDispatch();
@@ -54,6 +55,10 @@ const Wishlist = ({navigation}) => {
               });
               const orderId = orderArray.toString();
               if (orderId == '') {
+                 dispatch({
+                  type: GET_STATUS_ORDER_PRODUCT,
+                  statusOrderProduct: null,
+                });
                 navigation.navigate('Detail', {
                   user: 'buyer',
                   order_id: null,

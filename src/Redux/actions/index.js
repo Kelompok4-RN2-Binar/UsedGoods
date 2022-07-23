@@ -27,12 +27,15 @@ import {
   CONNECTED,
   NOT_CONNECTED,
   GET_WISHLIST,
+  GET_HISTORY,
+  GET_HISTORY_PRODUCT,
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
 import moment from 'moment';
 import NetInfo from '@react-native-community/netinfo';
-
+import TouchID from 'react-native-touch-id'
+import { Linking } from 'react-native';
 export const authScreen = data => ({
   type: AUTH_SCREEN,
   payload: data,
@@ -711,7 +714,11 @@ export const buyProduct = (data, AccessToken) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        console.log("buy errorrrrr",error);
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
       });
   };
 };
@@ -847,3 +854,73 @@ export const connectionChecker = () => {
     }
   };
 };
+
+export const goFingerprint = () => {
+    const optionalConfigObject = {
+      title:"Authentication Required", 
+      color : "#e00606",
+      unifiedErrors: false ,// use unified error messages (default false)
+      passcodeFallback: false
+    }
+    return TouchID.authenticate('Please scan your finger print to buy this product!', optionalConfigObject)
+      .catch(error => {
+          Toast.show({
+            type: 'error',
+            text1: 'Failed to Authenticate!',
+          });
+      })
+  
+};
+
+export const getHistory = AccessToken => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'history', {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_HISTORY,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+};
+
+export const getHistoryProduct = (AccessToken,id) => {
+  return async dispatch => {
+    await axios
+      .get(URL + 'history/'+id, {
+        headers: {
+          access_token: `${AccessToken}`,
+        },
+      })
+      .then(res => {
+        dispatch({
+          type: GET_HISTORY_PRODUCT,
+          payload: res.data,
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+};
+
+export const sendOnWhatsApp = (url) => {
+    Linking.openURL(url)
+      .then(data => {
+        console.log('WhatsApp Opened');
+      })
+      .catch(() => {
+        Toast.show({
+          type: 'error',
+          text1: 'Make sure Whatsapp installed on your device',
+        });
+      });
+  };

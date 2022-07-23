@@ -37,7 +37,6 @@ const Seller = () => {
 
   const onDismiss = () => {
       setopenModal(false);
-      var dataDetail = null;
     };
   var dataDetail =  useSelector(state => state.appData.notifDataDetail);
 

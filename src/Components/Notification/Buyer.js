@@ -7,7 +7,6 @@ import {
   Dimensions,
   RefreshControl,
   ScrollView,
-  Linking,
 } from 'react-native';
 import React, {useState, useCallback} from 'react';
 import {useSelector} from 'react-redux';
@@ -17,11 +16,11 @@ import {
   getNotificationBuyer,
   getDetailNotification,
   readNotif,
+  sendOnWhatsApp
 } from '../../Redux/actions';
 import {useDispatch} from 'react-redux';
 import BottomModal from '../Others/BottomModal';
 import Button from '../Others/Button';
-import Toast from 'react-native-toast-message';
 const Buyer = () => {
   const dispatch = useDispatch();
   const notifDataBuyer = useSelector(state => state.appData.notifDataBuyer);
@@ -34,9 +33,8 @@ const Buyer = () => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
   const onRefresh = useCallback(() => {
-    dispatch(getNotificationBuyer(loginUser.access_token)).then(() => {
-      setRefreshing(true);
-    });
+    setRefreshing(true);
+    dispatch(getNotificationBuyer(loginUser.access_token))
     wait(500).then(() => {
       setRefreshing(false);
     });
@@ -50,40 +48,17 @@ const Buyer = () => {
   };
   var dataDetail = useSelector(state => state.appData.notifDataDetail);
 
-  const sendOnWhatsApp = () => {
-    let url =
-      'whatsapp://send?text=' +
-      'Hello this is ' +
-      userData.full_name +
-      ' who want to buy  ' +
-      dataDetail.product_name +
-      ' in SecondApp with bid price ' +
-      'Rp. ' +
-      rupiah(dataDetail.bid_price) +
-      '&phone=62' +
-      dataDetail.User.phone_number;
-    Linking.openURL(url)
-      .then(data => {
-        console.log('WhatsApp Opened');
-      })
-      .catch(() => {
-        Toast.show({
-          type: 'error',
-          text1: 'Make sure Whatsapp installed on your device',
-        });
-      });
-  };
 
   const onOpenAccepted = (id, read) => {
     if (dataDetail.id == id) {
       setopenModal(true);
       loadData();
       if (read == false) {
+        setRefreshing(true);
         dispatch(readNotif(loginUser.access_token, dataDetail.id)).then(() => {
-          setRefreshing(true);
-        });
-        wait(500).then(() => {
-          setRefreshing(false);
+          wait(500).then(() => {
+            setRefreshing(false);
+          });
         });
       }
 
@@ -166,14 +141,25 @@ const Buyer = () => {
                         dataDetail.Product.base_price,
                       )}`}</Text>
                       <Text style={[styles.Text, {fontSize: 14}]}>
-                        Bid {`Rp. ${rupiah(dataDetail.bid_price)}`}
+                        Succesfully Bid {`Rp. ${rupiah(dataDetail.bid_price)}`}
                       </Text>
                     </View>
                   </View>
                   <Button
                     caption={'Contact Seller via Whatsapp'}
                     onPress={() => {
-                      sendOnWhatsApp();
+                      let url =
+                        'whatsapp://send?text=' +
+                        'Hello this is ' +
+                        userData.full_name +
+                        ' who want to buy  ' +
+                        dataDetail.product_name +
+                        ' in SecondApp with bid price ' +
+                        'Rp. ' +
+                        rupiah(dataDetail.bid_price) +
+                        '&phone=62' +
+                        dataDetail.User.phone_number;
+                      sendOnWhatsApp(url);
                     }}
                     style={{
                       width: window.width * 0.8,
@@ -181,6 +167,60 @@ const Buyer = () => {
                       marginVertical: 15,
                     }}
                   />
+                </>
+              )}
+              {dataDetail.status == '' && (
+                <>
+                  <Text
+                    style={[
+                      styles.Text,
+                      {
+                        alignSelf: 'center',
+                        fontSize: 14,
+                        paddingTop: 10,
+                        fontFamily: FONTS.SemiBold,
+                        color: COLORS.grey,
+                      },
+                    ]}>
+                    Wait the seller response your bid :)
+                  </Text>
+                  <Text
+                    style={[
+                      styles.Text,
+                      {
+                        alignSelf: 'center',
+                        fontSize: 16,
+                        paddingTop: 10,
+                        fontFamily: FONTS.SemiBold,
+                      },
+                    ]}>
+                    Product Bid
+                  </Text>
+        
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingVertical: 20,
+                      width: window.width * 0.9,
+                      marginLeft: 20,
+                    }}>
+                    <Image
+                      style={styles.imageUser}
+                      source={{uri: dataDetail.Product.image_url}}
+                    />
+                    <View style={{flexDirection: 'column'}}>
+                      <Text style={[styles.Text, {fontSize: 14}]}>
+                        {dataDetail.Product.name}
+                      </Text>
+                      <Text
+                        style={[styles.Text, {fontSize: 14}]}>{`Rp. ${rupiah(
+                        dataDetail.Product.base_price,
+                      )}`}</Text>
+                      <Text style={[styles.Text, {fontSize: 14}]}>
+                        Bid {`Rp. ${rupiah(dataDetail.bid_price)}`}
+                      </Text>
+                    </View>
+                  </View>
                 </>
               )}
               {dataDetail.status == 'declined' && (
@@ -232,10 +272,10 @@ const Buyer = () => {
                       </Text>
                       <Text
                         style={[styles.Text, {fontSize: 14}]}>{`Rp. ${rupiah(
-                        dataDetail.base_price,
+                        dataDetail.Product.base_price,
                       )}`}</Text>
                       <Text style={[styles.textGrey]}>{`${timeDate(
-                        dataDetail.updatedAt,
+                        dataDetail.Product.updatedAt,
                       )}`}</Text>
                     </View>
                   </View>
@@ -281,8 +321,8 @@ const Buyer = () => {
                       justifyContent: 'space-between',
                       paddingRight: 30,
                     }}>
-                    {item.status == 'accepted' ? (
-                      <Text style={styles.textGrey}>Product Offer</Text>
+                    {item.status == 'accepted'||item.status == '' ? (
+                      <Text style={[styles.textGrey,{color:item.status=='accepted'?COLORS.green:COLORS.grey}]}>Product Offer</Text>
                     ) : (
                       <Text style={[styles.textGrey, {color: COLORS.red}]}>
                         Offer Declined
@@ -295,9 +335,9 @@ const Buyer = () => {
                       {item.read == false && <View style={styles.dot} />}
                     </View>
                   </View>
-                  <Text style={styles.textBlack}>{item.product_name}</Text>
+                  <Text style={styles.textBlack}>{item.Product.name}</Text>
                   <Text style={styles.textBlack}>{`Rp. ${rupiah(
-                    item.base_price,
+                    item.Product.base_price,
                   )}`}</Text>
                   {item.bid_price != null && item.status == 'accepted' ? (
                     <Text style={styles.textBlack}>
@@ -327,9 +367,6 @@ const Buyer = () => {
                       width: window.width * 0.82,
                       flexDirection: 'row',
                     }}>
-                    {/* <Text style={[styles.textGrey]}>
-                        Kamu akan segera dihubungi penjual via whatsapp
-                    </Text> */}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -357,7 +394,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Bold,
     fontSize: 24,
   },
-  text: {
+  Text: {
     color: COLORS.black,
     fontFamily: FONTS.Regular,
     fontSize: 22,
