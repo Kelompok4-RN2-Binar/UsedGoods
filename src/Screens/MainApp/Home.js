@@ -122,7 +122,7 @@ const Home = ({navigation}) => {
     dispatch(getWishlist(loginUser.access_token));
     dispatch(connectionChecker()).then(() => {
       getData();
-    });
+  });
     
   }, [connection, currentCategory]);
 

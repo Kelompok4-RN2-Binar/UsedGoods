@@ -15,6 +15,7 @@ import {
   getStatusOrderProduct,
   getWishlist,
   removeWishlist,
+  getStatusOrder
 } from '../../../Redux/actions';
 import {COLORS} from '../../../Utils';
 import {ms} from 'react-native-size-matters';
@@ -33,6 +34,8 @@ const Wishlist = ({navigation}) => {
 
   const getData = () => {
     dispatch(getWishlist(loginUser.access_token));
+    dispatch(getStatusOrder(loginUser.access_token))
+  
   };
 
   useState(() => {
@@ -43,22 +46,22 @@ const Wishlist = ({navigation}) => {
     <ProductCard
       onPress={() => {
         if (loginUser) {
+          dispatch({
+            type: GET_STATUS_ORDER_PRODUCT,
+            statusOrderProduct: null,
+          });  
           dispatch(
             getSpesificProductBuyer(loginUser.access_token, item.product_id),
           ).then(() => {
             if (statusOrder != null) {
               var order = statusOrder.filter(itemS => {
-                return itemS.product_id == item.id;
+                return itemS.product_id == item.product_id;
               });
               var orderArray = order.map(o => {
                 return o.id;
               });
               const orderId = orderArray.toString();
               if (orderId == '') {
-                 dispatch({
-                  type: GET_STATUS_ORDER_PRODUCT,
-                  statusOrderProduct: null,
-                });
                 navigation.navigate('Detail', {
                   user: 'buyer',
                   order_id: null,
