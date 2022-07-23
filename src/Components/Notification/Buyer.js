@@ -50,7 +50,7 @@ const Buyer = () => {
 
 
   const onOpenAccepted = (id, read) => {
-    if (dataDetail.id == id) {
+    if (dataDetail&&dataDetail.id == id) {
       setopenModal(true);
       loadData();
       if (read == false) {
@@ -393,11 +393,6 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontFamily: FONTS.Bold,
     fontSize: 24,
-  },
-  Text: {
-    color: COLORS.black,
-    fontFamily: FONTS.Regular,
-    fontSize: 22,
   },
   textGrey: {
     color: COLORS.grey,
