@@ -10,18 +10,20 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {ms} from 'react-native-size-matters';
 import {
   getBanner,
   getProduct,
-  getSpesificProductBuyer,
-  getStatusOrderProduct,
-  getStatusOrder,
   clearProduct,
   addWishlist,
   connectionChecker,
+  getSpesificProductBuyer,
+  getStatusOrderProduct,
+  getWishlist,
 } from '../../Redux/actions';
 import {
   CategoryButton,
@@ -29,47 +31,38 @@ import {
   Input,
   ProductCard,
 } from '../../Components';
-import {CATEGORY, COLORS} from '../../Utils';
-import Toast from 'react-native-toast-message';
-import {useMemo} from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {ms} from 'react-native-size-matters';
+import {COLORS} from '../../Utils';
 
 const Home = ({navigation}) => {
+  const setCategory = id => (
+    setIsSearch(''), setCurrentPage(1), setCurrentCategory(id)
+  );
+
   const CATEGORY = [
     {
-      id: 1,
       name: 'All Product',
       icon: 'feature-search',
-      onclick: () => {
-        currentCategory === ''
-          ? setCurrentCategory(null)
-          : setCurrentCategory('');
-      },
+      onclick: () => setCategory(''),
     },
     {
-      id: 2,
       name: 'Elektronik',
       icon: 'desktop-mac',
-      onclick: () => setCurrentCategory(96),
+      onclick: () => setCategory(1),
     },
     {
-      id: 3,
       name: 'Aksesoris Fashion',
       icon: 'tshirt-crew-outline',
-      onclick: () => setCurrentCategory(102),
+      onclick: () => setCategory(7),
     },
     {
-      id: 4,
       name: 'Hobi dan Koleksit',
       icon: 'bike',
-      onclick: () => setCurrentCategory(104),
+      onclick: () => setCategory(9),
     },
     {
-      id: 5,
       name: 'Perlengakapan Rumah',
       icon: 'sofa-single-outline',
-      onclick: () => setCurrentCategory(107),
+      onclick: () => setCategory(12),
     },
   ];
 
@@ -79,74 +72,51 @@ const Home = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const [currentCategory, setCurrentCategory] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [isSearch, setIsSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const statusOrder = useSelector(state => state.appData.statusOrder);
 
   const loginUser = useSelector(state => state.appData.loginUser);
 
   let banner = useSelector(state => state.appData.banner);
   const product = useSelector(state => state.appData.product);
   const connection = useSelector(state => state.appData.connection);
-  console.log(connection);
-
-  const statusOrder = useSelector(state => state.appData.statusOrder);
+  let wishlist = useSelector(state => state.appData.wishlist);
 
   banner = banner?.map(({image_url}) => image_url);
 
-  useMemo(() => {
-    setLoading(true);
-    dispatch(clearProduct());
-    dispatch(
-      getProduct({category_id: currentCategory, search: '', page: 1}),
-    ).then(() => setLoading(false));
-  }, [currentCategory]);
+  useMemo(
+    () => dispatch(getProduct(currentCategory, isSearch, currentPage)),
+    [currentPage],
+  );
 
   const onSearch = () => {
     setLoading(true);
     dispatch(clearProduct());
-    dispatch(getProduct({category_id: '', search: isSearch, page: 1})).then(
-      () => setLoading(false),
-    );
+    dispatch(getBanner());
+    dispatch(getProduct(currentCategory, isSearch, currentPage)).then(() => {
+      setLoading(false);
+    });
   };
-
-  useMemo(() => {
-    dispatch(
-      getProduct({
-        category_id: currentCategory,
-        search: isSearch,
-        page: currentPage,
-      }),
-    );
-  }, [currentPage]);
 
   const getData = () => {
+    setLoading(true);
+    dispatch(clearProduct());
     dispatch(getBanner());
-    setCurrentCategory('');
-    if (loginUser != null) {
-      dispatch(getStatusOrder(loginUser.access_token));
-    }
-  };
-
-  const wait = timeout => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-  };
-
-  const onRefresh = useCallback(() => {
-    dispatch(getProduct({category: currentCategory, page: currentPage}));
-    if (loginUser != null) {
-      dispatch(getStatusOrder(loginUser.access_token)).then(() => {
-        setRefreshing(true);
-      });
-    }
-    wait(500).then(() => {
-      setRefreshing(false);
+    dispatch(getProduct(currentCategory, isSearch, currentPage)).then(() => {
+      setLoading(false);
     });
-  }, []);
+  };
+
+  useMemo(() => {});
 
   useEffect(() => {
-    dispatch(connectionChecker());
-    getData();
-  }, [connection]);
+    dispatch(getWishlist(loginUser.access_token));
+    dispatch(connectionChecker()).then(() => {
+      getData();
+    });
+  }, [connection, currentCategory]);
 
   const headerComponent = (
     <View style={styles.Layer}>
@@ -154,7 +124,7 @@ const Home = ({navigation}) => {
         <Input
           placeholder="Search"
           onChangeText={val => setIsSearch(val)}
-          onPress={onSearch}
+          onPress={() => onSearch()}
         />
         <TouchableOpacity
           style={styles.Wishlist}
@@ -190,28 +160,16 @@ const Home = ({navigation}) => {
               onPress={item.onclick}
             />
           )}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.name}
         />
       </View>
     </View>
   );
 
-  const cekLogin = () => {
-    if (loginUser == null) {
-      Toast.show({
-        type: 'error',
-        text1: 'You Are not logged in',
-      });
-      navigation.navigate('Auth');
-    }
-  };
-
   const renderItem = ({item}) => (
     <ProductCard
       onPress={() => {
-        if (loginUser == null) {
-          cekLogin();
-        } else {
+        if (loginUser) {
           dispatch(
             getSpesificProductBuyer(loginUser.access_token, item.id),
           ).then(() => {
@@ -240,12 +198,17 @@ const Home = ({navigation}) => {
               }
             }
           });
+        } else {
+          navigation.navigate('Auth');
         }
       }}
       data={item}
       onPressWishlist={() =>
-        dispatch(addWishlist(item.id, loginUser?.access_token))
+        dispatch(addWishlist(item.id, loginUser?.access_token)).then(() =>
+          dispatch(getWishlist(loginUser.access_token)),
+        )
       }
+      wishlist={wishlist}
     />
   );
 
@@ -272,8 +235,8 @@ const Home = ({navigation}) => {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor="green"
+              onRefresh={() => getData()}
+              tintColor={COLORS.softDark}
               colors={['green']}
             />
           }

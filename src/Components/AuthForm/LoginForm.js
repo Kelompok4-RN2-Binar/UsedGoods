@@ -8,7 +8,7 @@ import {fetchingLogin, getUserData} from '../../Redux/actions';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
 
-const LoginForm = () => {
+const LoginForm = ({connection}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -29,7 +29,6 @@ const LoginForm = () => {
   });
 
   const goLogin = useCallback(values => {
-    console.log(values);
     dispatch(fetchingLogin(values));
   }, []);
 
@@ -61,7 +60,11 @@ const LoginForm = () => {
             error={errors.password}
             secureTextEntry={true}
           />
-          <Button caption={'Login'} onPress={handleSubmit} />
+          <Button
+            disabled={connection ? false : true}
+            caption={'Login'}
+            onPress={handleSubmit}
+          />
         </View>
       )}
     </Formik>

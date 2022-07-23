@@ -25,6 +25,7 @@ import {
   ADD_WISHLIST,
   CONNECTED,
   NOT_CONNECTED,
+  GET_WISHLIST,
 } from '../types';
 const initialState = {
   authScreen: 'Login',
@@ -94,7 +95,7 @@ const Reducer = (state = initialState, action) => {
         ...state,
         product: null,
       };
-    case ADD_WISHLIST:
+    case GET_WISHLIST:
       return {
         ...state,
         wishlist: action.payload,

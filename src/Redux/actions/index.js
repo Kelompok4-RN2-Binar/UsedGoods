@@ -26,6 +26,7 @@ import {
   ADD_WISHLIST,
   CONNECTED,
   NOT_CONNECTED,
+  GET_WISHLIST,
 } from '../types';
 import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
@@ -234,8 +235,8 @@ export const getBanner = () => {
   };
 };
 
-export const getProduct = ({page, category_id, search}) => {
-  console.log(page, search, category_id);
+export const getProduct = (category_id, search, page) => {
+  console.log(category_id, search, page);
   return async dispatch => {
     await axios
       .get(`${URL}buyer/product`, {
@@ -248,7 +249,6 @@ export const getProduct = ({page, category_id, search}) => {
         },
       })
       .then(res => {
-        console.log(res.data);
         dispatch({
           type: GET_PRODUCT,
           payload: res.data,
@@ -265,8 +265,7 @@ export const clearProduct = () => ({
 });
 
 export const addWishlist = (productId, accessToken) => {
-  console.log(productId, accessToken);
-  return async dispatch => {
+  return async () => {
     await axios
       .post(
         `${URL}buyer/wishlist`,
@@ -279,14 +278,29 @@ export const addWishlist = (productId, accessToken) => {
           },
         },
       )
-      .then(res => {
-        console.log(res.data);
+      .then(() => {
         Toast.show({
           type: 'success',
           text1: 'Successful Add to Wishlist!',
         });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+};
+
+export const getWishlist = (accessToken, id) => {
+  return async dispatch => {
+    await axios
+      .get(`${URL}buyer/wishlist`, {
+        headers: {
+          access_token: `${accessToken}`,
+        },
+      })
+      .then(res => {
         dispatch({
-          type: ADD_WISHLIST,
+          type: GET_WISHLIST,
           payload: res.data,
         });
       })
@@ -296,6 +310,26 @@ export const addWishlist = (productId, accessToken) => {
   };
 };
 
+export const removeWishlist = (accessToken, id) => {
+  console.log(accessToken, id);
+  return async () => {
+    await axios
+      .delete(URL + 'buyer/wishlist/' + id, {
+        headers: {
+          access_token: `${accessToken}`,
+        },
+      })
+      .then(() => {
+        Toast.show({
+          type: 'success',
+          text1: 'Successful Remove from Wishlist!',
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+};
 export const DaftarJualScreen = data => ({
   type: DAFTARJUAL_SCREEN,
   payload: data,
@@ -799,6 +833,10 @@ export const connectionChecker = () => {
             type: CONNECTED,
           });
         } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Not Connected!',
+          });
           dispatch({
             type: NOT_CONNECTED,
           });

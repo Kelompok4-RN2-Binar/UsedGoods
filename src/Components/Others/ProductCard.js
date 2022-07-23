@@ -10,22 +10,42 @@ import {ms} from 'react-native-size-matters';
 import {rupiah} from '../../Redux/actions';
 import {COLORS, FONTS} from '../../Utils';
 
-const Product = ({data, onPress, onPressWishlist}) => {
+const Product = ({data, onPress, onPressWishlist, wishlist, label}) => {
+  const wishlistButton = wishlist?.filter(i => i.product_id == data.id);
   return (
     <TouchableOpacity style={styles.Card} onPress={onPress}>
-      <Image style={styles.Image} source={{uri: data?.image_url}} />
+      <Image
+        style={styles.Image}
+        source={{uri: label ? data?.Product?.image_url : data?.image_url}}
+      />
       <Text style={styles.Location} numberOfLines={1}>
-        {data?.location}
+        {label ? data?.Product?.location : data?.location}
       </Text>
       <Text style={styles.Name} numberOfLines={1}>
-        {data?.name}
+        {label ? data?.Product?.name : data?.name}
       </Text>
-      <Text style={styles.Price} numberOfLines={1}>
-        {`Rp. ${rupiah(data?.base_price)}`}
-      </Text>
-      <TouchableOpacity style={styles.AddWishlist} onPress={onPressWishlist}>
-        <Text style={styles.Wishlist}>Add to Wishlist</Text>
-      </TouchableOpacity>
+      {/* <Text style={styles.Price} numberOfLines={1}>
+        {`Rp. ${rupiah(label ? data?.Product?.base_price : data?.base_price)}`}
+      </Text> */}
+      {wishlist || label ? (
+        <TouchableOpacity
+          disabled={label ? false : wishlistButton?.length ? true : false}
+          style={[
+            {
+              backgroundColor: label
+                ? COLORS.red
+                : wishlistButton?.length
+                ? COLORS.dark
+                : COLORS.softDark,
+            },
+            styles.AddWishlist,
+          ]}
+          onPress={onPressWishlist}>
+          <Text style={styles.Wishlist}>
+            {label ? 'Remove' : 'Add to Wishlist'}
+          </Text>
+        </TouchableOpacity>
+      ) : null}
     </TouchableOpacity>
   );
 };
@@ -77,7 +97,6 @@ const styles = StyleSheet.create({
     color: COLORS.dark,
   },
   AddWishlist: {
-    backgroundColor: COLORS.softDark,
     alignItems: 'center',
 
     paddingHorizontal: ms(10),

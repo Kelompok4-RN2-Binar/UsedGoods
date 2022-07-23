@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import {ms} from 'react-native-size-matters';
 import {COLORS, FONTS} from '../../Utils';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ButtonIcon from './ButtonIcon';
 
 const Header = ({navigation, title}) => {
@@ -20,13 +21,10 @@ const Header = ({navigation, title}) => {
           color={COLORS.black}
         />
       )}
-      <Text
-        style={[
-          styles.Title,
-          {marginLeft: navigation ? window.width * 0.235 : 0},
-        ]}>
-        {title}
-      </Text>
+      <Text style={styles.Title}>{title}</Text>
+      {navigation && (
+        <Icon name={'keyboard-backspace'} size={25} color={COLORS.white} />
+      )}
     </View>
   );
 };
@@ -38,13 +36,13 @@ const styles = StyleSheet.create({
   Container: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
 
     paddingHorizontal: window.width * 0.05,
     marginBottom: ms(25),
   },
   Title: {
-    marginLeft: window.width * 0.235,
-
+    flex: 1,
     fontFamily: FONTS.Bold,
     fontSize: ms(18),
     textAlign: 'center',

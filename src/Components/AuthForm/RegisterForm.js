@@ -10,7 +10,7 @@ import Input from '../Others/Input';
 import Button from '../Others/Button';
 import ImageShow from '../Others/ImageShow';
 
-const RegisterForm = ({label}) => {
+const RegisterForm = ({label, connection}) => {
   const dispatch = useDispatch();
 
   const loginUser = useSelector(state => state.appData.loginUser);
@@ -151,6 +151,7 @@ const RegisterForm = ({label}) => {
             error={errors.city}
           />
           <Button
+            disabled={connection ? false : true}
             caption={label ? 'Update' : 'Register'}
             onPress={handleSubmit}
           />

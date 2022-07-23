@@ -5,12 +5,22 @@ import {
   StyleSheet,
   NativeModules,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {ms} from 'react-native-size-matters';
+import {connectionChecker} from '../../../Redux/actions';
 import {RegisterForm, Header} from '../../../Components';
 import {COLORS} from '../../../Utils';
 
 const EditAccount = ({navigation}) => {
+  const dispatch = useDispatch();
+
+  const connection = useSelector(state => state.appData.connection);
+
+  useEffect(() => {
+    dispatch(connectionChecker());
+  }, [connection]);
+
   return (
     <View style={styles.Container}>
       <StatusBar
@@ -20,7 +30,7 @@ const EditAccount = ({navigation}) => {
       />
       <Header title={'Edit Account'} navigation={navigation} />
       <ScrollView contentContainerStyle={styles.Box}>
-        <RegisterForm label={'Edit'} />
+        <RegisterForm label={'Edit'} connection={connection} />
       </ScrollView>
     </View>
   );

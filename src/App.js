@@ -6,7 +6,6 @@ import {PersistGate} from 'redux-persist/integration/react';
 import Toast from 'react-native-toast-message';
 import Router from './Router';
 import Store, {PersistStore} from './Redux/Store';
-import NetInfo from '@react-native-community/netinfo';
 
 const App = () => {
   return (

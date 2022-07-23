@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {authScreen} from '../../Redux/actions';
+import {authScreen, connectionChecker} from '../../Redux/actions';
 import {Pattern, Logo} from '../../Assets';
 import {AuthHeader, LoginForm, RegisterForm} from '../../Components';
 import {COLORS, FONTS} from '../../Utils/';
@@ -21,8 +21,10 @@ const Auth = () => {
   const dispatch = useDispatch();
 
   const selectScreen = useSelector(state => state.appData.authScreen);
+  const connection = useSelector(state => state.appData.connection);
 
   useEffect(() => {
+    dispatch(connectionChecker);
     dispatch(authScreen('Login'));
   }, []);
 
@@ -43,7 +45,11 @@ const Auth = () => {
             <AuthHeader screen={'Login'} />
             <AuthHeader screen={'Register'} />
           </View>
-          {selectScreen == 'Login' ? <LoginForm /> : <RegisterForm />}
+          {selectScreen == 'Login' ? (
+            <LoginForm connection={connection} />
+          ) : (
+            <RegisterForm connection={connection} />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

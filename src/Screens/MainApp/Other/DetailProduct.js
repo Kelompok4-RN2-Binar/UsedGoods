@@ -252,7 +252,7 @@ const Detail = ({route}) => {
                 })}
               </View>
               <Text style={styles.Price}>
-                {`Rp. ${rupiah(productSpesific.base_price)}`}
+                {`Rp. ${rupiah(productSpesific?.base_price)}`}
               </Text>
             </View>
           </ImageBackground>

@@ -10,7 +10,7 @@ import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux/';
 import {useNavigation} from '@react-navigation/native';
 import {ms} from 'react-native-size-matters';
-import {getUserData, goLogout} from '../../Redux/actions';
+import {connectionChecker, getUserData, goLogout} from '../../Redux/actions';
 import {userIcon} from '../../Assets';
 import {AkunShimmer, ButtonShadow} from '../../Components';
 import {COLORS, FONTS} from '../../Utils';
@@ -21,16 +21,18 @@ const Akun = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const connection = useSelector(state => state.appData.connection);
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
 
   useEffect(() => {
+    dispatch(connectionChecker());
     loginUser
       ? dispatch(getUserData(loginUser?.access_token)).then(() =>
           setLoading(false),
         )
       : setLoading(false);
-  }, [loginUser]);
+  }, [connection, loginUser]);
 
   return (
     <View style={styles.Container}>
@@ -39,7 +41,7 @@ const Akun = () => {
         backgroundColor={'transparent'}
         translucent
       />
-      {loading ? (
+      {loading || !connection ? (
         <AkunShimmer />
       ) : (
         <>
