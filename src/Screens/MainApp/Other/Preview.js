@@ -19,8 +19,11 @@ import {getCategory, rupiah} from '../../../Redux/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import Button from '../../../Components/Others/Button';
 import {postProduct, updateProduct} from '../../../Redux/actions';
+
 const Preview = ({route}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
   const {
     data,
     categoryProduct,
@@ -30,11 +33,11 @@ const Preview = ({route}) => {
     id,
     dataCategory,
   } = route.params;
+
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
   const category = useSelector(state => state.appData.category);
-  console.log(category);
-  const navigation = useNavigation();
+
   const goSell = () => {
     dispatch(postProduct(data, loginUser.access_token, categoryProduct)).then(
       () => {
@@ -43,6 +46,7 @@ const Preview = ({route}) => {
     );
     resetForm();
   };
+
   const goUpdate = () => {
     dispatch(
       updateProduct(data, loginUser.access_token, categoryProduct, id),
@@ -51,6 +55,7 @@ const Preview = ({route}) => {
     });
     resetForm();
   };
+
   useEffect(() => {
     dispatch(getCategory());
   }, []);
@@ -58,7 +63,7 @@ const Preview = ({route}) => {
   return (
     <>
       {data != null && (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
           <StatusBar
             backgroundColor={'transparent'}
             translucent
@@ -230,7 +235,14 @@ const Preview = ({route}) => {
                 )}
               </View>
             </View>
-            <View style={{marginBottom:20,flexDirection:'column',position:'absolute',bottom:1,alignSelf:'center'}}>
+            <View
+              style={{
+                marginBottom: 20,
+                flexDirection: 'column',
+                position: 'absolute',
+                bottom: 1,
+                alignSelf: 'center',
+              }}>
               {data.image &&
               data.base_price &&
               data.name &&
@@ -240,7 +252,7 @@ const Preview = ({route}) => {
                   {screen == 'edit' && (
                     <Button
                       caption={'Update'}
-                      style={{width:window.width*0.8}}
+                      style={{width: window.width * 0.8}}
                       onPress={() => {
                         goUpdate();
                       }}
@@ -249,7 +261,7 @@ const Preview = ({route}) => {
                   {screen == 'jual' && (
                     <Button
                       caption={'Posting'}
-                      style={{width:window.width*0.8}}
+                      style={{width: window.width * 0.8}}
                       onPress={() => {
                         goSell();
                       }}
@@ -261,7 +273,10 @@ const Preview = ({route}) => {
                   {screen == 'edit' && (
                     <Button
                       caption={'Update'}
-                      style={{width:window.width*0.8,backgroundColor:COLORS.disabled}}
+                      style={{
+                        width: window.width * 0.8,
+                        backgroundColor: COLORS.disabled,
+                      }}
                       onPress={() => {
                         goUpdate();
                       }}
@@ -271,8 +286,10 @@ const Preview = ({route}) => {
                   {screen == 'jual' && (
                     <Button
                       caption={'Posting'}
-                      
-                      style={{width:window.width*0.8,backgroundColor:COLORS.disabled}}
+                      style={{
+                        width: window.width * 0.8,
+                        backgroundColor: COLORS.disabled,
+                      }}
                       onPress={() => {
                         goSell();
                       }}
@@ -283,7 +300,7 @@ const Preview = ({route}) => {
               )}
             </View>
           </ScrollView>
-        </SafeAreaView>
+        </View>
       )}
     </>
   );
@@ -332,7 +349,7 @@ const styles = StyleSheet.create({
     height: 150,
     backgroundColor: 'white',
     alignSelf: 'center',
-    marginLeft:25
+    marginLeft: 25,
   },
   Text: {
     fontSize: 12,
@@ -354,6 +371,6 @@ const styles = StyleSheet.create({
   Box: {
     flexGrow: 1,
     paddingBottom: 25,
-    height:window.height*1
+    height: window.height * 1,
   },
 });

@@ -12,8 +12,6 @@ const Tab = createBottomTabNavigator();
 const MainApp = () => {
   const loginUser = useSelector(state => state.appData.loginUser);
 
-  const bottom = Platform.OS === 'ios' ? ms(20) : ms(5);
-
   const handleNotLogin = ({navigation}) => ({
     tabPress: e => {
       if (!loginUser) {
@@ -54,7 +52,7 @@ const MainApp = () => {
           borderRadius: ms(10),
           marginHorizontal: ms(5),
           paddingHorizontal: ms(20),
-          bottom: bottom,
+          bottom: Platform.OS === 'ios' ? ms(20) : ms(5),
         },
         tabBarItemStyle: {
           height: ms(40),

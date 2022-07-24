@@ -15,6 +15,7 @@ import HomeShimmer from './Skeleton/HomeShimmer';
 import DetailProductShimmer from './Skeleton/DetailProductShimmer';
 import NotificationShimmer from './Skeleton/NotificationShimmer';
 import DaftarJualShimmer from './Skeleton/DaftarJualShimmer';
+import WishlistShimmer from './Skeleton/WishlistShimmer';
 
 export {
   AuthHeader,
@@ -34,4 +35,5 @@ export {
   DetailProductShimmer,
   NotificationShimmer,
   DaftarJualShimmer,
+  WishlistShimmer,
 };

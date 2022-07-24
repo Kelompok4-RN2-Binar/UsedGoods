@@ -7,9 +7,9 @@ import {
 } from 'react-native';
 import React from 'react';
 import {ms} from 'react-native-size-matters';
+import ButtonIcon from './ButtonIcon';
 import {COLORS, FONTS} from '../../Utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ButtonIcon from './ButtonIcon';
 
 const Header = ({navigation, title}) => {
   return (
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
 
     paddingHorizontal: window.width * 0.05,
-    marginBottom: ms(25),
+    marginBottom: ms(15),
   },
   Title: {
     flex: 1,

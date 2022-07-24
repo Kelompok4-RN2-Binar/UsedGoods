@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {ms} from 'react-native-size-matters';
 import {authScreen, connectionChecker} from '../../Redux/actions';
 import {Pattern, Logo} from '../../Assets';
 import {AuthHeader, LoginForm, RegisterForm} from '../../Components';
 import {COLORS, FONTS} from '../../Utils/';
-import {ms} from 'react-native-size-matters';
 
 const Auth = () => {
   const dispatch = useDispatch();

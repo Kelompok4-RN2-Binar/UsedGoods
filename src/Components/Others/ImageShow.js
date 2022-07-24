@@ -6,6 +6,7 @@ import {COLORS} from '../../Utils/Colors';
 
 const ImageShow = ({onPress, uri}) => {
   let image = uri;
+  console.log(image);
 
   return (
     <TouchableOpacity style={styles.Button} onPress={onPress}>
@@ -31,17 +32,17 @@ const styles = StyleSheet.create({
   Button: {
     width: ms(100),
     height: ms(100),
-    backgroundColor: COLORS.black,
+    backgroundColor: COLORS.lightGrey,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: window.height * 0.025,
+    marginBottom: ms(25),
     borderRadius: ms(10),
   },
   Image: {
-    width: ms(10),
-    height: ms(10),
-    borderRadius: ms(100),
+    width: ms(100),
+    height: ms(100),
+    borderRadius: ms(10),
   },
   Icon: {
     position: 'absolute',

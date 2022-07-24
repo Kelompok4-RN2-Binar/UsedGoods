@@ -10,7 +10,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState, useCallback, useMemo} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -24,7 +24,7 @@ import {
   getSpesificProductBuyer,
   getStatusOrderProduct,
   getWishlist,
-  getStatusOrder
+  getStatusOrder,
 } from '../../Redux/actions';
 import {
   CategoryButton,
@@ -33,7 +33,7 @@ import {
   ProductCard,
 } from '../../Components';
 import {COLORS} from '../../Utils';
-import { GET_STATUS_ORDER_PRODUCT } from '../../Redux/types';
+import {GET_STATUS_ORDER_PRODUCT} from '../../Redux/types';
 
 const Home = ({navigation}) => {
   const setCategory = id => (
@@ -78,9 +78,9 @@ const Home = ({navigation}) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const statusOrder = useSelector(state => state.appData.statusOrder);
-  console.log("status order home",statusOrder)
+  console.log('status order home', statusOrder);
   const loginUser = useSelector(state => state.appData.loginUser);
-  console.log(loginUser)
+  console.log(loginUser);
   let banner = useSelector(state => state.appData.banner);
   const product = useSelector(state => state.appData.product);
   const connection = useSelector(state => state.appData.connection);
@@ -109,10 +109,10 @@ const Home = ({navigation}) => {
     dispatch(getProduct(currentCategory, isSearch, currentPage)).then(() => {
       setLoading(false);
     });
-    if(loginUser!=null){
+    if (loginUser != null) {
       dispatch(getStatusOrder(loginUser.access_token)).then(() => {
         setLoading(false);
-    });
+      });
     }
   };
 
@@ -122,8 +122,7 @@ const Home = ({navigation}) => {
     dispatch(getWishlist(loginUser.access_token));
     dispatch(connectionChecker()).then(() => {
       getData();
-  });
-    
+    });
   }, [connection, currentCategory]);
 
   const headerComponent = (
@@ -177,12 +176,11 @@ const Home = ({navigation}) => {
   const renderItem = ({item}) => (
     <ProductCard
       onPress={() => {
-        
         if (loginUser) {
           dispatch({
             type: GET_STATUS_ORDER_PRODUCT,
             statusOrderProduct: null,
-          });  
+          });
           dispatch(
             getSpesificProductBuyer(loginUser.access_token, item.id),
           ).then(() => {

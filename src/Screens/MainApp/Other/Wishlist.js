@@ -8,35 +8,43 @@ import {
   FlatList,
 } from 'react-native';
 import React from 'react';
-import {useState} from 'react';
+import {useState, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getSpesificProductBuyer,
   getStatusOrderProduct,
   getWishlist,
   removeWishlist,
-  getStatusOrder
+  getStatusOrder,
 } from '../../../Redux/actions';
 import {COLORS} from '../../../Utils';
 import {ms} from 'react-native-size-matters';
-import {Header, ProductCard} from '../../../Components';
-import { GET_STATUS_ORDER_PRODUCT } from '../../../Redux/types';
+import {Header, ProductCard, WishlistShimmer} from '../../../Components';
+import {GET_STATUS_ORDER_PRODUCT} from '../../../Redux/types';
 
 const Wishlist = ({navigation}) => {
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(true);
+
+  const connection = useSelector(state => state.appData.connection);
   const loginUser = useSelector(state => state.appData.loginUser);
   const statusOrder = useSelector(state => state.appData.statusOrder);
   const wishlist = useSelector(state => state.appData.wishlist);
 
   const wishlistFilter = wishlist?.map(i => i.Product);
-  console.log('tesssssssss', wishlistFilter);
 
   const getData = () => {
     dispatch(getWishlist(loginUser.access_token));
-    dispatch(getStatusOrder(loginUser.access_token))
-  
+    dispatch(getStatusOrder(loginUser.access_token)).then(() =>
+      setLoading(false),
+    );
   };
+
+  const handleRemove = useCallback(id => {
+    setLoading(true);
+    dispatch(removeWishlist(loginUser.access_token, id)).then(() => getData());
+  }, []);
 
   useState(() => {
     getData();
@@ -49,7 +57,7 @@ const Wishlist = ({navigation}) => {
           dispatch({
             type: GET_STATUS_ORDER_PRODUCT,
             statusOrderProduct: null,
-          });  
+          });
           dispatch(
             getSpesificProductBuyer(loginUser.access_token, item.product_id),
           ).then(() => {
@@ -84,11 +92,7 @@ const Wishlist = ({navigation}) => {
       }}
       data={item}
       label={'wishlist'}
-      onPressWishlist={() =>
-        dispatch(removeWishlist(loginUser.access_token, item.id)).then(() =>
-          getData(),
-        )
-      }
+      onPressWishlist={() => handleRemove(item.id)}
     />
   );
 
@@ -99,15 +103,21 @@ const Wishlist = ({navigation}) => {
         backgroundColor={'transparent'}
         translucent
       />
-      <Header navigation={navigation} title={'Wishlist'} />
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        keyExtractor={item => item.id}
-        numColumns={2}
-        data={wishlist}
-        renderItem={renderItem}
-        contentContainerStyle={styles.FlatlistContainer}
-      />
+      {loading || !connection ? (
+        <WishlistShimmer />
+      ) : (
+        <>
+          <Header navigation={navigation} title={'My Wishlist'} />
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.id}
+            numColumns={2}
+            data={wishlist}
+            renderItem={renderItem}
+            contentContainerStyle={styles.FlatlistContainer}
+          />
+        </>
+      )}
     </View>
   );
 };
@@ -121,7 +131,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
     paddingTop: StatusBarManager.HEIGHT + ms(20),
-    paddingBottom: Platform.OS === 'ios' ? ms(75) : ms(60),
+    paddingBottom: Platform.OS === 'ios' ? ms(25) : ms(15),
   },
   FlatlistContainer: {
     alignItems: 'center',
