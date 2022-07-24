@@ -5,23 +5,26 @@ import {
   Text,
   Image,
   ImageBackground,
-  TouchableOpacity,
   StatusBar,
   Dimensions,
   StyleSheet,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {authScreen} from '../../Redux/actions';
+import {ms} from 'react-native-size-matters';
+import {authScreen, connectionChecker} from '../../Redux/actions';
 import {Pattern, Logo} from '../../Assets';
-import {LoginForm, RegisterForm} from '../../Components';
+import {AuthHeader, LoginForm, RegisterForm} from '../../Components';
 import {COLORS, FONTS} from '../../Utils/';
 
 const Auth = () => {
   const dispatch = useDispatch();
+
   const selectScreen = useSelector(state => state.appData.authScreen);
+  const connection = useSelector(state => state.appData.connection);
 
   useEffect(() => {
+    dispatch(connectionChecker);
     dispatch(authScreen('Login'));
   }, []);
 
@@ -39,28 +42,14 @@ const Auth = () => {
         </View>
         <View style={styles.Card}>
           <View style={styles.Header}>
-            <TouchableOpacity
-              onPress={() => {
-                dispatch(authScreen('Login'));
-              }}>
-              {selectScreen == 'Login' ? (
-                <Text style={styles.ActivePage}>Login</Text>
-              ) : (
-                <Text style={styles.PasivePage}>Login</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                dispatch(authScreen('Register'));
-              }}>
-              {selectScreen == 'Register' ? (
-                <Text style={styles.ActivePage}>Register</Text>
-              ) : (
-                <Text style={styles.PasivePage}>Register</Text>
-              )}
-            </TouchableOpacity>
+            <AuthHeader screen={'Login'} />
+            <AuthHeader screen={'Register'} />
           </View>
-          {selectScreen == 'Login' ? <LoginForm /> : <RegisterForm />}
+          {selectScreen == 'Login' ? (
+            <LoginForm connection={connection} />
+          ) : (
+            <RegisterForm connection={connection} />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -83,48 +72,41 @@ const styles = StyleSheet.create({
   Box: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingVertical: 75,
+
+    paddingVertical: ms(75),
   },
   UsedGoods: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 50,
+
+    marginBottom: ms(50),
   },
   ImageLogo: {
-    width: 40,
-    height: 40,
-    marginRight: 12,
+    width: ms(40),
+    height: ms(40),
+    marginRight: ms(10),
   },
   ImageUsedGoods: {
     fontFamily: FONTS.Regular,
-    fontSize: 32,
+    fontSize: ms(30),
     fontWeight: '700',
     color: COLORS.white,
   },
   Card: {
-    width: window.width * 0.9,
     backgroundColor: COLORS.white,
-    borderRadius: 15,
+
+    width: window.width * 0.9,
     alignSelf: 'center',
-    paddingVertical: 25,
+    borderRadius: ms(15),
+
+    paddingVertical: ms(25),
   },
   Header: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    marginBottom: 25,
-  },
-  ActivePage: {
-    fontFamily: FONTS.Bold,
-    fontSize: 18,
-    color: COLORS.black,
-    borderBottomWidth: 4,
-    borderColor: COLORS.red,
-  },
-  PasivePage: {
-    fontFamily: FONTS.Regular,
-    color: COLORS.grey,
-    fontSize: 14,
+
+    marginBottom: ms(25),
   },
 });

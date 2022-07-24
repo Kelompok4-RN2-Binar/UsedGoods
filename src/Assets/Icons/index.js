@@ -1,1 +1,1 @@
-export const Google = require('./google.png');
+export const userIcon = require('./user.png');

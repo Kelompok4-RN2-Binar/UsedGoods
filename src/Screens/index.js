@@ -9,6 +9,28 @@ import Akun from './MainApp/Akun';
 //MainApp for bottom tabs
 
 import Splash from './MainApp/Other/Splash';
-import InfoAkun from './MainApp/Other/InfoAkun';
-
-export {Auth, Home, Notifikasi, Jual, DaftarJual, Akun, Splash, InfoAkun};
+import EditAccount from './MainApp/Other/EditAccount';
+import EditPassword from './MainApp/Other/EditPassword';
+import Detail from './MainApp/Other/DetailProduct';
+import Preview from './MainApp/Other/Preview';
+import EditProduct from './MainApp/Other/EditProduct';
+import InfoPenawar from './MainApp/Other/InfoPenawar';
+import Wishlist from './MainApp/Other/Wishlist';
+import History from './MainApp/Other/History';
+export {
+  Auth,
+  Home,
+  Notifikasi,
+  Jual,
+  DaftarJual,
+  Akun,
+  Splash,
+  EditAccount,
+  EditPassword,
+  Detail,
+  Preview,
+  EditProduct,
+  InfoPenawar,
+  Wishlist,
+  History
+};

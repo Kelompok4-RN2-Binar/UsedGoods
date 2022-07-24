@@ -1,23 +1,18 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
-import React, {useCallback} from 'react';
-import {useDispatch} from 'react-redux';
-import {fetchingLogin} from '../../Redux/actions';
+import {View} from 'react-native';
+import React, {useCallback, useMemo} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import {Google} from '../../Assets';
+import {fetchingLogin, getUserData} from '../../Redux/actions';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
-import {COLORS, FONTS} from '../../Utils';
 
-const LoginForm = () => {
+const LoginForm = ({connection}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const loginUser = useSelector(state => state.appData.loginUser);
 
   const loginValidation = yup.object().shape({
     email: yup
@@ -36,6 +31,10 @@ const LoginForm = () => {
   const goLogin = useCallback(values => {
     dispatch(fetchingLogin(values));
   }, []);
+
+  useMemo(() => {
+    loginUser && navigation.navigate('Home');
+  }, [loginUser]);
 
   return (
     <Formik
@@ -61,11 +60,11 @@ const LoginForm = () => {
             error={errors.password}
             secureTextEntry={true}
           />
-          <Button caption={'Login'} onPress={handleSubmit} />
-          <TouchableOpacity style={styles.Button}>
-            <Image style={styles.Icon} source={Google} />
-            <Text style={styles.Text}>Login with Google</Text>
-          </TouchableOpacity>
+          <Button
+            disabled={connection ? false : true}
+            caption={'Login'}
+            onPress={handleSubmit}
+          />
         </View>
       )}
     </Formik>
@@ -73,28 +72,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-const window = Dimensions.get('window');
-const styles = StyleSheet.create({
-  Button: {
-    backgroundColor: COLORS.black,
-    width: window.width * 0.6,
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: 25,
-    borderRadius: 15,
-  },
-  Icon: {
-    width: 25,
-    height: 25,
-    marginRight: 10,
-  },
-  Text: {
-    fontFamily: FONTS.SemiBold,
-    fontSize: 12,
-    color: COLORS.white,
-  },
-});

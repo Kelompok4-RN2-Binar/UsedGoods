@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import {ms} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../Utils/Colors';
 import {FONTS} from '../../Utils/Fonts';
@@ -18,32 +19,50 @@ const Input = ({
   value,
   error,
   secureTextEntry,
+  screen,
+  onPress,
 }) => {
   const [isSecureText, setIsSecureText] = useState(secureTextEntry);
+  const [isActive, setIsActive] = useState(false);
+
   return (
     <View style={styles.Container}>
-      <View style={styles.Content}>
+      <View
+        style={{
+          ...styles.Content,
+          borderColor: isActive ? COLORS.black : COLORS.grey,
+        }}>
         <Icon style={styles.Icon} name={icon} size={20} color={COLORS.dark} />
         <TextInput
-          style={styles.Input}
+          onFocus={() => setIsActive(true)}
+          onBlur={() => setIsActive(false)}
+          style={[styles.Input, {marginHorizontal: screen == 'jual' ? 0 : 15}]}
           placeholder={placeholder}
           onChangeText={onChangeText}
           value={value}
           secureTextEntry={isSecureText}
           placeholderTextColor={COLORS.grey}
         />
-        {placeholder == 'Password' || placeholder == 'Confirm Password' ? (
-          <TouchableOpacity
-            onPress={() => {
-              setIsSecureText(val => !val);
-            }}>
-            <Icon
-              name={isSecureText ? 'eye-outline' : 'eye-off-outline'}
-              size={20}
-              color={COLORS.dark}
-            />
+        {placeholder == 'Password' ||
+          placeholder == 'Current Password' ||
+          placeholder == 'New Password' ||
+          (placeholder == 'Confirm Password' && (
+            <TouchableOpacity
+              onPress={() => {
+                setIsSecureText(val => !val);
+              }}>
+              <Icon
+                name={isSecureText ? 'eye-outline' : 'eye-off-outline'}
+                size={ms(20)}
+                color={COLORS.dark}
+              />
+            </TouchableOpacity>
+          ))}
+        {placeholder == 'Search' && (
+          <TouchableOpacity onPress={onPress}>
+            <Icon name={'card-search'} size={ms(30)} color={COLORS.dark} />
           </TouchableOpacity>
-        ) : null}
+        )}
       </View>
       <Text style={styles.Text}>{error}</Text>
     </View>
@@ -56,29 +75,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   Content: {
-    width: window.width * 0.8,
-    height: 52,
     backgroundColor: COLORS.white,
+    width: window.width * 0.8,
+    height: ms(45),
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.dark,
-    borderRadius: 15,
-    paddingHorizontal: 15,
+
+    borderWidth: ms(1),
+    borderRadius: ms(10),
+
+    paddingHorizontal: ms(15),
   },
   Input: {
     width: '75%',
+    paddingVertical: ms(6),
+
     fontFamily: FONTS.Regular,
-    fontSize: 12,
-    marginHorizontal: 15,
+    fontSize: ms(12),
+    color: COLORS.black,
   },
   Text: {
     width: window.width * 0.7,
+
     fontFamily: FONTS.Regular,
-    fontSize: 10,
+    fontSize: ms(10),
     color: COLORS.red,
     textAlign: 'justify',
-    marginVertical: 5,
+
+    marginVertical: ms(5),
   },
 });
 

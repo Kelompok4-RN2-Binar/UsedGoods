@@ -1,15 +1,16 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import Router from './Router';
 import {Provider} from 'react-redux';
-import Store, {PersistStor} from './Redux/Store';
 import {PersistGate} from 'redux-persist/integration/react';
 import Toast from 'react-native-toast-message';
+import Router from './Router';
+import Store, {PersistStore} from './Redux/Store';
 
 const App = () => {
   return (
     <Provider store={Store}>
-      <PersistGate loading={null} persistor={PersistStor}>
+      <PersistGate loading={null} persistor={PersistStore}>
         <NavigationContainer>
           <Router />
           <Toast />
