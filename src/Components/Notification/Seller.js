@@ -66,7 +66,7 @@ const Seller = () => {
     if (dataDetail?.id == id) {
       setopenModal(true);
       dispatch(readNotif(loginUser?.access_token, dataDetail?.id)).then(() => {
-        getData();
+        dispatch(getNotificationSeller(loginUser?.access_token));
         setComponent(
           <View
             style={{

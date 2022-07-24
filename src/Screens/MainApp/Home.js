@@ -115,7 +115,7 @@ const Home = ({navigation}) => {
   const getData = () => {
     setIsSearch('');
     setDefault();
-    dispatch(getWishlist(loginUser.access_token));
+    loginUser && dispatch(getWishlist(loginUser.access_token));
     dispatch(getProduct(currentCategory, '', 1)).then(() => {
       setLoading(false);
     });

@@ -12,21 +12,27 @@ import {
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {ms} from 'react-native-size-matters';
-import {authScreen, connectionChecker} from '../../Redux/actions';
+import {authScreen, connectionChecker,getUserData} from '../../Redux/actions';
 import {Pattern, Logo} from '../../Assets';
 import {AuthHeader, LoginForm, RegisterForm} from '../../Components';
 import {COLORS, FONTS} from '../../Utils/';
+import { useNavigation } from '@react-navigation/native';
 
 const Auth = () => {
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   const selectScreen = useSelector(state => state.appData.authScreen);
   const connection = useSelector(state => state.appData.connection);
+  const loginUser = useSelector(state => state.appData.loginUser);
 
   useEffect(() => {
     dispatch(connectionChecker);
     dispatch(authScreen('Login'));
-  }, []);
+    if (loginUser) {
+      navigation.replace('MainApp');
+      dispatch(getUserData(loginUser.access_token));
+    }
+  }, [loginUser]);
 
   return (
     <SafeAreaView style={styles.Container}>
