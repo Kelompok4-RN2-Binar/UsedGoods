@@ -10,7 +10,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState, useMemo} from 'react';
+import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -34,40 +34,45 @@ import {
 } from '../../Components';
 import {COLORS} from '../../Utils';
 import {GET_STATUS_ORDER_PRODUCT} from '../../Redux/types';
+import {useIsFocused} from '@react-navigation/native';
 
 const Home = ({navigation}) => {
-  const setCategory = id => (
-    setIsSearch(''), setCurrentPage(1), setCurrentCategory(id)
-  );
-
   const CATEGORY = [
     {
       name: 'All Product',
       icon: 'feature-search',
-      onclick: () => setCategory(''),
+      onclick: () => {
+        setCurrentCategory('');
+        setIsSearch('');
+        setDefault();
+        dispatch(getWishlist(loginUser.access_token));
+        dispatch(getProduct(currentCategory, '', 1)).then(() => {
+          setLoading(false);
+        });
+      },
     },
     {
       name: 'Elektronik',
       icon: 'desktop-mac',
-      onclick: () => setCategory(1),
+      onclick: () => setCurrentCategory(1),
     },
     {
       name: 'Aksesoris Fashion',
       icon: 'tshirt-crew-outline',
-      onclick: () => setCategory(7),
+      onclick: () => setCurrentCategory(7),
     },
     {
       name: 'Hobi dan Koleksit',
       icon: 'bike',
-      onclick: () => setCategory(9),
+      onclick: () => setCurrentCategory(9),
     },
     {
       name: 'Perlengakapan Rumah',
       icon: 'sofa-single-outline',
-      onclick: () => setCategory(12),
+      onclick: () => setCurrentCategory(12),
     },
   ];
-
+  const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
@@ -78,9 +83,9 @@ const Home = ({navigation}) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const statusOrder = useSelector(state => state.appData.statusOrder);
-  console.log('status order home', statusOrder);
+
   const loginUser = useSelector(state => state.appData.loginUser);
-  console.log(loginUser);
+
   let banner = useSelector(state => state.appData.banner);
   const product = useSelector(state => state.appData.product);
   const connection = useSelector(state => state.appData.connection);
@@ -94,35 +99,42 @@ const Home = ({navigation}) => {
   );
 
   const onSearch = () => {
-    setLoading(true);
-    dispatch(clearProduct());
-    dispatch(getBanner());
-    dispatch(getProduct(currentCategory, isSearch, currentPage)).then(() => {
+    setDefault();
+    dispatch(getProduct(currentCategory, isSearch, 1)).then(() => {
       setLoading(false);
     });
+  };
+
+  const setDefault = () => {
+    setLoading(true);
+    setCurrentPage(1);
+    dispatch(clearProduct());
+    dispatch(getBanner());
   };
 
   const getData = () => {
-    setLoading(true);
-    dispatch(clearProduct());
-    dispatch(getBanner());
-    dispatch(getProduct(currentCategory, isSearch, currentPage)).then(() => {
+    setIsSearch('');
+    setDefault();
+    dispatch(getWishlist(loginUser.access_token));
+    dispatch(getProduct(currentCategory, '', 1)).then(() => {
       setLoading(false);
     });
-    if (loginUser != null) {
+    loginUser &&
       dispatch(getStatusOrder(loginUser.access_token)).then(() => {
         setLoading(false);
       });
-    }
   };
 
-  useMemo(() => {});
+  onRefresh = useCallback(() => {
+    getData();
+  }, []);
 
   useEffect(() => {
-    dispatch(getWishlist(loginUser.access_token));
-    dispatch(connectionChecker()).then(() => {
-      getData();
-    });
+    if (isFocused) {
+      dispatch(connectionChecker()).then(() => {
+        getData();
+      });
+    }
   }, [connection, currentCategory]);
 
   const headerComponent = (
@@ -239,6 +251,8 @@ const Home = ({navigation}) => {
           numColumns={2}
           data={product}
           renderItem={renderItem}
+          refreshing={true}
+          onRefresh={() => onRefresh}
           ListHeaderComponent={headerComponent}
           onEndReached={() => setCurrentPage(currentPage + 1)}
           onEndReachedThreshold={0.5}

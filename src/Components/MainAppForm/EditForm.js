@@ -18,11 +18,15 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import {updateProduct} from '../../Redux/actions';
 import {useNavigation} from '@react-navigation/native';
+import {ms} from 'react-native-size-matters';
 
 const EditValidation = yup.object().shape({
   name: yup.string().required('Product Name is Required!'),
   location: yup.string().required('City is Required!'),
-  base_price: yup.string().required('Price is Required!'),
+  base_price: yup
+    .string()
+    .required('Price is Required!')
+    .matches(/^\d+$/, 'Numbers Only'),
   description: yup.string().required('Description is Required!'),
 });
 
@@ -164,6 +168,7 @@ const EditForm = ({data}) => {
                   }}>
                   <ImageBackground
                     style={styles.Image}
+                    imageStyle={{borderRadius: ms(10)}}
                     source={{uri: values.image}}>
                     <Icon
                       style={styles.Icon}
@@ -200,16 +205,17 @@ export default EditForm;
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Text: {
-    paddingLeft: 40,
+    paddingLeft: ms(40),
     color: COLORS.black,
     fontFamily: FONTS.Regular,
+    marginBottom: ms(5),
   },
   Dropdown: {
     width: window.width * 0.8,
     alignSelf: 'center',
-    borderWidth: 1,
-    borderRadius: 15,
-    marginBottom: 25,
+    borderWidth: ms(1),
+    borderRadius: ms(10),
+    marginBottom: ms(20),
     borderColor: COLORS.grey,
   },
   Icon: {
@@ -217,18 +223,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   Category: {
-    width: window.width * 0.3,
-    height: 110,
-    borderWidth: 1,
+    width: ms(130),
+    height: ms(90),
+    borderWidth: ms(1),
     borderColor: COLORS.grey,
-    borderRadius: 5,
-    marginRight: 15,
+    borderRadius: ms(10),
+    marginRight: ms(15),
     justifyContent: 'center',
   },
   Image: {
-    width: window.width * 0.3,
-    height: 110,
+    width: ms(130),
+    height: ms(90),
     justifyContent: 'center',
-    borderRadius: 5,
   },
 });

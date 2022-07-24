@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux/';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {ms} from 'react-native-size-matters';
 import {connectionChecker, getUserData, goLogout} from '../../Redux/actions';
 import {userIcon} from '../../Assets';
@@ -20,6 +20,7 @@ import {COLORS, FONTS} from '../../Utils';
 const Akun = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
   const [loading, setLoading] = useState(true);
 
@@ -28,12 +29,14 @@ const Akun = () => {
   const userData = useSelector(state => state.appData.userData);
 
   useEffect(() => {
-    dispatch(connectionChecker());
-    loginUser
-      ? dispatch(getUserData(loginUser?.access_token)).then(() =>
-          setLoading(false),
-        )
-      : setLoading(false);
+    if (isFocused) {
+      dispatch(connectionChecker());
+      loginUser
+        ? dispatch(getUserData(loginUser?.access_token)).then(() =>
+            setLoading(false),
+          )
+        : setLoading(false);
+    }
   }, [connection, loginUser]);
 
   return (

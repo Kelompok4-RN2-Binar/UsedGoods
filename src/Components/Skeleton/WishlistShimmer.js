@@ -9,15 +9,6 @@ const WishlistShimmer = () => {
     <ScrollView
       contentContainerStyle={{alignItems: 'center', width: window.width * 1}}>
       <SkeletonPlaceholder>
-        <View
-          style={{
-            width: ms(150),
-            height: ms(30),
-            alignSelf: 'center',
-            borderRadius: ms(10),
-            marginBottom: ms(15),
-          }}
-        />
         <View style={{alignItems: 'center'}}>
           {[1, 2, 3, 4, 5].map(() => (
             <View style={{flexDirection: 'row'}} key={i => i}>

@@ -21,9 +21,11 @@ import {COLORS} from '../../../Utils';
 import {ms} from 'react-native-size-matters';
 import {Header, ProductCard, WishlistShimmer} from '../../../Components';
 import {GET_STATUS_ORDER_PRODUCT} from '../../../Redux/types';
+import {useIsFocused} from '@react-navigation/native';
 
 const Wishlist = ({navigation}) => {
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
   const [loading, setLoading] = useState(true);
 
@@ -31,8 +33,6 @@ const Wishlist = ({navigation}) => {
   const loginUser = useSelector(state => state.appData.loginUser);
   const statusOrder = useSelector(state => state.appData.statusOrder);
   const wishlist = useSelector(state => state.appData.wishlist);
-
-  const wishlistFilter = wishlist?.map(i => i.Product);
 
   const getData = () => {
     dispatch(getWishlist(loginUser.access_token));
@@ -47,7 +47,9 @@ const Wishlist = ({navigation}) => {
   }, []);
 
   useState(() => {
-    getData();
+    if (isFocused) {
+      getData();
+    }
   }, []);
 
   const renderItem = ({item}) => (
@@ -103,20 +105,18 @@ const Wishlist = ({navigation}) => {
         backgroundColor={'transparent'}
         translucent
       />
+      <Header navigation={navigation} title={'My Wishlist'} />
       {loading || !connection ? (
         <WishlistShimmer />
       ) : (
-        <>
-          <Header navigation={navigation} title={'My Wishlist'} />
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.id}
-            numColumns={2}
-            data={wishlist}
-            renderItem={renderItem}
-            contentContainerStyle={styles.FlatlistContainer}
-          />
-        </>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          data={wishlist}
+          renderItem={renderItem}
+          contentContainerStyle={styles.FlatlistContainer}
+        />
       )}
     </View>
   );
