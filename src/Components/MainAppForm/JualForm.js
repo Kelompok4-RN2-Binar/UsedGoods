@@ -1,38 +1,43 @@
 import {
   View,
+  ScrollView,
   Text,
+  TouchableOpacity,
+  ImageBackground,
   StyleSheet,
   Dimensions,
-  TouchableOpacity,
-  ScrollView,
-  ImageBackground,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {ms} from 'react-native-size-matters';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ImagePicker from 'react-native-image-crop-picker';
+import {postProduct} from '../../Redux/actions';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
 import {COLORS, FONTS} from '../../Utils';
-import {postProduct} from '../../Redux/actions';
-import { useNavigation } from '@react-navigation/native';
-
-const jualValidation = yup.object().shape({
-  name: yup.string().required('Product Name is Required!'),
-  location: yup.string().required('City is Required!'),
-  base_price: yup.string().required('Price is Required!'),
-  description: yup.string().required('Description is Required!'),
-});
 
 const JualForm = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const jualValidation = yup.object().shape({
+    name: yup.string().required('Product Name is Required!'),
+    location: yup.string().required('City is Required!'),
+    base_price: yup
+      .string()
+      .required('Price is Required!')
+      .matches(/^\d+$/, 'Numbers Only'),
+    description: yup.string().required('Description is Required!'),
+    image: yup.mixed().required('Image is Required!'),
+  });
+
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
-  console.log('data akun :', userData);
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
@@ -45,8 +50,8 @@ const JualForm = () => {
 
   const imagePicker = async handleChange => {
     ImagePicker.openPicker({
-      width: 420,
-      height: 300,
+      width: ms(420),
+      height: ms(300),
       cropping: true,
     })
       .then(image => {
@@ -61,7 +66,6 @@ const JualForm = () => {
 
   const goSell = (values, resetForm) => {
     const categoryProduct = value.toString();
-    console.log(categoryProduct);
     dispatch(postProduct(values, loginUser.access_token, categoryProduct)).then(
       () => {
         navigation.navigate('DaftarJual');
@@ -69,13 +73,10 @@ const JualForm = () => {
         setValue([]);
       },
     );
-    console.log('values :', values);
   };
 
   const goPreview = (values, resetForm) => {
-    console.log(values);
     const categoryProduct = value.toString();
-    console.log('category', categoryProduct);
     navigation.navigate('Preview', {
       data: values,
       categoryProduct: categoryProduct,
@@ -109,7 +110,7 @@ const JualForm = () => {
         setFieldValue,
         resetForm,
       }) => (
-        <View>
+        <ScrollView>
           <Text style={styles.Text}>Product Name</Text>
           <Input
             onChangeText={handleChange('name')}
@@ -124,7 +125,7 @@ const JualForm = () => {
             onChangeText={handleChange('base_price')}
             onBlur={handleBlur('base_price')}
             value={values.base_price}
-            placeholder={'Rp 0.00'}
+            placeholder={'Product Price'}
             error={errors.base_price}
             screen={'jual'}
           />
@@ -150,9 +151,9 @@ const JualForm = () => {
             max={4}
             style={styles.Dropdown}
             textStyle={{
-              fontSize: 12,
+              fontSize: ms(12),
               color: COLORS.black,
-              paddingLeft: 10,
+              paddingLeft: ms(10),
             }}
             containerStyle={{
               width: window.width * 0.8,
@@ -164,7 +165,7 @@ const JualForm = () => {
             badgeTextStyle={{
               fontFamily: FONTS.Regular,
               color: COLORS.white,
-              paddingLeft: -5,
+              paddingLeft: ms(-5),
             }}
             badgeColors={COLORS.green}
             listMode="SCROLLVIEW"
@@ -180,45 +181,52 @@ const JualForm = () => {
           />
           <Text style={styles.Text}>Product Image</Text>
           <View style={{width: window.width * 0.8, alignSelf: 'center'}}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View>
               {values.image == '' ? (
-                <TouchableOpacity
-                  style={styles.Category}
-                  onPress={() => {
-                    imagePicker(handleChange('image'));
-                  }}>
-                  <Icon
-                    style={styles.Icon}
-                    name={'plus'}
-                    size={50}
-                    color={COLORS.grey}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={styles.Category}
-                  onPress={() => {
-                    setFieldValue('image', '');
-                  }}>
-                  <ImageBackground
-                    style={styles.Image}
-                    source={{uri: values.image}}>
+                <>
+                  <TouchableOpacity
+                    style={styles.Category}
+                    onPress={() => {
+                      imagePicker(handleChange('image'));
+                    }}>
                     <Icon
                       style={styles.Icon}
-                      name={'minus'}
-                      size={50}
+                      name={'plus'}
+                      size={ms(40)}
                       color={COLORS.grey}
                     />
-                  </ImageBackground>
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                  <Text style={styles.Error}>{errors.image}</Text>
+                </>
+              ) : (
+                <>
+                  <TouchableOpacity
+                    style={styles.Category}
+                    onPress={() => {
+                      setFieldValue('image', '');
+                    }}>
+                    <ImageBackground
+                      style={styles.Image}
+                      imageStyle={{borderRadius: ms(10)}}
+                      source={{uri: values.image}}>
+                      <Icon
+                        style={styles.Icon}
+                        name={'minus'}
+                        size={ms(40)}
+                        color={COLORS.grey}
+                      />
+                    </ImageBackground>
+                  </TouchableOpacity>
+                  <Text style={styles.Error}>{errors.image}</Text>
+                </>
               )}
-            </ScrollView>
+            </View>
           </View>
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
-              marginTop: 5,
+              marginTop: ms(10),
             }}>
             <Button
               caption={'Preview'}
@@ -228,7 +236,7 @@ const JualForm = () => {
             />
             <Button caption={'Posting'} onPress={handleSubmit} />
           </View>
-        </View>
+        </ScrollView>
       )}
     </Formik>
   );
@@ -239,17 +247,19 @@ export default JualForm;
 const window = Dimensions.get('window');
 const styles = StyleSheet.create({
   Text: {
-    marginLeft: 40,
-    marginBottom: 5,
+    marginLeft: ms(40),
+    marginBottom: ms(5),
+
     color: COLORS.black,
     fontFamily: FONTS.Regular,
   },
   Dropdown: {
     width: window.width * 0.8,
     alignSelf: 'center',
-    borderWidth: 1,
-    borderRadius: 15,
-    marginBottom: 25,
+    marginBottom: ms(20),
+
+    borderWidth: ms(1),
+    borderRadius: ms(10),
     borderColor: COLORS.grey,
   },
   Icon: {
@@ -257,18 +267,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   Category: {
-    width: window.width * 0.3,
-    height: 110,
-    borderWidth: 1,
-    borderColor: COLORS.grey,
-    borderRadius: 5,
-    marginRight: 15,
+    width: ms(130),
+    height: ms(90),
+    marginRight: ms(15),
     justifyContent: 'center',
+
+    borderWidth: ms(1),
+    borderColor: COLORS.grey,
+    borderRadius: ms(10),
   },
   Image: {
-    width: window.width * 0.3,
-    height: 110,
+    width: ms(130),
+    height: ms(90),
     justifyContent: 'center',
-    borderRadius: 5,
+  },
+  Error: {
+    fontFamily: FONTS.Regular,
+    fontSize: ms(10),
+    color: COLORS.red,
+    textAlign: 'justify',
+
+    width: window.width * 0.8,
+    marginVertical: ms(5),
   },
 });

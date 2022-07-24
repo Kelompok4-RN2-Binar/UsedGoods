@@ -6,212 +6,339 @@ import {
   StyleSheet,
   Dimensions,
   RefreshControl,
-  ScrollView
+  ScrollView,
 } from 'react-native';
-import React ,{useState,useCallback} from 'react';
-import {useSelector} from 'react-redux';
-import {getDetailNotification, readNotif, rupiah, timeDate} from '../../Redux/actions';
-import {COLORS, FONTS} from '../../Utils';
-import { getNotificationSeller } from '../../Redux/actions';
-import { useDispatch } from 'react-redux';
+import React, {useState, useCallback, useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import {ms} from 'react-native-size-matters';
+import {
+  connectionChecker,
+  getDetailNotification,
+  getNotificationSeller,
+  readNotif,
+  rupiah,
+  timeDate,
+} from '../../Redux/actions';
 import BottomModal from '../Others/BottomModal';
+import NotificationShimmer from '../Skeleton/NotificationShimmer';
+import {COLORS, FONTS} from '../../Utils';
+
 const Seller = () => {
-  const notifDataSeller = useSelector(state => state.appData.notifDataSeller);
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+
+  const connection = useSelector(state => state.appData.connection);
   const loginUser = useSelector(state => state.appData.loginUser);
+  const notifDataSeller = useSelector(state => state.appData.notifDataSeller);
+  const dataDetail = useSelector(state => state.appData.notifDataDetail);
+
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [openModal, setopenModal] = useState(false);
-  const [component,setComponent] = useState(null);
-  const wait = timeout => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-  };
-  const onRefresh = useCallback(() => {
-    dispatch(getNotificationSeller(loginUser.access_token)).then(()=>{setRefreshing(true)})
-    wait(500).then(() => {
-      setRefreshing(false);
-    });
+  const [component, setComponent] = useState(null);
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(connectionChecker());
+      getData();
+    }
   }, []);
-  const loadData = useCallback(() => {
-    dispatch(getNotificationSeller(loginUser.access_token))
-   }, []);
+
+  const getData = useCallback(() => {
+    setLoading(true);
+    dispatch(getNotificationSeller(loginUser?.access_token)).then(() =>
+      setLoading(false),
+    );
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getData();
+    setRefreshing(false);
+  }, []);
 
   const onDismiss = () => {
-      setopenModal(false);
-    };
-  var dataDetail =  useSelector(state => state.appData.notifDataDetail);
+    setopenModal(false);
+  };
 
-  
-  const onOpenAccepted = (id) => {
-    
-    if(dataDetail.id==id){
+  const onOpenAccepted = id => {
+    if (dataDetail?.id == id) {
       setopenModal(true);
-      setRefreshing(true)
-      dispatch(readNotif(loginUser.access_token,dataDetail.id)).then(()=>{
-        loadData()
-        wait(500).then(() => {
-          setRefreshing(false);
-        });
+      dispatch(readNotif(loginUser?.access_token, dataDetail?.id)).then(() => {
+        getData();
         setComponent(
-        <View style={{width:window.width}}>
-          {dataDetail.id==id &&
-          <View style={{justifyContent:'center',alignItems:'center',width:window.width*0.9,alignSelf:'center'}}>
-            {dataDetail.status=="bid" && 
-              <>
-              <Text style={[styles.Text,{alignSelf:'center',fontSize:14,paddingTop:10,fontFamily:FONTS.SemiBold,color:COLORS.green}]}>Yeay you managed to get a suitable price :)</Text>
-              <Text style={[styles.Text,{alignSelf:'center',fontSize:16,paddingTop:10,fontFamily:FONTS.SemiBold}]}>Product Bid</Text>
-              <View style={{flexDirection: 'row',paddingVertical:20,width:window.width*0.9,marginLeft:20,}}>
-                <Image
-                  style={styles.imageUser}
-                />
-                <View style={{flexDirection: 'column'}}>
-                  <Text style={[styles.Text,{fontSize:18}]}>{dataDetail.buyer_name}</Text>
-                </View>
-              </View>
-              <View style={{flexDirection: 'row',paddingVertical:20,width:window.width*0.9,marginLeft:20}}>
-                <Image
-                  style={styles.imageUser}
-                  source={{uri:dataDetail.Product.image_url}}
-                />
-                <View style={{flexDirection: 'column'}}>
-                  <Text style={[styles.Text,{fontSize:14}]}>{dataDetail.Product.name}</Text>
-                  <Text style={[styles.Text,{fontSize:14}]}>{`Rp. ${rupiah(dataDetail.Product.base_price)}`}</Text>
-                  <Text style={[styles.Text,{fontSize:14}]}>Bid {`Rp. ${rupiah(dataDetail.bid_price)}`}</Text>
-                </View>
-              </View>
-              
-              </>
-            }{dataDetail.status=="create" && 
-              <>
-              <Text style={[styles.Text,{alignSelf:'center',fontSize:14,paddingTop:10,fontFamily:FONTS.SemiBold,color:COLORS.green}]}>Yeay you managed to publised product!</Text>
-              <Text style={[styles.textGrey,{alignSelf:'center',fontSize:14}]}>Hope you get best price with the buyer!</Text>    
+          <View
+            style={{
+              width: window.width,
+              paddingBottom: ms(60),
+              paddingTop: ms(20),
+            }}>
+            {dataDetail?.id == id && (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  width: window.width * 0.9,
+                }}>
+                {dataDetail?.status == 'bid' && (
+                  <>
+                    <Text
+                      style={[
+                        styles.Text,
+                        {
+                          fontSize: ms(14),
+                          paddingTop: ms(10),
 
-              <View style={{flexDirection: 'row',paddingTop:20,width:window.width*0.9,marginLeft:20}}>
-                <Image
-                  style={{width:60,height:60,borderRadius:10,marginRight:20}}
-                  source={{uri:dataDetail.image_url}}
-                />
-                <View style={{flexDirection: 'column',marginBottom:10}}>
-                  <Text style={[styles.Text,{fontSize:16,fontFamily:FONTS.SemiBold}]}>{dataDetail.product_name}</Text>
-                  <Text style={[styles.Text,{fontSize:14}]}>{`Rp. ${rupiah(dataDetail.base_price)}`}</Text>
-                  <Text style={[styles.textGrey]}>{`${timeDate(dataDetail.updatedAt)}`}</Text>
-                </View>
-              </View>  
-              </>
-            }
-          </View>
-          }
-        </View>
-      )  
-      })
-      
+                          fontFamily: FONTS.SemiBold,
+                          color: COLORS.green,
+                        },
+                      ]}>
+                      Yeay you managed to get a suitable price :)
+                    </Text>
+                    <Text
+                      style={[
+                        styles.Text,
+                        {
+                          fontSize: ms(16),
+                          paddingTop: ms(10),
+                          fontFamily: FONTS.SemiBold,
+                        },
+                      ]}>
+                      Product Bid
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingVertical: ms(15),
+                        width: window.width * 0.8,
+                      }}>
+                      <Image style={styles.imageUser} />
+                      <View style={{flexDirection: 'column'}}>
+                        <Text style={[styles.Text, {fontSize: 16}]}>
+                          {dataDetail?.buyer_name}
+                        </Text>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingTop: ms(15),
+                        width: window.width * 0.8,
+                      }}>
+                      <Image
+                        style={styles.imageUser}
+                        source={{uri: dataDetail?.Product.image_url}}
+                      />
+                      <View style={{flexDirection: 'column'}}>
+                        <Text style={[styles.Text, {fontSize: ms(14)}]}>
+                          {dataDetail?.Product.name}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.Text,
+                            {fontSize: ms(14)},
+                          ]}>{`Rp. ${rupiah(
+                          dataDetail?.Product.base_price,
+                        )}`}</Text>
+                        <Text style={[styles.Text, {fontSize: ms(14)}]}>
+                          Bid {`Rp. ${rupiah(dataDetail?.bid_price)}`}
+                        </Text>
+                      </View>
+                    </View>
+                  </>
+                )}
+                {dataDetail?.status == 'create' && (
+                  <>
+                    <Text
+                      style={[
+                        styles.Text,
+                        {
+                          fontSize: ms(14),
+                          paddingTop: ms(10),
+                          fontFamily: FONTS.SemiBold,
+                          color: COLORS.green,
+                        },
+                      ]}>
+                      Yeay you managed to publised product!
+                    </Text>
+                    <Text
+                      style={[
+                        styles.textGrey,
+                        {marginVertical: ms(10), fontSize: ms(14)},
+                      ]}>
+                      Hope you get best price with the buyer!
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingTop: ms(5),
+                        width: window.width * 0.9,
+                      }}>
+                      <Image
+                        style={{
+                          width: ms(60),
+                          height: ms(60),
+                          borderRadius: ms(10),
+                          marginRight: ms(15),
+                          backgroundColor: COLORS.lightGrey,
+                        }}
+                        source={{uri: dataDetail?.image_url}}
+                      />
+                      <View style={{flexDirection: 'column'}}>
+                        <Text
+                          style={[
+                            styles.Text,
+                            {fontSize: ms(16), fontFamily: FONTS.SemiBold},
+                          ]}>
+                          {dataDetail?.product_name}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.Text,
+                            {fontSize: ms(14), marginVertical: ms(4)},
+                          ]}>{`Rp. ${rupiah(dataDetail?.base_price)}`}</Text>
+                        <Text style={[styles.textGrey]}>{`${timeDate(
+                          dataDetail?.updatedAt,
+                        )}`}</Text>
+                      </View>
+                    </View>
+                  </>
+                )}
+              </View>
+            )}
+          </View>,
+        );
+      });
     }
   };
   return (
-    <View>
     <ScrollView
-        contentContainerStyle={styles.Box}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="green"
-            colors={['green']}
-          />
-    }>
-      {notifDataSeller &&
-        notifDataSeller.map(item => {
-          return (
-            <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: 20,}}
-              key={item.id}
-              onPress={()=>{
-                dispatch(getDetailNotification(loginUser.access_token,item.id)).then(()=>{
-                  onOpenAccepted(item.id)
-                })
-              }}>
-              {item.Product!=null ?
-              <>
-              <Image source={{uri: item.Product.image_url}} style={styles.image} />
-                <View style={{flexDirection: 'column', marginLeft: 15}}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      paddingRight: 30,
-                      width:window.width*0.8
-                    }}>
-                  
-                    {item.status == 'bid' ? (
-                      <Text style={styles.textGrey}>Product Offer</Text>
-                    ) : (
-                      <Text style={styles.textGrey}>Successfully published</Text>
-                    )}
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={[styles.textGrey]}>{`${timeDate(
-                        item.Product.updatedAt,
-                      )}`}</Text>
-                      {item.read == false && <View style={styles.dot} />}
-                    </View>
-                  </View>
-                  <Text style={styles.textBlack}>{item.Product.name}</Text>
-                  <Text style={styles.textBlack}>{`Rp. ${rupiah(
-                    item.Product.base_price,
-                  )}`}</Text>
-                  {item.bid_price != null && (
-                    <Text style={styles.textBlack}>
-                      Bid {`Rp. ${rupiah(item.bid_price)}`}
-                    </Text>
+      contentContainerStyle={styles.Box}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor="green"
+          colors={['green']}
+        />
+      }>
+      {loading || !connection ? (
+        <NotificationShimmer />
+      ) : (
+        <>
+          {notifDataSeller &&
+            notifDataSeller.map(item => {
+              return (
+                <TouchableOpacity
+                  style={{flexDirection: 'row', marginBottom: ms(20)}}
+                  key={item?.id}
+                  onPress={() => {
+                    dispatch(
+                      getDetailNotification(loginUser?.access_token, item?.id),
+                    ).then(() => {
+                      onOpenAccepted(item?.id);
+                    });
+                  }}>
+                  {item.Product ? (
+                    <>
+                      <Image
+                        source={{uri: item?.Product.image_url}}
+                        style={styles.image}
+                      />
+                      <View
+                        style={{flexDirection: 'column', marginLeft: ms(15)}}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            paddingRight: ms(30),
+                            width: window.width * 0.8,
+                          }}>
+                          {item?.status == 'bid' ? (
+                            <Text style={styles.textGrey}>Product Offer</Text>
+                          ) : (
+                            <Text style={styles.textGrey}>
+                              Successfully published
+                            </Text>
+                          )}
+                          <View style={{flexDirection: 'row'}}>
+                            <Text style={[styles.textGrey]}>{`${timeDate(
+                              item?.Product?.updatedAt,
+                            )}`}</Text>
+                            {item?.read == false && <View style={styles.dot} />}
+                          </View>
+                        </View>
+                        <Text style={styles.textBlack}>
+                          {item?.Product?.name}
+                        </Text>
+                        <Text style={styles.textBlack}>{`Rp. ${rupiah(
+                          item?.Product?.base_price,
+                        )}`}</Text>
+                        {item.bid_price != null && (
+                          <Text style={styles.textBlack}>
+                            Bid {`Rp. ${rupiah(item?.bid_price)}`}
+                          </Text>
+                        )}
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      <Image
+                        source={{uri: item?.image_url}}
+                        style={styles.image}
+                      />
+                      <View
+                        style={{flexDirection: 'column', marginLeft: ms(15)}}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            paddingRight: ms(30),
+                            width: window.width * 0.8,
+                          }}>
+                          {item?.status == 'bid' ? (
+                            <Text style={styles.textGrey}>Product Offer</Text>
+                          ) : (
+                            <Text style={styles.textGrey}>
+                              Successfully published
+                            </Text>
+                          )}
+                          <View style={{flexDirection: 'row'}}>
+                            <Text style={[styles.textGrey]}>{`${timeDate(
+                              item?.updatedAt,
+                            )}`}</Text>
+                            {!item?.read && <View style={styles.dot} />}
+                          </View>
+                        </View>
+                        <Text style={styles.textBlack}>
+                          {item?.product_name}
+                        </Text>
+                        <Text style={styles.textBlack}>{`Rp. ${rupiah(
+                          item?.base_price,
+                        )}`}</Text>
+                        {item.bid_price && (
+                          <Text style={styles.textBlack}>
+                            Ditawar {`Rp. ${rupiah(item?.bid_price)}`}
+                          </Text>
+                        )}
+                      </View>
+                    </>
                   )}
-                </View>
-                </>
-                :
-                <>
-                <Image source={{uri: item.image_url}} style={styles.image} />
-                <View style={{flexDirection: 'column', marginLeft: 15}}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      paddingRight: 30,
-                      width:window.width*0.8
-                    }}>
-                  
-                    {item.status == 'bid' ? (
-                      <Text style={styles.textGrey}>Product Offer</Text>
-                    ) : (
-                      <Text style={styles.textGrey}>Successfully published</Text>
-                    )}
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={[styles.textGrey]}>{`${timeDate(
-                        item.updatedAt,
-                      )}`}</Text>
-                      {item.read == false && <View style={styles.dot} />}
-                    </View>
-                  </View>
-                  <Text style={styles.textBlack}>{item.product_name}</Text>
-                  <Text style={styles.textBlack}>{`Rp. ${rupiah(
-                    item.base_price,
-                  )}`}</Text>
-                  {item.bid_price != null && (
-                    <Text style={styles.textBlack}>
-                      Ditawar {`Rp. ${rupiah(item.bid_price)}`}
-                    </Text>
-                  )}
-                </View>
-                </>
-                }
-              
-            </TouchableOpacity>
-            
-          );
-        })}
-       {openModal && (
-          <BottomModal  onDismiss={onDismiss}>
-                    {component}
-          </BottomModal>
-        )}     
+                </TouchableOpacity>
+              );
+            })}
+          {openModal && (
+            <BottomModal onDismiss={onDismiss}>{component}</BottomModal>
+          )}
+        </>
+      )}
     </ScrollView>
-    </View>
   );
 };
 
@@ -221,43 +348,42 @@ const styles = StyleSheet.create({
   textGrey: {
     color: COLORS.grey,
     fontFamily: FONTS.Regular,
-    fontSize: 12,
-    paddingBottom: 4,
+    fontSize: ms(11),
+    paddingBottom: ms(2),
   },
   image: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'black',
-    borderRadius: 12,
+    width: ms(50),
+    height: ms(50),
+    backgroundColor: COLORS.lightGrey,
+    borderRadius: ms(10),
   },
   dot: {
     backgroundColor: '#FA2C5A',
-    width: 8,
-    height: 8,
-    borderRadius: 10,
-    marginTop: 4,
-    marginLeft: 8,
+    width: ms(8),
+    height: ms(8),
+    borderRadius: ms(10),
+    marginTop: ms(4),
+    marginLeft: ms(8),
   },
   Box: {
     width: window.width * 0.9,
   },
-  
   textBlack: {
     color: COLORS.black,
     fontFamily: FONTS.Regular,
-    fontSize: 14,
-    paddingBottom: 4,
+    fontSize: ms(13),
+    paddingBottom: ms(2),
   },
- 
-  imageUser:{
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    marginRight: 20,
-    backgroundColor: 'black',
+
+  imageUser: {
+    width: ms(40),
+    height: ms(40),
+    borderRadius: ms(8),
+    marginRight: ms(20),
+    backgroundColor: COLORS.lightGrey,
   },
   Text: {
-    fontSize: 12,
+    fontSize: ms(12),
     fontFamily: FONTS.Regular,
     color: COLORS.black,
   },

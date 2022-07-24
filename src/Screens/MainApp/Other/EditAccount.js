@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
     paddingTop: StatusBarManager.HEIGHT + ms(20),
+    paddingBottom: Platform.OS === 'ios' ? ms(25) : ms(15),
   },
   Box: {
     flexGrow: 1,

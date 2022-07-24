@@ -10,12 +10,14 @@ import {
   RefreshControl,
   NativeModules,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import {COLORS, FONTS} from '../../../Utils';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {
   buyProduct,
+  connectionChecker,
   deleteProduct,
   getStatusOrderProduct,
   goFingerprint,
@@ -33,11 +35,12 @@ const Detail = ({route}) => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
+  const connection = useSelector(state => state.appData.connection);
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
-  const order = useSelector(state => state.appData.order);
-  console.log("order ",order)
+
   const productSpesific =
     user == 'seller'
       ? useSelector(state => state.appData.productSpesific)
@@ -45,7 +48,7 @@ const Detail = ({route}) => {
 
   const statusOrderProduct =
     user != 'seller' && useSelector(state => state.appData.statusOrderProduct);
-  console.log("status order ",statusOrderProduct)
+
   const [openModal, setopenModal] = useState(false);
   const [component, setComponent] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -61,20 +64,19 @@ const Detail = ({route}) => {
     );
   };
 
-  
   const goBuy = (values, resetForm) => {
-      goFingerprint().then(()=>{
-         dispatch(buyProduct(values, loginUser.access_token)).then(() => {
-          setRefreshing(true);
-          wait(500).then(() => {
-            resetForm();
-            setopenModal(false);
-            setRefreshing(false); 
-            navigation.replace("MainApp")
-          });
-          // dispatch(getStatusOrderProduct(loginUser.access_token, order.id))
-         });
-       })
+    goFingerprint().then(() => {
+      dispatch(buyProduct(values, loginUser.access_token)).then(() => {
+        setRefreshing(true);
+        wait(500).then(() => {
+          resetForm();
+          setopenModal(false);
+          setRefreshing(false);
+          navigation.replace('MainApp');
+        });
+        // dispatch(getStatusOrderProduct(loginUser.access_token, order.id))
+      });
+    });
   };
   const buyValidation = yup.object().shape({
     base_price: yup.string().required('Price is Required!'),
@@ -90,14 +92,14 @@ const Detail = ({route}) => {
             alignItems: 'center',
             width: window.width * 0.9,
             alignSelf: 'center',
+            paddingBottom: ms(60),
+            paddingTop: ms(20),
           }}>
           <Text
             style={[
               styles.Text,
               {
-                alignSelf: 'center',
-                fontSize: 16,
-                paddingTop: 10,
+                fontSize: ms(16),
                 fontFamily: FONTS.SemiBold,
               },
             ]}>
@@ -106,7 +108,7 @@ const Detail = ({route}) => {
           <Text
             style={[
               styles.textGrey,
-              {alignSelf: 'center', fontSize: 14, paddingTop: 10},
+              {textAlign: 'center', fontSize: ms(12), paddingTop: ms(10)},
             ]}>
             Your bid price will be known by the seller, if the seller matches
             you will be contacted by the seller immediately
@@ -114,24 +116,28 @@ const Detail = ({route}) => {
           <View
             style={{
               flexDirection: 'row',
-              paddingTop: 20,
-              width: window.width * 0.9,
-              marginLeft: 60,
+              paddingTop: ms(15),
+              width: window.width * 0.8,
             }}>
             <Image
               style={styles.imageUser}
               source={{uri: productSpesific.image_url}}
             />
-            <View style={{flexDirection: 'column', marginBottom: 10}}>
-              <View style={{flexDirection: 'row',flexWrap:'wrap',width:window.width*0.7 }}>
-                <Text style={[styles.Text, {fontSize: 14}]}>
+            <View style={{flexDirection: 'column'}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  width: window.width * 0.7,
+                }}>
+                <Text style={[styles.Text, {fontSize: ms(14)}]}>
                   {productSpesific.name}
                 </Text>
               </View>
               <Text
                 style={[
                   styles.Text,
-                  {fontSize: 14, fontFamily: FONTS.Regular},
+                  {fontSize: ms(14), fontFamily: FONTS.Regular},
                 ]}>{`Rp. ${rupiah(productSpesific.base_price)}`}</Text>
             </View>
           </View>
@@ -142,19 +148,23 @@ const Detail = ({route}) => {
             }}
             validationSchema={buyValidation}
             onSubmit={(values, {resetForm}) => {
-                goBuy(values, resetForm);
+              goBuy(values, resetForm);
             }}>
             {({handleChange, handleBlur, handleSubmit, values, errors}) => (
               <View
                 style={{
                   flexDirection: 'column',
                   width: window.width * 0.8,
-                  marginTop: 30,
+                  marginTop: ms(20),
                 }}>
                 <Text
                   style={[
                     styles.Text,
-                    {fontSize: 14, fontFamily: FONTS.Regular,paddingBottom: ms(5),},
+                    {
+                      fontSize: ms(14),
+                      fontFamily: FONTS.Regular,
+                      paddingBottom: ms(5),
+                    },
                   ]}>
                   Bid Price
                 </Text>
@@ -171,15 +181,13 @@ const Detail = ({route}) => {
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    marginTop: 5,
                   }}>
                   <Button
                     caption={'Buy'}
                     onPress={handleSubmit}
                     style={{
                       width: window.width * 0.8,
-                      height: 50,
-                      marginBottom: 15,
+                      height: ms(50),
                     }}
                   />
                 </View>
@@ -187,38 +195,37 @@ const Detail = ({route}) => {
             )}
           </Formik>
         </View>
-      </View>
+      </View>,
     );
   };
 
-  const cekData = () =>{
-    if(user=='buyer'){
-      if (statusOrderProduct != null) {
+  const cekData = () => {
+    if (user == 'buyer') {
+      if (statusOrderProduct) {
         dispatch(
           getStatusOrderProduct(loginUser.access_token, statusOrderProduct.id),
         );
-      }   
-      if (order_id != null) {
-        dispatch(
-          getStatusOrderProduct(loginUser.access_token, order_id),
-        );
-      }else{
-        dispatch(
-          getStatusOrderProduct(loginUser.access_token, null)
-        );
+      }
+      if (order_id) {
+        dispatch(getStatusOrderProduct(loginUser.access_token, order_id));
+      } else {
+        dispatch(getStatusOrderProduct(loginUser.access_token, null));
       }
     }
-  }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    cekData()
-  }, []);
+    if (isFocused) {
+      dispatch(connectionChecker());
+      cekData();
+    }
+  }, [connection]);
 
   const onRefresh = useCallback(() => {
-    cekData()
-    wait(500).then(() => {
-      setRefreshing(false);
-    });
+    setLoading(true);
+    cekData();
+    setRefreshing(false);
   }, []);
 
   return (
@@ -228,7 +235,7 @@ const Detail = ({route}) => {
         translucent
         barStyle={'light-content'}
       />
-      {loading ? (
+      {loading || !connection ? (
         <DetailProductShimmer />
       ) : (
         <ScrollView
@@ -244,18 +251,13 @@ const Detail = ({route}) => {
           <ImageBackground
             style={styles.Image}
             source={{uri: productSpesific?.image_url}}>
-            <View style={styles.Header}>
+            <TouchableOpacity style={styles.Header}>
               <ButtonIcon
                 icon="keyboard-backspace"
                 onPress={() => navigation.goBack()}
                 color={COLORS.white}
               />
-              <ButtonIcon
-                icon="book"
-                onPress={() => navigation.goBack()}
-                color={COLORS.white}
-              />
-            </View>
+            </TouchableOpacity>
             <View style={styles.Card}>
               <Text style={styles.Name}>{productSpesific?.name}</Text>
               <View style={styles.CategoryContainer}>
@@ -303,6 +305,7 @@ const Detail = ({route}) => {
               <>
                 <Button
                   caption={'Edit'}
+                  style={{backgroundColor: COLORS.green}}
                   onPress={() => {
                     navigation.navigate('EditProduct', {
                       data: productSpesific,
@@ -311,6 +314,7 @@ const Detail = ({route}) => {
                 />
                 <Button
                   caption={'Delete'}
+                  style={{backgroundColor: COLORS.red}}
                   onPress={() => {
                     goDelete();
                   }}
@@ -351,7 +355,9 @@ const Detail = ({route}) => {
                           width: window.width * 0.9,
                           backgroundColor: COLORS.red,
                         }}
-                        disabled={true}
+                        onPress={() => {
+                          onOpen();
+                        }}
                       />
                     )}
                   </>
@@ -404,8 +410,10 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   Header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: ms(45),
+    padding: ms(10),
+    backgroundColor: COLORS.softDark,
+    borderRadius: ms(50),
   },
   Card: {
     backgroundColor: COLORS.white,
@@ -458,6 +466,8 @@ const styles = StyleSheet.create({
   ProfileImage: {
     width: ms(50),
     height: ms(50),
+    borderRadius: ms(10),
+    backgroundColor: COLORS.lightGrey,
   },
   SellerText: {
     marginLeft: ms(10),
@@ -495,9 +505,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     position: 'absolute',
   },
-  Text:{
-    fontFamily:FONTS.Regular,
-    color:COLORS.black
+  Text: {
+    fontFamily: FONTS.Regular,
+    color: COLORS.black,
   },
   textGrey: {
     color: COLORS.grey,
@@ -505,7 +515,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     paddingBottom: 4,
   },
-  imageUser:{
+  imageUser: {
     width: 40,
     height: 40,
     borderRadius: 8,

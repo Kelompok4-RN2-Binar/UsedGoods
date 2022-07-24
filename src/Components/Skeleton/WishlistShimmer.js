@@ -1,23 +1,13 @@
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Dimensions,
-  Platform,
-  NativeModules,
-} from 'react-native';
+import {View, ScrollView, Dimensions} from 'react-native';
 import React from 'react';
-import {ms} from 'react-native-size-matters';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {COLORS} from '../../Utils';
+import {ms} from 'react-native-size-matters';
 
-const DaftarJualShimmer = () => {
+const WishlistShimmer = () => {
+  const window = Dimensions.get('window');
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: COLORS.white,
-      }}>
+    <ScrollView
+      contentContainerStyle={{alignItems: 'center', width: window.width * 1}}>
       <SkeletonPlaceholder>
         <View style={{alignItems: 'center'}}>
           {[1, 2, 3, 4, 5].map(() => (
@@ -38,7 +28,6 @@ const DaftarJualShimmer = () => {
                   alignItems: 'center',
                   margin: ms(10),
                   padding: ms(10),
-
                   borderRadius: ms(10),
                 }}
               />
@@ -46,11 +35,8 @@ const DaftarJualShimmer = () => {
           ))}
         </View>
       </SkeletonPlaceholder>
-    </View>
+    </ScrollView>
   );
 };
 
-export default DaftarJualShimmer;
-
-const {StatusBarManager} = NativeModules;
-const window = Dimensions.get('window');
+export default WishlistShimmer;

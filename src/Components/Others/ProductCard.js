@@ -24,9 +24,9 @@ const Product = ({data, onPress, onPressWishlist, wishlist, label}) => {
       <Text style={styles.Name} numberOfLines={1}>
         {label ? data?.Product?.name : data?.name}
       </Text>
-      {/* <Text style={styles.Price} numberOfLines={1}>
+      <Text style={styles.Price} numberOfLines={1}>
         {`Rp. ${rupiah(label ? data?.Product?.base_price : data?.base_price)}`}
-      </Text> */}
+      </Text>
       {wishlist || label ? (
         <TouchableOpacity
           disabled={label ? false : wishlistButton?.length ? true : false}

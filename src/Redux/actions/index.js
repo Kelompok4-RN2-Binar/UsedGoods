@@ -34,8 +34,8 @@ import {URL} from '../../Utils/Url';
 import Toast from 'react-native-toast-message';
 import moment from 'moment';
 import NetInfo from '@react-native-community/netinfo';
-import TouchID from 'react-native-touch-id'
-import { Linking } from 'react-native';
+import TouchID from 'react-native-touch-id';
+import {Linking} from 'react-native';
 export const authScreen = data => ({
   type: AUTH_SCREEN,
   payload: data,
@@ -137,6 +137,7 @@ export const getUserData = AccessToken => {
 export const updateUserData = (data, AccessToken) => {
   return async dispatch => {
     const {image, name, email, password, phone, address, city} = data;
+    console.log(data);
     const formData = new FormData();
     formData.append('full_name', name);
     formData.append('email', email);
@@ -333,15 +334,6 @@ export const removeWishlist = (accessToken, id) => {
       });
   };
 };
-export const DaftarJualScreen = data => ({
-  type: DAFTARJUAL_SCREEN,
-  payload: data,
-});
-
-export const NotificationScreen = data => ({
-  type: NOTIFICATION_SCREEN,
-  payload: data,
-});
 
 export const postProduct = (data, AccessToken, category) => {
   return async dispatch => {
@@ -364,23 +356,30 @@ export const postProduct = (data, AccessToken, category) => {
     await axios
       .post(URL + 'seller/product', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          Accept: 'application/json',
           access_token: `${AccessToken}`,
         },
       })
       .then(res => {
         Toast.show({
           type: 'success',
-          text1: 'Success Post Product!',
+          text1: 'Post Product Successful!',
         });
       })
       .catch(function (error) {
         console.log(error);
-        console.log(error);
       });
   };
 };
+
+export const DaftarJualScreen = data => ({
+  type: DAFTARJUAL_SCREEN,
+  payload: data,
+});
+
+export const NotificationScreen = data => ({
+  type: NOTIFICATION_SCREEN,
+  payload: data,
+});
 
 export const getProductSeller = AccessToken => {
   return async dispatch => {
@@ -714,7 +713,7 @@ export const buyProduct = (data, AccessToken) => {
         });
       })
       .catch(function (error) {
-        console.log("buy errorrrrr",error);
+        console.log('buy errorrrrr', error);
         Toast.show({
           type: 'error',
           text1: error.response.data.message,
@@ -856,20 +855,21 @@ export const connectionChecker = () => {
 };
 
 export const goFingerprint = () => {
-    const optionalConfigObject = {
-      title:"Authentication Required", 
-      color : "#e00606",
-      unifiedErrors: false ,// use unified error messages (default false)
-      passcodeFallback: false
-    }
-    return TouchID.authenticate('Please scan your finger print to buy this product!', optionalConfigObject)
-      .catch(error => {
-          Toast.show({
-            type: 'error',
-            text1: 'Failed to Authenticate!',
-          });
-      })
-  
+  const optionalConfigObject = {
+    title: 'Authentication Required',
+    color: '#e00606',
+    unifiedErrors: false, // use unified error messages (default false)
+    passcodeFallback: false,
+  };
+  return TouchID.authenticate(
+    'Please scan your finger print to buy this product!',
+    optionalConfigObject,
+  ).catch(error => {
+    Toast.show({
+      type: 'error',
+      text1: 'Failed to Authenticate!',
+    });
+  });
 };
 
 export const getHistory = AccessToken => {
@@ -892,10 +892,10 @@ export const getHistory = AccessToken => {
   };
 };
 
-export const getHistoryProduct = (AccessToken,id) => {
+export const getHistoryProduct = (AccessToken, id) => {
   return async dispatch => {
     await axios
-      .get(URL + 'history/'+id, {
+      .get(URL + 'history/' + id, {
         headers: {
           access_token: `${AccessToken}`,
         },
@@ -912,15 +912,15 @@ export const getHistoryProduct = (AccessToken,id) => {
   };
 };
 
-export const sendOnWhatsApp = (url) => {
-    Linking.openURL(url)
-      .then(data => {
-        console.log('WhatsApp Opened');
-      })
-      .catch(() => {
-        Toast.show({
-          type: 'error',
-          text1: 'Make sure Whatsapp installed on your device',
-        });
+export const sendOnWhatsApp = url => {
+  Linking.openURL(url)
+    .then(data => {
+      console.log('WhatsApp Opened');
+    })
+    .catch(() => {
+      Toast.show({
+        type: 'error',
+        text1: 'Make sure Whatsapp installed on your device',
       });
-  };
+    });
+};

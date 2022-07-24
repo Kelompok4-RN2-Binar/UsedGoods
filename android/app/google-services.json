@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "135219316975",
+    "project_id": "usedg-18a12",
+    "storage_bucket": "usedg-18a12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135219316975:android:3b099bec242dac60bd331a",
+        "android_client_info": {
+          "package_name": "com.usedgoods"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135219316975-3bbrhc5h4ggu7vuvhmvhq67nv1i4027j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAX00LDejtIkDitbYmbAtlvakA2w45qC2Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135219316975-3bbrhc5h4ggu7vuvhmvhq67nv1i4027j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "135219316975-398qoi6pf41ble3jji9ci17vnhil9o6m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.UsedGoods"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

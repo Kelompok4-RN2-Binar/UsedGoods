@@ -4,11 +4,13 @@ import {
   StatusBar,
   StyleSheet,
   NativeModules,
+  Platform,
 } from 'react-native';
 import React from 'react';
 import {Header} from '../../../Components';
 import EditForm from '../../../Components/MainAppForm/EditForm';
 import {COLORS} from '../../../Utils';
+import {ms} from 'react-native-size-matters';
 
 const EditProduct = ({route, navigation}) => {
   const {data} = route.params;
@@ -35,10 +37,11 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingTop: StatusBarManager.HEIGHT + 20,
+    paddingTop: StatusBarManager.HEIGHT + ms(20),
+    paddingBottom: Platform.OS === 'ios' ? ms(25) : ms(15),
   },
   Box: {
     flexGrow: 1,
-    paddingBottom: 25,
+    paddingBottom: ms(20),
   },
 });

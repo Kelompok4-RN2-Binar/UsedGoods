@@ -13,25 +13,6 @@ const NotificationShimmer = () => {
         alignItems: 'center',
       }}>
       <SkeletonPlaceholder>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: window.width * 0.9,
-          }}>
-          <View style={{width: ms(100), height: ms(30), fontSize: 18}} />
-          <View style={{flexDirection: 'row'}}>
-            <View style={{width: ms(50), height: ms(30), fontSize: 18}} />
-            <View
-              style={{
-                width: ms(50),
-                height: ms(30),
-                fontSize: 18,
-                marginLeft: ms(8),
-              }}
-            />
-          </View>
-        </View>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => (
           <View
             key={i => i}
