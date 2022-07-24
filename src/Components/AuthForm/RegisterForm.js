@@ -1,45 +1,38 @@
 import {View} from 'react-native';
 import React, {useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchingRegister, updateUserData} from '../../Redux/actions';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import ImagePicker from 'react-native-image-crop-picker';
+import {ms} from 'react-native-size-matters';
+import {fetchingRegister, updateUserData} from '../../Redux/actions';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
 import ImageShow from '../Others/ImageShow';
-import ImagePicker from 'react-native-image-crop-picker';
-const RegisterForm = ({label}) => {
+
+const RegisterForm = ({label, connection}) => {
   const dispatch = useDispatch();
+
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
-  console.log("user data: ",userData)
-  const registerValidation = yup.object().shape({
-    name: yup.string().required('Name is Required!'),
-    email: yup
-      .string()
-      .email('Please Enter Valid Email!')
-      .required('Email is Required!'),
-    password: yup
-      .string()
-      .required('Password is Required!')
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-        'Must Contain 8 Characters, One Uppercase, One Lowercase and One Number!',
-      ),
-    phone: yup
-      .string()
-      .required('Phone Number is Required!')
-      .matches(/^[0][0-9]{10,14}$/, 'Please Enter Valid Phone Number'),
-    address: yup.string().required('Address is Required!'),
-    city: yup.string().required('City is Required!'),
-  });
 
-  const updateValidation = yup.object().shape({
+  const dataValidation = yup.object().shape({
     name: yup.string().required('Name is Required!'),
     email: yup
       .string()
       .email('Please Enter Valid Email!')
       .required('Email is Required!'),
+    showPassword: yup.boolean(),
+    password: yup.string().when('showPassword', {
+      is: true,
+      then: yup
+        .string()
+        .required('Password is Required!')
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+          'Must Contain 8 Characters, One Uppercase, One Lowercase and One Number!',
+        ),
+    }),
     phone: yup
       .string()
       .required('Phone Number is Required!')
@@ -53,20 +46,25 @@ const RegisterForm = ({label}) => {
   }, []);
 
   const goUpdate = useCallback(values => {
-    console.log(loginUser.access_token)
     dispatch(updateUserData(values, loginUser.access_token));
   }, []);
 
   const imagePicker = async handleChange => {
     ImagePicker.openPicker({
-      width: 450,
-      height: 450,
+      width: ms(360),
+      height: ms(360),
       cropping: true,
-    }).then(image => {
-      console.log(image);
-      const uploadUri = Platform.OS === 'IOS' ? image.path.replace('file://', '') : image.path;
-      handleChange(uploadUri);
-    });
+    })
+      .then(image => {
+        const uploadUri =
+          Platform.OS === 'IOS'
+            ? image.path.replace('file://', '')
+            : image.path;
+        handleChange(uploadUri);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
@@ -77,28 +75,30 @@ const RegisterForm = ({label}) => {
               image: userData.image_url,
               name: userData.full_name,
               email: userData.email,
-              password: '',
               phone: 0 + userData.phone_number,
               address: userData.address,
               city: userData.city,
             }
           : {
-              image: '',
               name: '',
               email: '',
               password: '',
               phone: '',
               address: '',
               city: '',
+              showPassword: true,
             }
       }
-      validationSchema={label ? updateValidation : registerValidation}
+      validationSchema={dataValidation}
       onSubmit={values => (label ? goUpdate(values) : goRegister(values))}>
       {({handleChange, handleBlur, handleSubmit, values, errors}) => (
         <View>
-        {label&&
-          <ImageShow onPress={() => imagePicker(handleChange('image'))} uri={values.image}/>
-        }
+          {label && (
+            <ImageShow
+              onPress={() => imagePicker(handleChange('image'))}
+              uri={values.image}
+            />
+          )}
           <Input
             icon={'account-outline'}
             onChangeText={handleChange('name')}
@@ -151,6 +151,7 @@ const RegisterForm = ({label}) => {
             error={errors.city}
           />
           <Button
+            disabled={connection ? false : true}
             caption={label ? 'Update' : 'Register'}
             onPress={handleSubmit}
           />

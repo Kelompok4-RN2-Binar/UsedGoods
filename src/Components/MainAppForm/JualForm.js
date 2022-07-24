@@ -37,10 +37,10 @@ const JualForm = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [items, setItems] = useState([
-    {label: 'Elektronik', value: 96},
-    {label: 'Aksesoris Fashion', value: 102},
-    {label: 'Hobi dan Koleksi', value: 104},
-    {label: 'Perlengkapan rumah', value: 107},
+    {label: 'Elektronik', value: 1},
+    {label: 'Aksesoris Fashion', value: 7},
+    {label: 'Hobi dan Koleksi', value: 9},
+    {label: 'Perlengkapan rumah', value: 12},
   ]);
 
   const imagePicker = async handleChange => {

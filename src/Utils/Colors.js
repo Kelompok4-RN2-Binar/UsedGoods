@@ -6,7 +6,7 @@ export const COLORS = {
   red: '#FF6164',
   green: '#0CBFA5',
   grey: '#8991A4',
-  lightGrey: '#F4F5F6',
+  lightGrey: '#DFE9EF',
   socialMedia: '#1a3834',
-  disabled : '#d0d0d0'
+  disabled: '#d0d0d0',
 };

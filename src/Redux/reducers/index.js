@@ -20,29 +20,40 @@ import {
   GET_STATUS_ORDER,
   GET_ORDER,
   GET_DETAIL_NOTIFICATION,
-  GET_SOLD_SELLER
+  GET_SOLD_SELLER,
+  CLEAR_PRODUCT,
+  ADD_WISHLIST,
+  CONNECTED,
+  NOT_CONNECTED,
+  GET_WISHLIST,
+  GET_HISTORY,
+  GET_HISTORY_PRODUCT,
 } from '../types';
 const initialState = {
   authScreen: 'Login',
-  loginUser: null,
-  userData: null,
-  wishlistDataSeller:null,
-  banner: null,
-  product: null,
+  loginUser: {},
+  userData: {},
+  banner: [],
+  product: [],
+  wishlist: [],
+  wishlistDataSeller: null,
   productDataSeller: null,
   daftarJualScreen: 'Product',
-  notifDataSeller:null,
-  notifDataBuyer:null,
-  notifScreen:'Seller',
-  category:null,
-  productSpesific:null,
-  wishlistSpesific:null,
-  productSpesificBuyer:null,
-  order:null,
-  statusOrder:null,
-  statusOrderProduct:null,
-  notifDataDetail:null,
-  soldSeller:null
+  notifDataSeller: null,
+  notifDataBuyer: null,
+  notifScreen: 'Seller',
+  category: null,
+  productSpesific: null,
+  wishlistSpesific: null,
+  productSpesificBuyer: null,
+  order: null,
+  statusOrder: null,
+  statusOrderProduct: null,
+  notifDataDetail: null,
+  soldSeller: null,
+  connection: false,
+  history:null,
+  historyProduct:null
 };
 
 const Reducer = (state = initialState, action) => {
@@ -52,26 +63,10 @@ const Reducer = (state = initialState, action) => {
         ...state,
         authScreen: action.payload,
       };
-    case DAFTARJUAL_SCREEN:
-      return {
-        ...state,
-        daftarJualScreen: action.payload,
-      };
-    case NOTIFICATION_SCREEN:
-    return {
-      ...state,
-      notifScreen: action.payload,
-    };
     case FETCH_LOGIN:
       return {
         ...state,
         loginUser: action.payload,
-      };
-    case LOGOUT:
-      return {
-        ...state,
-        loginUser: null,
-        userData: null,
       };
     case GET_USER_DATA:
       return {
@@ -83,6 +78,12 @@ const Reducer = (state = initialState, action) => {
         ...state,
         userData: action.payload,
       };
+    case LOGOUT:
+      return {
+        ...state,
+        loginUser: null,
+        userData: null,
+      };
     case GET_BANNER:
       return {
         ...state,
@@ -91,8 +92,29 @@ const Reducer = (state = initialState, action) => {
     case GET_PRODUCT:
       return {
         ...state,
-        product: action.payload,
+        product: [...(state.product || []), ...action.payload],
       };
+    case CLEAR_PRODUCT:
+      return {
+        ...state,
+        product: null,
+      };
+    case GET_WISHLIST:
+      return {
+        ...state,
+        wishlist: action.payload,
+      };
+    case DAFTARJUAL_SCREEN:
+      return {
+        ...state,
+        daftarJualScreen: action.payload,
+      };
+    case NOTIFICATION_SCREEN:
+      return {
+        ...state,
+        notifScreen: action.payload,
+      };
+
     case GET_PRODUCT_SELLER:
       return {
         ...state,
@@ -157,6 +179,26 @@ const Reducer = (state = initialState, action) => {
       return {
         ...state,
         soldSeller: action.payload,
+      };
+    case CONNECTED:
+      return {
+        ...state,
+        connection: true,
+      };
+    case NOT_CONNECTED:
+      return {
+        ...state,
+        connection: false,
+      };
+    case GET_HISTORY:
+      return {
+        ...state,
+        history: action.payload,
+      };
+    case GET_HISTORY_PRODUCT:
+      return {
+        ...state,
+        historyProduct: action.payload,
       };
     default:
       return state;

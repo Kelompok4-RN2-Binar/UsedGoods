@@ -1,7 +1,8 @@
 import {View, StatusBar, StyleSheet, NativeModules} from 'react-native';
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {updatePassword} from '../../../Redux/actions';
+import {ms} from 'react-native-size-matters';
+import {connectionChecker, updatePassword} from '../../../Redux/actions';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {Header, Input, Button} from '../../../Components';
@@ -10,6 +11,7 @@ import {COLORS} from '../../../Utils';
 const EditPassword = ({navigation}) => {
   const dispatch = useDispatch();
 
+  const connection = useSelector(state => state.appData.connection);
   const loginUser = useSelector(state => state.appData.loginUser);
 
   const registerValidation = yup.object().shape({
@@ -36,6 +38,10 @@ const EditPassword = ({navigation}) => {
         'Must Contain 8 Characters, One Uppercase, One Lowercase and One Number!',
       ),
   });
+
+  useEffect(() => {
+    dispatch(connectionChecker());
+  }, [connection]);
 
   const goUpdate = useCallback(values => {
     dispatch(updatePassword(values, loginUser.access_token));
@@ -85,7 +91,11 @@ const EditPassword = ({navigation}) => {
             error={errors.confirmPassword}
             secureTextEntry={true}
           />
-          <Button caption={'Update'} onPress={handleSubmit} />
+          <Button
+            disabled={connection ? false : true}
+            caption={'Update'}
+            onPress={handleSubmit}
+          />
         </View>
       )}
     </Formik>
@@ -99,6 +109,6 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingTop: StatusBarManager.HEIGHT + 20,
+    paddingTop: StatusBarManager.HEIGHT + ms(20),
   },
 });

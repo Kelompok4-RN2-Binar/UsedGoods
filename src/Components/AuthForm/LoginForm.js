@@ -1,14 +1,18 @@
 import {View} from 'react-native';
-import React, {useCallback} from 'react';
-import {useDispatch} from 'react-redux';
-import {fetchingLogin} from '../../Redux/actions';
+import React, {useCallback, useMemo} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import {fetchingLogin, getUserData} from '../../Redux/actions';
 import Input from '../Others/Input';
 import Button from '../Others/Button';
 
-const LoginForm = () => {
+const LoginForm = ({connection}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const loginUser = useSelector(state => state.appData.loginUser);
 
   const loginValidation = yup.object().shape({
     email: yup
@@ -27,6 +31,10 @@ const LoginForm = () => {
   const goLogin = useCallback(values => {
     dispatch(fetchingLogin(values));
   }, []);
+
+  useMemo(() => {
+    loginUser && navigation.navigate('Home');
+  }, [loginUser]);
 
   return (
     <Formik
@@ -52,7 +60,11 @@ const LoginForm = () => {
             error={errors.password}
             secureTextEntry={true}
           />
-          <Button caption={'Login'} onPress={handleSubmit} />
+          <Button
+            disabled={connection ? false : true}
+            caption={'Login'}
+            onPress={handleSubmit}
+          />
         </View>
       )}
     </Formik>
