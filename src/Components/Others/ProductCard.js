@@ -9,9 +9,10 @@ import React from 'react';
 import {ms} from 'react-native-size-matters';
 import {rupiah} from '../../Redux/actions';
 import {COLORS, FONTS} from '../../Utils';
-
+import { useSelector } from 'react-redux';
 const Product = ({data, onPress, onPressWishlist, wishlist, label}) => {
   const wishlistButton = wishlist?.filter(i => i.product_id == data.id);
+  const loginUser = useSelector(state => state.appData.loginUser);
   return (
     <TouchableOpacity style={styles.Card} onPress={onPress}>
       <Image
@@ -27,7 +28,7 @@ const Product = ({data, onPress, onPressWishlist, wishlist, label}) => {
       <Text style={styles.Price} numberOfLines={1}>
         {`Rp. ${rupiah(label ? data?.Product?.base_price : data?.base_price)}`}
       </Text>
-      {wishlist || label ? (
+      {loginUser&&wishlist || label ? (
         <TouchableOpacity
           disabled={label ? false : wishlistButton?.length ? true : false}
           style={[

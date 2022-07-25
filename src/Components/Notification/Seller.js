@@ -201,7 +201,7 @@ const Seller = () => {
                         <Text
                           style={[
                             styles.Text,
-                            {fontSize: ms(14), marginVertical: ms(4)},
+                            {fontSize: ms(14), marginVertical: ms(1)},
                           ]}>{`Rp. ${rupiah(dataDetail?.base_price)}`}</Text>
                         <Text style={[styles.textGrey]}>{`${timeDate(
                           dataDetail?.updatedAt,

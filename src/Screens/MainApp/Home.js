@@ -145,11 +145,15 @@ const Home = ({navigation}) => {
           onChangeText={val => setIsSearch(val)}
           onPress={() => onSearch()}
         />
-        <TouchableOpacity
-          style={styles.Wishlist}
-          onPress={() => navigation.navigate('Wishlist')}>
-          <Icon name={'book'} size={ms(30)} color={COLORS.white} />
-        </TouchableOpacity>
+        {loginUser&&(
+          <TouchableOpacity
+            style={styles.Wishlist}
+            onPress={() =>
+              navigation.navigate('Wishlist')
+            }>
+            <Icon name={'book'} size={ms(30)} color={COLORS.white} />
+          </TouchableOpacity>
+        )}
       </View>
       <Carousel
         loop

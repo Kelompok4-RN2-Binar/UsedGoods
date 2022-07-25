@@ -19,6 +19,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {updateProduct} from '../../Redux/actions';
 import {useNavigation} from '@react-navigation/native';
 import {ms} from 'react-native-size-matters';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const EditValidation = yup.object().shape({
   name: yup.string().required('Product Name is Required!'),
@@ -37,13 +38,21 @@ const EditForm = ({data}) => {
 
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
-  console.log('data akun :', userData);
-
-  const [value, setValue] = useState([]);
+  
   const array = [];
   data.Categories.map(item => {
     array.push(item.id);
   });
+  
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    {label: 'Elektronik', value: 1},
+    {label: 'Aksesoris Fashion', value: 7},
+    {label: 'Hobi dan Koleksi', value: 9},
+    {label: 'Perlengkapan rumah', value: 12},
+  ]);
+  const [value, setValue] = useState(array);
+  
   const categoryProduct = array.toString();
 
   const imagePicker = async handleChange => {
@@ -64,6 +73,7 @@ const EditForm = ({data}) => {
   };
 
   const goUpdate = (values, resetForm) => {
+    const categoryProduct = value.toString();
     dispatch(
       updateProduct(values, loginUser.access_token, categoryProduct, data.id),
     ).then(() => {
@@ -134,6 +144,38 @@ const EditForm = ({data}) => {
             placeholder={'Location'}
             error={errors.location}
             screen={'jual'}
+          />
+          <Text style={styles.Text}>Category</Text>
+          <DropDownPicker
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
+            multiple={true}
+            min={0}
+            max={4}
+            style={styles.Dropdown}
+            textStyle={{
+              fontSize: ms(12),
+              color: COLORS.black,
+              paddingLeft: ms(10),
+            }}
+            containerStyle={{
+              width: window.width * 0.8,
+              alignSelf: 'center',
+            }}
+            placeholder="Select Category"
+            mode="BADGE"
+            badgeDotColors={['red', 'green', 'blue', 'yellow']}
+            badgeTextStyle={{
+              fontFamily: FONTS.Regular,
+              color: COLORS.white,
+              paddingLeft: ms(-5),
+            }}
+            badgeColors={COLORS.green}
+            listMode="SCROLLVIEW"
           />
           <Text style={styles.Text}>Description</Text>
           <Input
