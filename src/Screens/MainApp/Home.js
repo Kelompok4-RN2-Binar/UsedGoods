@@ -115,7 +115,7 @@ const Home = ({navigation}) => {
   const getData = () => {
     setIsSearch('');
     setDefault();
-    dispatch(getWishlist(loginUser.access_token));
+    loginUser && dispatch(getWishlist(loginUser.access_token));
     dispatch(getProduct(currentCategory, '', 1)).then(() => {
       setLoading(false);
     });
@@ -145,11 +145,15 @@ const Home = ({navigation}) => {
           onChangeText={val => setIsSearch(val)}
           onPress={() => onSearch()}
         />
-        <TouchableOpacity
-          style={styles.Wishlist}
-          onPress={() => navigation.navigate('Wishlist')}>
-          <Icon name={'book'} size={ms(30)} color={COLORS.white} />
-        </TouchableOpacity>
+        {loginUser&&(
+          <TouchableOpacity
+            style={styles.Wishlist}
+            onPress={() =>
+              navigation.navigate('Wishlist')
+            }>
+            <Icon name={'book'} size={ms(30)} color={COLORS.white} />
+          </TouchableOpacity>
+        )}
       </View>
       <Carousel
         loop

@@ -3,20 +3,23 @@ import {Platform} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ms} from 'react-native-size-matters';
-import {useSelector} from 'react-redux';
+import { useSelector} from 'react-redux';
 import {Home, DaftarJual, Jual, Notifikasi, Akun} from '../Screens';
 import {COLORS} from '../Utils/Colors';
-
+import Toast from 'react-native-toast-message';
 const Tab = createBottomTabNavigator();
 
 const MainApp = () => {
   const loginUser = useSelector(state => state.appData.loginUser);
-
   const handleNotLogin = ({navigation}) => ({
     tabPress: e => {
       if (!loginUser) {
         e.preventDefault();
         navigation.navigate('Auth');
+        Toast.show({
+          type: 'error',
+          text1: 'You are not login!',
+        });
       }
     },
   });

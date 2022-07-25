@@ -135,9 +135,9 @@ export const getUserData = AccessToken => {
 };
 
 export const updateUserData = (data, AccessToken) => {
+  console.log(data);
   return async dispatch => {
     const {image, name, email, password, phone, address, city} = data;
-    console.log(data);
     const formData = new FormData();
     formData.append('full_name', name);
     formData.append('email', email);
@@ -157,6 +157,8 @@ export const updateUserData = (data, AccessToken) => {
     await axios
       .put(URL + 'auth/user', formData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
           access_token: `${AccessToken}`,
         },
       })
@@ -177,7 +179,10 @@ export const updateUserData = (data, AccessToken) => {
             text1: 'Email Already Exists!',
           });
         } else {
-          console.log(error);
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
         }
       });
   };
@@ -356,6 +361,8 @@ export const postProduct = (data, AccessToken, category) => {
     await axios
       .post(URL + 'seller/product', formData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
           access_token: `${AccessToken}`,
         },
       })
@@ -421,9 +428,17 @@ export const getWishlistSeller = AccessToken => {
   };
 };
 export const rupiah = number => {
-  let reverse = number.toString().split('').reverse().join(''),
-    thousand = reverse.match(/\d{1,3}/g);
-  thousand = thousand.join('.').split('').reverse().join('');
+  let reverse ;
+  if(typeof number =="number"){
+    reverse =  number.toString().split('').reverse().join('')
+     thousand = reverse.match(/\d{1,3}/g);
+     thousand = thousand.join('.').split('').reverse().join('');
+  }else if(typeof number =="string"){
+    reverse =  number.split('').reverse().join('')
+     thousand = reverse.match(/\d{1,3}/g);
+     thousand = thousand.join('.').split('').reverse().join('');
+  }
+  
   return thousand;
 };
 
@@ -524,6 +539,10 @@ export const deleteProduct = (AccessToken, id) => {
       })
       .catch(function (error) {
         console.log(error);
+        Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
       });
   };
 };
@@ -561,7 +580,6 @@ export const updateProduct = (data, AccessToken, category, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
         console.log(error);
       });
   };

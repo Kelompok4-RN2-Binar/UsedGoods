@@ -36,7 +36,6 @@ const Buyer = () => {
   const userData = useSelector(state => state.appData.userData);
   const notifDataBuyer = useSelector(state => state.appData.notifDataBuyer);
   const dataDetail = useSelector(state => state.appData.notifDataDetail);
-
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [openModal, setopenModal] = useState(false);
@@ -71,7 +70,7 @@ const Buyer = () => {
       setopenModal(true);
       if (read == false) {
         dispatch(readNotif(loginUser.access_token, dataDetail.id)).then(() => {
-          getData();
+          dispatch(getNotificationBuyer(loginUser.access_token));
         });
       }
 
@@ -163,6 +162,9 @@ const Buyer = () => {
                       <Text style={[styles.Text, {fontSize: ms(14)}]}>
                         Succesfully Bid {`Rp. ${rupiah(dataDetail?.bid_price)}`}
                       </Text>
+                      <Text style={[styles.Text, {fontSize: ms(14)}]}>
+                        {dataDetail?.User?.phone_number}
+                      </Text>
                     </View>
                   </View>
                   <Button
@@ -179,6 +181,7 @@ const Buyer = () => {
                         rupiah(dataDetail?.bid_price) +
                         '&phone=62' +
                         dataDetail?.User?.phone_number;
+                      
                       sendOnWhatsApp(url);
                     }}
                     style={{

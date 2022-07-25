@@ -8,7 +8,7 @@ import {
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {ms} from 'react-native-size-matters';
-import {connectionChecker} from '../../Redux/actions';
+import {connectionChecker, getCategory} from '../../Redux/actions';
 import {Header, JualForm} from '../../Components';
 import {COLORS} from '../../Utils';
 
@@ -19,6 +19,7 @@ const Jual = ({navigation}) => {
 
   useEffect(() => {
     dispatch(connectionChecker());
+    dispatch(getCategory())
   }, [connection]);
 
   return (

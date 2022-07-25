@@ -31,7 +31,7 @@ import {
 } from '../types';
 const initialState = {
   authScreen: 'Login',
-  loginUser: {},
+  loginUser: null,
   userData: {},
   banner: [],
   product: [],
@@ -83,6 +83,8 @@ const Reducer = (state = initialState, action) => {
         ...state,
         loginUser: null,
         userData: null,
+        notifDataSeller :null,
+        notifDataBuyer :null
       };
     case GET_BANNER:
       return {

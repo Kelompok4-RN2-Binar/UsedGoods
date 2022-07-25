@@ -75,7 +75,7 @@ const RegisterForm = ({label, connection}) => {
               image: userData.image_url,
               name: userData.full_name,
               email: userData.email,
-              phone: 0 + userData.phone_number,
+              phone: userData.phone_number,
               address: userData.address,
               city: userData.city,
             }

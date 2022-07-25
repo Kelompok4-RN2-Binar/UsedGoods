@@ -36,6 +36,7 @@ const InfoPenawar = ({route}) => {
   const data = useSelector(state => state.appData.wishlistSpesific);
   const loginUser = useSelector(state => state.appData.loginUser);
   const userData = useSelector(state => state.appData.userData);
+
   const {dataRoute} = route.params;
 
   const [openModal, setopenModal] = useState(false);
@@ -44,6 +45,10 @@ const InfoPenawar = ({route}) => {
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
+
+  var url = 'whatsapp://send?text=' + 'Hello this is ' +  userData.full_name + ' who sell ' + data?.product_name +
+            ' in SecondApp ' +'&phone=62' + data?.User.phone_number;
+
   const onOpenAccepted = () => {
     setopenModal(true);
     setComponent(
@@ -127,15 +132,6 @@ const InfoPenawar = ({route}) => {
             caption={'Contact Buyer via Whatsapp'}
             style={{width: window.width * 0.8, height: 50, marginVertical: 15}}
             onPress={() => {
-              let url =
-                'whatsapp://send?text=' +
-                'Hello this is ' +
-                userData.full_name +
-                ' who sell ' +
-                data.product_name +
-                ' in SecondApp ' +
-                '&phone=62' +
-                data.User.phone_number;
               sendOnWhatsApp(url);
             }}
           />
@@ -431,7 +427,7 @@ const InfoPenawar = ({route}) => {
                   <Button
                     caption={'Contact'}
                     onPress={() => {
-                      sendOnWhatsApp();
+                      sendOnWhatsApp(url);
                     }}
                     style={{width: window.width * 0.4, height: 50}}
                   />
