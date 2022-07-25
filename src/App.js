@@ -6,7 +6,11 @@ import {PersistGate} from 'redux-persist/integration/react';
 import Toast from 'react-native-toast-message';
 import Router from './Router';
 import Store, {PersistStore} from './Redux/Store';
+import CodePush from 'react-native-code-push';
 
+const codePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+};
 const App = () => {
   return (
     <Provider store={Store}>
@@ -20,4 +24,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default CodePush(codePushOptions)(App);
