@@ -53,7 +53,6 @@ const EditForm = ({data}) => {
   ]);
   const [value, setValue] = useState(array);
   
-  const categoryProduct = array.toString();
 
   const imagePicker = async handleChange => {
     ImagePicker.openPicker({
@@ -84,9 +83,10 @@ const EditForm = ({data}) => {
   };
 
   const goPreview = (values, resetForm) => {
+    const categoryProductPrev = value.toString();
     navigation.navigate('Preview', {
       data: values,
-      categoryProduct: categoryProduct,
+      categoryProduct: categoryProductPrev,
       resetForm: resetForm,
       arrayProduct: value,
       screen: 'edit',
