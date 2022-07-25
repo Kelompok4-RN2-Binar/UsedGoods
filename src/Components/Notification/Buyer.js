@@ -162,9 +162,6 @@ const Buyer = () => {
                       <Text style={[styles.Text, {fontSize: ms(14)}]}>
                         Succesfully Bid {`Rp. ${rupiah(dataDetail?.bid_price)}`}
                       </Text>
-                      <Text style={[styles.Text, {fontSize: ms(14)}]}>
-                        {dataDetail?.User?.phone_number}
-                      </Text>
                     </View>
                   </View>
                   <Button
@@ -181,7 +178,7 @@ const Buyer = () => {
                         rupiah(dataDetail?.bid_price) +
                         '&phone=62' +
                         dataDetail?.User?.phone_number;
-                      
+
                       sendOnWhatsApp(url);
                     }}
                     style={{
