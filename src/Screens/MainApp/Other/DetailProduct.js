@@ -441,8 +441,6 @@ const styles = StyleSheet.create({
   CategoryContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-
-    marginVertical: ms(4),
   },
   Category: {
     fontFamily: FONTS.Regular,
