@@ -23,7 +23,6 @@ import {
   GET_DETAIL_NOTIFICATION,
   GET_SOLD_SELLER,
   CLEAR_PRODUCT,
-  ADD_WISHLIST,
   CONNECTED,
   NOT_CONNECTED,
   GET_WISHLIST,
@@ -36,6 +35,7 @@ import moment from 'moment';
 import NetInfo from '@react-native-community/netinfo';
 import TouchID from 'react-native-touch-id';
 import {Linking} from 'react-native';
+
 export const authScreen = data => ({
   type: AUTH_SCREEN,
   payload: data,
@@ -119,11 +119,12 @@ export const getUserData = AccessToken => {
         });
       })
       .catch(function (error) {
-        if (error.response.status == 400) {
+        if (error.response.status == 403) {
           Toast.show({
             type: 'error',
-            text1: 'Email Already Exists!',
+            text1: error.response.data.message,
           });
+          dispatch(goLogout());
         } else {
           Toast.show({
             type: 'error',
@@ -178,6 +179,12 @@ export const updateUserData = (data, AccessToken) => {
             type: 'error',
             text1: 'Email Already Exists!',
           });
+        } else if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
         } else {
           Toast.show({
             type: 'error',
@@ -217,6 +224,12 @@ export const updatePassword = (data, accessToken) => {
             type: 'error',
             text1: 'Current Password is Wrong!',
           });
+        } else if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
         } else {
           console.log(error);
         }
@@ -294,12 +307,20 @@ export const addWishlist = (productId, accessToken) => {
         });
       })
       .catch(err => {
-        console.log(err);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(err);
+        }
       });
   };
 };
 
-export const getWishlist = (accessToken, id) => {
+export const getWishlist = accessToken => {
   return async dispatch => {
     await axios
       .get(`${URL}buyer/wishlist`, {
@@ -314,7 +335,15 @@ export const getWishlist = (accessToken, id) => {
         });
       })
       .catch(err => {
-        console.log(err);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(err);
+        }
       });
   };
 };
@@ -335,7 +364,21 @@ export const removeWishlist = (accessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 400) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -373,7 +416,15 @@ export const postProduct = (data, AccessToken, category) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -403,7 +454,15 @@ export const getProductSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -423,22 +482,30 @@ export const getWishlistSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(MediaError);
+        }
       });
   };
 };
 export const rupiah = number => {
-  let reverse ;
-  if(typeof number =="number"){
-    reverse =  number.toString().split('').reverse().join('')
-     thousand = reverse.match(/\d{1,3}/g);
-     thousand = thousand.join('.').split('').reverse().join('');
-  }else if(typeof number =="string"){
-    reverse =  number.split('').reverse().join('')
-     thousand = reverse.match(/\d{1,3}/g);
-     thousand = thousand.join('.').split('').reverse().join('');
+  let reverse;
+  if (typeof number == 'number') {
+    reverse = number.toString().split('').reverse().join('');
+    thousand = reverse.match(/\d{1,3}/g);
+    thousand = thousand.join('.').split('').reverse().join('');
+  } else if (typeof number == 'string') {
+    reverse = number.split('').reverse().join('');
+    thousand = reverse.match(/\d{1,3}/g);
+    thousand = thousand.join('.').split('').reverse().join('');
   }
-  
+
   return thousand;
 };
 
@@ -462,7 +529,15 @@ export const getNotificationSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -482,7 +557,15 @@ export const getNotificationBuyer = AccessToken => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -518,7 +601,15 @@ export const getSpesificProduct = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -538,11 +629,15 @@ export const deleteProduct = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -580,7 +675,15 @@ export const updateProduct = (data, AccessToken, category, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -606,7 +709,15 @@ export const acceptOrder = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -632,7 +743,15 @@ export const SoldOrder = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -658,7 +777,15 @@ export const declineOrder = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -678,7 +805,15 @@ export const getWishlistSpesific = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -698,7 +833,15 @@ export const getSpesificProductBuyer = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -731,11 +874,15 @@ export const buyProduct = (data, AccessToken) => {
         });
       })
       .catch(function (error) {
-        console.log('buy errorrrrr', error);
-        Toast.show({
-          type: 'error',
-          text1: error.response.data.message,
-        });
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -755,7 +902,15 @@ export const getStatusOrder = AccessToken => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -783,6 +938,15 @@ export const getStatusOrderProduct = (AccessToken, id) => {
           type: GET_STATUS_ORDER_PRODUCT,
           payload: null,
         });
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -802,7 +966,15 @@ export const getDetailNotification = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -823,7 +995,15 @@ export const readNotif = (AccessToken, id) => {
         console.log('patch read sucess!');
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -843,7 +1023,15 @@ export const getSoldSeller = AccessToken => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -905,7 +1093,15 @@ export const getHistory = AccessToken => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
@@ -925,7 +1121,15 @@ export const getHistoryProduct = (AccessToken, id) => {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        if (error.response.status == 403) {
+          Toast.show({
+            type: 'error',
+            text1: error.response.data.message,
+          });
+          dispatch(goLogout());
+        } else {
+          console.log(error);
+        }
       });
   };
 };
